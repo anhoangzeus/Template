@@ -119,42 +119,53 @@ function HomeStack(props) {
     </Stack.Navigator>
   );
 }
-
+function NotificationsScreen({ navigation }) {
+  return (
+    <Block style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>
+        HAHA
+      </Text>
+    </Block>
+  );
+}
 export function AppStack(props) {
   return (
     <Drawer.Navigator
-      style={{ flex: 1 }}
-      drawerContent={props => (
-        <CustomDrawerContent {...props} profile={profile} />
-      )}
-      drawerStyle={{
-        backgroundColor: "white",
-        width: width * 0.8
-      }}
-      drawerContentOptions={{
-        activeTintColor: "white",
-        inactiveTintColor: "#000",
-        activeBackgroundColor: materialTheme.COLORS.ACTIVE,
-        inactiveBackgroundColor: "transparent",
-        itemStyle: {
-          width: width * 0.74,
-          paddingHorizontal: 12,
-          // paddingVertical: 4,
-          justifyContent: "center",
-          alignContent: "center",
-          // alignItems: 'center',
-          overflow: "hidden"
-        },
-        labelStyle: {
-          fontSize: 18,
-          fontWeight: "normal"
-        }
-      }}
+    style={{ flex: 1 }}
+    // drawerContent={props => (
+    //   <CustomDrawerContent {...props} profile={profile} />
+    // )}
+    drawerStyle={{
+      backgroundColor: "white",
+      width: width * 0.8
+    }}
+    drawerContentOptions={{
+      activeTintColor: "white",
+      inactiveTintColor: "#000",
+      activeBackgroundColor: materialTheme.COLORS.ACTIVE,
+      inactiveBackgroundColor: "transparent",
+      itemStyle: {
+        width: width * 0.74,
+        paddingHorizontal: 12,
+        // paddingVertical: 4,
+        justifyContent: "center",
+        alignContent: "center",
+        // alignItems: 'center',
+        overflow: "hidden"
+      },
+      labelStyle: {
+        fontSize: 18,
+        fontWeight: "normal"
+      }
+    }}
       initialRouteName="Home"
     >
+ 
+
       <Drawer.Screen
         name="Home"
         component={HomeStack}
+
         options={{
           drawerIcon: ({ focused }) => (
             <Icon
@@ -165,7 +176,9 @@ export function AppStack(props) {
             />
           )
         }}
-      />
+      >
+      </Drawer.Screen>
+
       <Drawer.Screen
         name="Woman"
         component={ProScreen}
@@ -252,6 +265,7 @@ export function AppStack(props) {
           )
         }}
       />
+      {/* 
       <Drawer.Screen
         name="Components"
         component={ComponentsStack}
@@ -267,6 +281,8 @@ export function AppStack(props) {
           )
         }}
       />
+      */}
+      
       <Drawer.Screen
         name="Sign In"
         component={ProScreen}
@@ -281,6 +297,7 @@ export function AppStack(props) {
           )
         }}
       />
+      
       <Drawer.Screen
         name="Sign Up"
         component={ProScreen}
@@ -294,8 +311,9 @@ export function AppStack(props) {
             />
           )
         }}
-      />
+      /> 
     </Drawer.Navigator>
+    
   );
 }
 
