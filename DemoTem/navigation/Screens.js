@@ -10,7 +10,9 @@ import HomeScreen from '../screens/Home';
 import OnboardingScreen from '../screens/Onboarding';
 import ProfileScreen from '../screens/Profile';
 import ProScreen from '../screens/Pro';
+import Signup from '../screens/Signup'
 import SettingsScreen from '../screens/Settings';
+import LoginScreen from '../screens/Login'
 
 import CustomDrawerContent from './Menu';
 import { Icon, Header } from '../components';
@@ -285,7 +287,7 @@ export function AppStack(props) {
       
       <Drawer.Screen
         name="Sign In"
-        component={ProScreen}
+        component={LoginScreen}
         options={{
           drawerIcon: ({ focused }) => (
             <Icon
@@ -300,7 +302,7 @@ export function AppStack(props) {
       
       <Drawer.Screen
         name="Sign Up"
-        component={ProScreen}
+        component={Signup}
         options={{
           drawerIcon: ({ focused }) => (
             <Icon
@@ -332,6 +334,7 @@ export default function OnboardingStack(props) {
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="Setting" component={SettingsScreen} />
       <Stack.Screen name="Components" component={ComponentsScreen} />
+      <Stack.Screen name="Login" component={LoginScreen}/>
       <Stack.Screen name="App" component={AppStack} />
     </Stack.Navigator>
   );
