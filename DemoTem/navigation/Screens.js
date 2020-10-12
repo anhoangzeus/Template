@@ -171,7 +171,7 @@ export function AppStack(props) {
             <Icon
               size={16}
               name="shop"
-              family="GalioExtra"
+              family="entypo"
               color={focused ? "white" : materialTheme.COLORS.MUTED}
             />
           )
@@ -215,8 +215,8 @@ export function AppStack(props) {
           drawerIcon: ({ focused }) => (
             <Icon
               size={16}
-              name="baby"
-              family="GalioExtra"
+              name="github"
+              family="entypo"
               color={focused ? "white" : materialTheme.COLORS.MUTED}
             />
           )
@@ -243,8 +243,8 @@ export function AppStack(props) {
           drawerIcon: ({ focused }) => (
             <Icon
               size={16}
-              name="circle-10"
-              family="GalioExtra"
+              name="profile"
+              family="antdesign"
               color={focused ? "white" : materialTheme.COLORS.MUTED}
             />
           )

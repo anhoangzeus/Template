@@ -12,9 +12,9 @@ const iPhoneX = () => Platform.OS === 'ios' && (height === 812 || width === 812 
 const ChatButton = ({isWhite, style, navigation}) => (
   <TouchableOpacity style={[styles.button, style]} onPress={() => navigation.navigate('Pro')}>
     <Icon
-      family="GalioExtra"
+      family="entypo"
       size={16}
-      name="chat-33"
+      name="chat"
       color={theme.COLORS[isWhite ? 'WHITE' : 'ICON']}
     />
     <Block middle style={styles.notify} />
@@ -24,9 +24,9 @@ const ChatButton = ({isWhite, style, navigation}) => (
 const BasketButton = ({isWhite, style, navigation}) => (
   <TouchableOpacity style={[styles.button, style]} onPress={() => navigation.navigate('Pro')}>
     <Icon
-      family="GalioExtra"
+      family="entypo"
       size={16}
-      name="basket-simple"
+      name="shopping-cart"
       color={theme.COLORS[isWhite ? 'WHITE' : 'ICON']}
     />
     <Block middle style={styles.notify} />
@@ -133,7 +133,7 @@ class Header extends React.Component {
         </Button>
         <Button shadowless style={styles.tab} onPress={() => navigation.navigate('Pro')}>
           <Block row middle>
-            <Icon size={16} name="camera-18" family="GalioExtra" style={{ paddingRight: 8 }} />
+            <Icon size={16} name="camera" family="entypo" style={{ paddingRight: 8 }} />
             <Text size={16} style={styles.tabTitle}>{tabTitleRight || 'Best Deals'}</Text>
           </Block>
         </Button>
