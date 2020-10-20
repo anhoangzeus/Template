@@ -13,6 +13,7 @@ import ProScreen from '../screens/Pro';
 import Signup from '../screens/Signup'
 import SettingsScreen from '../screens/Settings';
 import LoginScreen from '../screens/Login'
+import AccountScreen from '../screens/Account'
 
 import CustomDrawerContent from './Menu';
 import { Icon, Header } from '../components';
@@ -82,7 +83,7 @@ function ComponentsStack(props) {
         component={ComponentsScreen}
         options={{
           header: ({ navigation, scene }) => (
-            <Header title="Components" scene={scene} navigation={navigation} />
+            <Header title="Laptop" scene={scene} navigation={navigation} />
           )
         }}
       />
@@ -171,7 +172,7 @@ export function AppStack(props) {
         options={{
           drawerIcon: ({ focused }) => (
             <Icon
-              size={16}
+              size={24}
               name="shop"
               family="entypo"
               color={focused ? "white" : materialTheme.COLORS.MUTED}
@@ -182,14 +183,14 @@ export function AppStack(props) {
       </Drawer.Screen>
 
       <Drawer.Screen
-        name="Woman"
+        name="Laptop"
         component={ProScreen}
         options={{
           drawerIcon: ({ focused }) => (
             <Icon
-              size={16}
-              name="md-woman"
-              family="ionicon"
+              size={24}
+              name="laptop"
+              family="entypo"
               color={focused ? "white" : materialTheme.COLORS.MUTED}
               style={{ marginLeft: 4, marginRight: 4 }}
             />
@@ -197,42 +198,42 @@ export function AppStack(props) {
         }}
       />
       <Drawer.Screen
-        name="Man"
+        name="Phone"
         component={ProScreen}
         options={{
           drawerIcon: ({ focused }) => (
             <Icon
-              size={16}
-              name="man"
-              family="entypo"
+              size={24}
+              name="mobile1"
+              family="antdesign"
               color={focused ? "white" : materialTheme.COLORS.MUTED}
             />
           )
         }}
       />
       <Drawer.Screen
-        name="Kids"
+        name="Accesory"
         component={ProScreen}
         options={{
           drawerIcon: ({ focused }) => (
             <Icon
-              size={16}
-              name="github"
-              family="entypo"
+              size={24}
+              name="cpu"
+              family="feather"
               color={focused ? "white" : materialTheme.COLORS.MUTED}
             />
           )
         }}
       />
       <Drawer.Screen
-        name="New Collection"
+        name="Sale"
         component={ProScreen}
         options={{
           drawerIcon: ({ focused }) => (
             <Icon
-              size={16}
-              name="grid-on"
-              family="material"
+              size={24}
+              name="burst-sale"
+              family="foundation"
               color={focused ? "white" : materialTheme.COLORS.MUTED}
             />
           )
@@ -244,7 +245,7 @@ export function AppStack(props) {
         options={{
           drawerIcon: ({ focused }) => (
             <Icon
-              size={16}
+              size={24}
               name="profile"
               family="antdesign"
               color={focused ? "white" : materialTheme.COLORS.MUTED}
@@ -258,7 +259,7 @@ export function AppStack(props) {
         options={{
           drawerIcon: ({ focused }) => (
             <Icon
-              size={16}
+              size={24}
               name="gears"
               family="font-awesome"
               color={focused ? "white" : materialTheme.COLORS.MUTED}
@@ -291,7 +292,7 @@ export function AppStack(props) {
         options={{
           drawerIcon: ({ focused }) => (
             <Icon
-              size={16}
+              size={24}
               name="ios-log-in"
               family="ionicon"
               color={focused ? "white" : materialTheme.COLORS.MUTED}
@@ -306,7 +307,7 @@ export function AppStack(props) {
         options={{
           drawerIcon: ({ focused }) => (
             <Icon
-              size={16}
+              size={24}
               name="md-person-add"
               family="ionicon"
               color={focused ? "white" : materialTheme.COLORS.MUTED}
@@ -322,20 +323,22 @@ export function AppStack(props) {
 export default function OnboardingStack(props) {
   return (
     <Stack.Navigator mode="card" headerMode="none">
-      <Stack.Screen
+      {/* <Stack.Screen
         name="Onboarding"
         component={OnboardingScreen}
         option={{
           headerTransparent: true
         }}
-      />
+      /> */}
+      <Stack.Screen name="App" component={AppStack} />
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Pro" component={ProScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="Setting" component={SettingsScreen} />
       <Stack.Screen name="Components" component={ComponentsScreen} />
       <Stack.Screen name="Login" component={LoginScreen}/>
-      <Stack.Screen name="App" component={AppStack} />
+      <Stack.Screen name='Account' component={AccountScreen}/>
+      
     </Stack.Navigator>
   );
 }

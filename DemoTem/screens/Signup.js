@@ -1,21 +1,23 @@
 import React from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import Button from "react-native-button";
 import { AppStyles } from "../AppStyles";
 //import firebase from "react-native-firebase";
+import {fbApp} from "../firebaseconfig";
+import "firebase/auth";
 
 class SignupScreen extends React.Component {
-//   constructor(props) {
-//     super(props);
+  constructor(props) {
+    super(props);
 
-//     this.state = {
-//       loading: true,
-//       fullname: "",
-//       phone: "",
-//       email: "",
-//       password: ""
-//     };
-//   }
+    this.state = {
+      loading: true,
+      fullname: "",
+      phone: "",
+      email: "",
+      password: ""
+    };
+  }
 
 //   componentDidMount() {
 //     this.authSubscription = firebase.auth().onAuthStateChanged(user => {
@@ -69,6 +71,33 @@ class SignupScreen extends React.Component {
 //       });
 //   };
 
+onRegister =() =>{
+  console.log("bâm duoc nut dang ky roi")
+  fbApp.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
+  .then(()=>{
+    Alert.alert(
+      'Alert Title',
+      'đăng ký thành công '+this.setState.email,
+      [
+        {text: 'Cancel', onPress: ()=> console.log('Canceled'), style:'cancel'},
+        {text:'OK', onPress:()=> {this.props.navigation.navigate("Account")}},
+      ],
+      {cancelable:false}
+    )
+    this.setState({
+      email:'',
+      password:''
+    })
+  })
+  .catch(function(error) {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    console.log(errorMessage);
+    // ...
+  });
+}
+
   render() {
     return (
       <View style={styles.container}>
@@ -97,8 +126,8 @@ class SignupScreen extends React.Component {
           <TextInput
             style={styles.body}
             placeholder="E-mail Address"
-            // onChangeText={text => this.setState({ email: text })}
-            // value={this.state.email}
+            onChangeText={text => this.setState({ email: text })}
+            value={this.state.email}
             placeholderTextColor={AppStyles.color.grey}
             underlineColorAndroid="transparent"
           />
@@ -108,8 +137,8 @@ class SignupScreen extends React.Component {
             style={styles.body}
             placeholder="Password"
             secureTextEntry={true}
-            // onChangeText={text => this.setState({ password: text })}
-            // value={this.state.password}
+             onChangeText={text => this.setState({ password: text })}
+            value={this.state.password}
             placeholderTextColor={AppStyles.color.grey}
             underlineColorAndroid="transparent"
           />
@@ -117,7 +146,7 @@ class SignupScreen extends React.Component {
         <Button
           containerStyle={[styles.facebookContainer, { marginTop: 50 }]}
           style={styles.facebookText}
-        //   onPress={() => this.onRegister()}
+           onPress={() => this.onRegister()}
         >
           Sign Up
         </Button>

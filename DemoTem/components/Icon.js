@@ -3,7 +3,7 @@ import React from 'react';
 import { createIconSetFromIcoMoon } from 'react-native-vector-icons';
 import { Icon } from 'galio-framework';
 
-import GalioConfig from '../assets/fonts/galioExtra';
+import GalioConfig from '../assets/fonts/galioExtra.json';
 
 const GalioExtra = require('../assets/fonts/galioExtra.ttf');
 const IconGalioExtra = createIconSetFromIcoMoon(GalioConfig, 'GalioExtra');

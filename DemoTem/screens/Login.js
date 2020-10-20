@@ -1,21 +1,24 @@
 import React from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import Button from "react-native-button";
 import { AppStyles } from "../AppStyles";
 // import firebase from "react-native-firebase";
-import { AsyncStorage } from "react-native";
+//import { AsyncStorage } from "react-native";
+import {fbApp} from "../firebaseconfig";
+import "firebase/auth";
+
 
 
 
 class LoginScreen extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       loading: true,
-//       email: "",
-//       password: ""
-//     };
-//   }
+  constructor(props) {
+    super(props);
+    this.state = {
+     
+      email: "",
+      password: ""
+    };
+  }
 
 //   onPressLogin = () => {
 //     const { email, password } = this.state;
@@ -57,6 +60,31 @@ class LoginScreen extends React.Component {
 //         // representation of the error
 //       });
 //   };
+  onPressLogin(){
+    console.log("bam duoc roi");
+    fbApp.auth().signInWithEmailAndPassword(this.state.email, this.state.password).then(()=>{
+      Alert.alert(
+        'Alert Title',
+        'My alert Msg',
+        [
+          {text:'Ask me later', onPress:()=>console.log('Ask me later')},
+          {text:'Cancel', onPress:()=>console.log("cancel pressed"),style: "cancel"},
+          {text:"okay",onPress:()=> {this.props.navigation.navigate("Account")}},
+        ],
+        {cancelable:false}
+      )
+      this.setState({
+        email:'',
+        password:''
+      })
+    }).catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      console.log(errorMessage);
+      // ...
+  });
+  }
 
  
 
@@ -67,9 +95,9 @@ class LoginScreen extends React.Component {
         <View style={styles.InputContainer}>
           <TextInput
             style={styles.body}
-            placeholder="E-mail or phone number"
-            // onChangeText={text => this.setState({ email: text })}
-            // value={this.state.email}
+            //placeholder="E-mail or phone number"
+            onChangeText={(email) => this.setState({email})}
+            value={this.state.email}
             placeholderTextColor={AppStyles.color.grey}
             underlineColorAndroid="transparent"
           />
@@ -79,8 +107,8 @@ class LoginScreen extends React.Component {
             style={styles.body}
             secureTextEntry={true}
             placeholder="Password"
-            // onChangeText={text => this.setState({ password: text })}
-            // value={this.state.password}
+            onChangeText={password => this.setState({ password})}
+            value={this.state.password}
             placeholderTextColor={AppStyles.color.grey}
             underlineColorAndroid="transparent"
           />
@@ -88,7 +116,7 @@ class LoginScreen extends React.Component {
         <Button
           containerStyle={styles.loginContainer}
           style={styles.loginText}
-        //   onPress={() => this.onPressLogin()}
+          onPress={() => this.onPressLogin()}
         >
           Log in
         </Button>
