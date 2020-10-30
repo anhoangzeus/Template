@@ -1,13 +1,47 @@
 import React from 'react';
-import { StyleSheet, Dimensions, ScrollView } from 'react-native';
+import { StyleSheet, Dimensions, ScrollView, View } from 'react-native';
 import { Button, Block, Text, theme, Input } from 'galio-framework';
 
 import { Icon, Product } from '../components/';
 
 const { width } = Dimensions.get('screen');
 import products from '../constants/products';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+
+import {fbApp} from "../firebaseconfig";
+import "firebase/auth";
 
 export default class Home extends React.Component {
+
+//   constructor(props) {
+//     super(props);
+
+//     this.itemRef = fbApp.database();
+//     this.state = {
+//       dataSource: new ListView.DataSource({rowHasChanged: (r1,r2) => r1!== r2}),
+     
+//     };
+   
+//   }
+
+//   ListenForItems(itemref){
+//     var items=[];
+//     this.itemRef.ref('/Products').on('value', snapshot => {
+//      items.push({
+//        name: snapshot.val().Name,
+//        image:snapshot.val().Image,
+//       meta:snapshot.val().MetaDescription
+//      });
+//      this.setState({
+//        dataSource: this.dataSource.cloneWithRows(item)
+//      })
+//   })
+// }
+
+//   componentDidMount(){
+//       this.ListenForItems(this.itemRef);
+//   }
+
   renderSearch = () => {
     const { navigation } = this.props;
     const iconCamera = <Icon size={16} color={theme.COLORS.MUTED} name="zoom-in" family="material" />
@@ -35,7 +69,7 @@ export default class Home extends React.Component {
             <Text size={16} style={styles.tabTitle}>Categories</Text>
           </Block>
         </Button>
-        <Button shadowless style={styles.tab} onPress={() =>  this.props.navigation.navigate('Pro')}>
+        <Button shadowless style={styles.tab} onPress={() =>  navigation.navigate('Pro')}>
           <Block row middle>
             <Icon size={16} name="camera-18" family="GalioExtra" style={{ paddingRight: 8 }} />
             <Text size={16} style={styles.tabTitle}>Best Deals</Text>
@@ -46,12 +80,17 @@ export default class Home extends React.Component {
   }
 
   renderProducts = () => {
+    const { navigation } = this.props;
+    
     return (
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.products}>
         <Block flex>
+          <TouchableOpacity  onPress={() =>  navigation.navigate('Product')}>
           <Product product={products[0]} horizontal />
+          </TouchableOpacity>
+         
           <Block flex row>
             <Product product={products[1]} style={{ marginRight: theme.SIZES.BASE }} />
             <Product product={products[2]} />
@@ -60,6 +99,18 @@ export default class Home extends React.Component {
           <Product product={products[4]} full />
         </Block>
       </ScrollView>
+
+      // <ListView  
+      //     dataSource= {this.this.state.dataSource} 
+      //     renderRow = {(rowData)=> {
+      //       <View>
+      //         {rowData.name}
+      //       </View>
+      //     }}
+      // />
+         
+
+      
     )
   }
 

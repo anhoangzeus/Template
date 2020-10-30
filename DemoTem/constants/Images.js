@@ -8,7 +8,7 @@ const Profile = 'https://images.unsplash.com/photo-1512529920731-e8abaea917a5?fi
 const Avatar = 'https://images.unsplash.com/photo-1518725522904-4b3939358342?fit=crop&w=210&q=80';
 
 const Viewed = [
-  'https://images.unsplash.com/photo-1508264443919-15a31e1d9c1a?fit=crop&w=240&q=80',
+  'https://cdn.tgdd.vn/Products/Images/44/220173/apple-macbook-air-2020-va%CC%82ntay-220173-400x400.jpg',
   'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?fit=crop&w=240&q=80',
   'https://images.unsplash.com/photo-1487376480913-24046456a727?fit=crop&w=240&q=80',
   'https://images.unsplash.com/photo-1494894194458-0174142560c0?fit=crop&w=240&q=80',

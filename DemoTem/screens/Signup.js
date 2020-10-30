@@ -10,8 +10,9 @@ class SignupScreen extends React.Component {
   constructor(props) {
     super(props);
 
+    this.itemRef = fbApp.database();
     this.state = {
-      loading: true,
+      
       fullname: "",
       phone: "",
       email: "",
@@ -72,7 +73,7 @@ class SignupScreen extends React.Component {
 //   };
 
 onRegister =() =>{
-  console.log("bâm duoc nut dang ky roi")
+  
   fbApp.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
   .then(()=>{
     Alert.alert(
@@ -80,7 +81,7 @@ onRegister =() =>{
       'đăng ký thành công '+this.setState.email,
       [
         {text: 'Cancel', onPress: ()=> console.log('Canceled'), style:'cancel'},
-        {text:'OK', onPress:()=> {this.props.navigation.navigate("Account")}},
+        {text:'OK', onPress:()=> {this.props.navigation.navigate("AppStack")}},
       ],
       {cancelable:false}
     )
@@ -93,9 +94,21 @@ onRegister =() =>{
     // Handle Errors here.
     var errorCode = error.code;
     var errorMessage = error.message;
-    console.log(errorMessage);
+    
     // ...
   });
+  //this.PushData();
+}
+
+PushData = () =>{
+  
+  this.itemRef.ref('Users').push({
+    FirstName: this.state.fullname,
+    Phone: this.state.phone,
+    Email: this.state.email,
+    Passwords: this.state.password
+  })
+  console.log("done");
 }
 
   render() {
@@ -106,8 +119,8 @@ onRegister =() =>{
           <TextInput
             style={styles.body}
             placeholder="Full Name"
-            // onChangeText={text => this.setState({ fullname: text })}
-            // value={this.state.fullname}
+             onChangeText={fullname => this.setState({ fullname })}
+             value={this.state.fullname}
             placeholderTextColor={AppStyles.color.grey}
             underlineColorAndroid="transparent"
           />
@@ -116,8 +129,8 @@ onRegister =() =>{
           <TextInput
             style={styles.body}
             placeholder="Phone Number"
-            // onChangeText={text => this.setState({ phone: text })}
-            // value={this.state.phone}
+             onChangeText={phone => this.setState({ phone })}
+             value={this.state.phone}
             placeholderTextColor={AppStyles.color.grey}
             underlineColorAndroid="transparent"
           />
@@ -126,7 +139,7 @@ onRegister =() =>{
           <TextInput
             style={styles.body}
             placeholder="E-mail Address"
-            onChangeText={text => this.setState({ email: text })}
+            onChangeText={email => this.setState({ email })}
             value={this.state.email}
             placeholderTextColor={AppStyles.color.grey}
             underlineColorAndroid="transparent"
@@ -137,7 +150,7 @@ onRegister =() =>{
             style={styles.body}
             placeholder="Password"
             secureTextEntry={true}
-             onChangeText={text => this.setState({ password: text })}
+             onChangeText={password => this.setState({ password})}
             value={this.state.password}
             placeholderTextColor={AppStyles.color.grey}
             underlineColorAndroid="transparent"

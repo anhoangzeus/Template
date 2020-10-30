@@ -14,6 +14,7 @@ import Signup from '../screens/Signup'
 import SettingsScreen from '../screens/Settings';
 import LoginScreen from '../screens/Login'
 import AccountScreen from '../screens/Account'
+import ProductScreen from '../screens/Product'
 
 import CustomDrawerContent from './Menu';
 import { Icon, Header } from '../components';
@@ -68,6 +69,26 @@ function SettingsStack(props) {
         options={{
           header: ({ navigation, scene }) => (
             <Header title="Settings" scene={scene} navigation={navigation} />
+          )
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+function CategoryStack(props) {
+  return (
+    <Stack.Navigator
+      initialRouteName="Category"
+      mode="card"
+      headerMode="screen"
+    >
+      <Stack.Screen
+        name="Category"
+        component={ProductScreen}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header title="Category" scene={scene} navigation={navigation} />
           )
         }}
       />
@@ -184,7 +205,7 @@ export function AppStack(props) {
 
       <Drawer.Screen
         name="Laptop"
-        component={ProScreen}
+        component={CategoryStack}
         options={{
           drawerIcon: ({ focused }) => (
             <Icon
@@ -338,7 +359,7 @@ export default function OnboardingStack(props) {
       <Stack.Screen name="Components" component={ComponentsScreen} />
       <Stack.Screen name="Login" component={LoginScreen}/>
       <Stack.Screen name='Account' component={AccountScreen}/>
-      
+      <Stack.Screen name="Product" component={ProductScreen}/>
     </Stack.Navigator>
   );
 }
