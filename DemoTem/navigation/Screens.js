@@ -25,13 +25,7 @@ const { width } = Dimensions.get("screen");
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
-const profile = {
-  avatar: Images.Profile,
-  name: "Rachel Brown",
-  type: "Seller",
-  plan: "Pro",
-  rating: 4.8
-};
+
 
 function ProfileStack(props) {
   return (
@@ -205,7 +199,7 @@ export function AppStack(props) {
 
       <Drawer.Screen
         name="Laptop"
-        component={CategoryStack}
+        component={HomeStack}
         options={{
           drawerIcon: ({ focused }) => (
             <Icon
@@ -220,7 +214,7 @@ export function AppStack(props) {
       />
       <Drawer.Screen
         name="Phone"
-        component={ProScreen}
+        component={HomeStack}
         options={{
           drawerIcon: ({ focused }) => (
             <Icon
@@ -233,8 +227,8 @@ export function AppStack(props) {
         }}
       />
       <Drawer.Screen
-        name="Accesory"
-        component={ProScreen}
+        name="Accesories"
+        component={HomeStack}
         options={{
           drawerIcon: ({ focused }) => (
             <Icon
@@ -289,23 +283,7 @@ export function AppStack(props) {
           )
         }}
       />
-      {/* 
-      <Drawer.Screen
-        name="Components"
-        component={ComponentsStack}
-        options={{
-          drawerIcon: ({ focused }) => (
-            <Icon
-              size={16}
-              name="md-switch"
-              family="ionicon"
-              color={focused ? "white" : materialTheme.COLORS.MUTED}
-              style={{ marginRight: 2, marginLeft: 2 }}
-            />
-          )
-        }}
-      />
-      */}
+     
       
       <Drawer.Screen
         name="Sign In"

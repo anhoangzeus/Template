@@ -23,6 +23,7 @@ class Product extends React.Component {
         <TouchableWithoutFeedback >
           <Block flex space="between" style={styles.productDescription}>
             <Text size={14} style={styles.productTitle}>{product.title}</Text>
+            <Text size={14} style={styles.productTitle}>{product.metades}</Text>
             <Text size={12} muted={!priceColor} color={priceColor}>${product.price}</Text>
           </Block>
         </TouchableWithoutFeedback>

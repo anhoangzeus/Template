@@ -1,87 +1,50 @@
 import React from 'react';
-import { StyleSheet, Dimensions, ScrollView, View } from 'react-native';
+import { StyleSheet, Dimensions, ScrollView, View,Image ,SafeAreaView,TouchableWithoutFeedback,LogBox} from 'react-native';
 import { Button, Block, Text, theme, Input } from 'galio-framework';
 
 import { Icon, Product } from '../components/';
 
 const { width } = Dimensions.get('screen');
 import products from '../constants/products';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 
+
+
 export default class Home extends React.Component {
+  constructor(props) {
+    super(props);
+    LogBox.ignoreAllLogs();
+    this.itemRef = fbApp.database();
+    this.state = { 
+    }; 
+  }
 
-//   constructor(props) {
-//     super(props);
-
-//     this.itemRef = fbApp.database();
-//     this.state = {
-//       dataSource: new ListView.DataSource({rowHasChanged: (r1,r2) => r1!== r2}),
+  ListenForItems(){
+    var items=[];
+    this.itemRef.ref('/Products').on('value', snapshot => {
+      snapshot.forEach(function (childSnapshot){
+        items.push({
+          key:snapshot.key,
+          title:childSnapshot.val().Name,
+          price:childSnapshot.val().Price,
+          metades:childSnapshot.val().MetaDescription,
+          image:childSnapshot.val().Image
+        })
+      })
      
-//     };
-   
-//   }
+  })
+  console.log(items);
+  return items;
+}
 
-//   ListenForItems(itemref){
-//     var items=[];
-//     this.itemRef.ref('/Products').on('value', snapshot => {
-//      items.push({
-//        name: snapshot.val().Name,
-//        image:snapshot.val().Image,
-//       meta:snapshot.val().MetaDescription
-//      });
-//      this.setState({
-//        dataSource: this.dataSource.cloneWithRows(item)
-//      })
-//   })
-// }
 
-//   componentDidMount(){
-//       this.ListenForItems(this.itemRef);
-//   }
 
-  renderSearch = () => {
-    const { navigation } = this.props;
-    const iconCamera = <Icon size={16} color={theme.COLORS.MUTED} name="zoom-in" family="material" />
-
-    return (
-      <Input
-        right
-        color="black"
-        style={styles.search}
-        iconContent={iconCamera}
-        placeholder="What are you looking for?"
-        onFocus={() => navigation.navigate('Pro')}
-      />
-    )
-  }
   
-  renderTabs = () => {
-    const { navigation } = this.props;
-
-    return (
-      <Block row style={styles.tabs}>
-        <Button shadowless style={[styles.tab, styles.divider]} onPress={() => navigation.navigate('Pro')}>
-          <Block row middle>
-            <Icon name="grid" family="feather" style={{ paddingRight: 8 }} />
-            <Text size={16} style={styles.tabTitle}>Categories</Text>
-          </Block>
-        </Button>
-        <Button shadowless style={styles.tab} onPress={() =>  navigation.navigate('Pro')}>
-          <Block row middle>
-            <Icon size={16} name="camera-18" family="GalioExtra" style={{ paddingRight: 8 }} />
-            <Text size={16} style={styles.tabTitle}>Best Deals</Text>
-          </Block>
-        </Button>
-      </Block>
-    )
-  }
-
-  renderProducts = () => {
-    const { navigation } = this.props;
-    
+  renderProducts = (items) => {
+    const { navigation } = this.props;   
     return (
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -89,38 +52,54 @@ export default class Home extends React.Component {
         <Block flex>
           <TouchableOpacity  onPress={() =>  navigation.navigate('Product')}>
           <Product product={products[0]} horizontal />
-          </TouchableOpacity>
-         
-          <Block flex row>
-            <Product product={products[1]} style={{ marginRight: theme.SIZES.BASE }} />
-            <Product product={products[2]} />
-          </Block>
-          <Product product={products[3]} horizontal />
-          <Product product={products[4]} full />
+          </TouchableOpacity>    
         </Block>
-      </ScrollView>
-
-      // <ListView  
-      //     dataSource= {this.this.state.dataSource} 
-      //     renderRow = {(rowData)=> {
-      //       <View>
-      //         {rowData.name}
-      //       </View>
-      //     }}
-      // />
-         
-
-      
+      </ScrollView>    
     )
   }
-
   render() {
+    const { navigation, product, horizontal, full, style, priceColor, imageStyle } = this.props;
+    const imageStyles = [styles.image, full ? styles.fullImage : styles.horizontalImage, imageStyle];
     return (
-      <Block flex center style={styles.home}>
-       
-        {this.renderProducts()}
-      </Block>
+      <SafeAreaView>
+     
+       <FlatList
+       data={this.ListenForItems()}
+       renderItem={({item})=>
+    //    <ScrollView
+    //    showsVerticalScrollIndicator={true}
+    //    contentContainerStyle={styles.products}>
+    //    <Block row={horizontal} card flex style={[styles.product, styles.shadow, style]}>
+    //     <TouchableWithoutFeedback >
+    //       <Block  style={[styles.imageContainer, styles.shadow]}>
+    //         <Image source={{ uri: item.image }} style={styles.imageStyle} />
+    //         <Text size={20} style={styles.productTitle}>{item.name}</Text>
+    //       </Block>
+    //     </TouchableWithoutFeedback>
+    //     <TouchableWithoutFeedback >
+    //       <Block flex space="between" style={styles.productDescription}>
+           
+    //         <Text size={12} muted={!priceColor} color={priceColor}>{item.metades}</Text>
+    //         <Text size={12} muted={!priceColor} color={priceColor}>${item.price}</Text>
+    //       </Block>
+    //     </TouchableWithoutFeedback>
+    //   </Block>
+    //  </ScrollView>
+    <ScrollView
+    showsVerticalScrollIndicator={false}
+    contentContainerStyle={styles.products}>
+      <Block flex>
+        <TouchableOpacity  onPress={() => navigation.navigate('Product')}>
+          <Product product={item} horizontal />
+        </TouchableOpacity>   
+        </Block>
+    </ScrollView>
+       } />      
+     
+      </SafeAreaView>
+      
     );
+    
   }
 }
 
@@ -172,4 +151,38 @@ const styles = StyleSheet.create({
     width: width - theme.SIZES.BASE * 2,
     paddingVertical: theme.SIZES.BASE * 2,
   },
+  product: {
+    backgroundColor: theme.COLORS.WHITE,
+    marginVertical: theme.SIZES.BASE,
+    borderWidth: 0,
+    minHeight: 114,
+  },
+  productTitle: {
+    flex: 1,
+    flexWrap: 'wrap',
+    paddingBottom: 6,
+  },
+  shadow: {
+    shadowColor: theme.COLORS.BLACK,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    shadowOpacity: 0.1,
+    elevation: 2,
+  },
+  imageContainer: {
+    elevation: 1,
+  },
+  productDescription: {
+    padding: theme.SIZES.BASE / 2,
+  },
+   productTitle: {
+    flex: 1,
+    flexWrap: 'wrap',
+    paddingBottom: 6,
+  },
+  imageStyle:{
+    width:150,
+    height:200,
+    marginLeft:20
+  }
 });
