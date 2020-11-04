@@ -51,7 +51,7 @@ export default class Home extends React.Component {
         contentContainerStyle={styles.products}>
         <Block flex>
           <TouchableOpacity  onPress={() =>  navigation.navigate('Product')}>
-          <Product product={products[0]} horizontal />
+          <Product product={products[0]} full />
           </TouchableOpacity>    
         </Block>
       </ScrollView>    
@@ -89,7 +89,7 @@ export default class Home extends React.Component {
     showsVerticalScrollIndicator={false}
     contentContainerStyle={styles.products}>
       <Block flex>
-        <TouchableOpacity  onPress={() => navigation.navigate('Product')}>
+        <TouchableOpacity  onPress={() => navigation.navigate('Product',this.key)}>
           <Product product={item} horizontal />
         </TouchableOpacity>   
         </Block>

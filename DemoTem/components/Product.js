@@ -58,12 +58,11 @@ const styles = StyleSheet.create({
     marginTop: -16,
   },
   horizontalImage: {
-    height: 122,
-    width: 'auto',
+    flex:1,
   },
   fullImage: {
-    height: 215,
-    width: width - theme.SIZES.BASE * 3,
+   width:115,
+   height:150
   },
   shadow: {
     shadowColor: theme.COLORS.BLACK,

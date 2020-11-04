@@ -10,9 +10,11 @@ import CateImg from "../assets/images/phone/laptop.jpg"
 
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
+import { Route } from 'react-router-dom';
 
 const { width, height } = Dimensions.get('screen');
 const thumbMeasure = (width - 48 - 32) / 3;
+const {key} = Route.param
 
 export default class Product extends Component {
 
