@@ -13,6 +13,10 @@ import "firebase/auth";
 const { width, height } = Dimensions.get('screen');
 const thumbMeasure = (width - 48 - 32) / 3;
 
+const user = fbApp.auth().currentUser;
+
+
+
 export default class Profile extends Component {
   constructor(props) {
     super(props);
@@ -31,7 +35,12 @@ export default class Profile extends Component {
   }
 
   getData =()=>{
-    console.log("da vao ham");
+    
+    fbApp.auth().onAuthStateChanged((user) => {
+      if (user) {
+        console.log('User email: ', user.email);
+      }
+    });
     this.itemRef.ref('/Users/AIzaSyDSWIekvpvwQbRiGh4WF88H91tqFzL6OWE')
     .on('value', snapshot => {
       this.setState({

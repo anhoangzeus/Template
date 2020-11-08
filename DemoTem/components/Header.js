@@ -13,7 +13,7 @@ const ChatButton = ({isWhite, style, navigation}) => (
   <TouchableOpacity style={[styles.button, style]} onPress={() => navigation.navigate('Pro')}>
     <Icon
       family="entypo"
-      size={16}
+      size={24}
       name="chat"
       color={theme.COLORS[isWhite ? 'WHITE' : 'ICON']}
     />
@@ -25,7 +25,7 @@ const BasketButton = ({isWhite, style, navigation}) => (
   <TouchableOpacity style={[styles.button, style]} onPress={() => navigation.navigate('Pro')}>
     <Icon
       family="entypo"
-      size={16}
+      size={24}
       name="shopping-cart"
       color={theme.COLORS[isWhite ? 'WHITE' : 'ICON']}
     />
@@ -63,7 +63,7 @@ class Header extends React.Component {
     switch (title) {
       case 'Home':
         return ([
-          <ChatButton key='chat-home' navigation={navigation} isWhite={white} />,
+          <ChatButton key='chat-home' navigation={navigation} isWhite={white}  />,
           <BasketButton key='basket-home' navigation={navigation} isWhite={white} />
         ]);
       case 'Deals':
@@ -160,7 +160,8 @@ class Header extends React.Component {
     const noShadow = ["Search", "Categories", "Deals", "Pro", "Profile"].includes(title);
     const headerStyles = [
       !noShadow ? styles.shadow : null,
-      transparent ? { backgroundColor: 'rgba(0,0,0,0)' } : null,
+      transparent ? { backgroundColor: 'rgba(0,0,0,0)' ,paddingTop:5} : null,
+     
     ];
 
     return (
@@ -202,7 +203,7 @@ const styles = StyleSheet.create({
   navbar: {
     paddingVertical: 0,
     paddingBottom: theme.SIZES.BASE * 1.5,
-    paddingTop: iPhoneX ? theme.SIZES.BASE * 4 : theme.SIZES.BASE,
+     paddingTop: iPhoneX ? theme.SIZES.BASE  : theme.SIZES.BASE,
     zIndex: 5,
   },
   shadow: {

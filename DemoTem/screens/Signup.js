@@ -12,66 +12,23 @@ class SignupScreen extends React.Component {
 
     this.itemRef = fbApp.database();
     this.state = {
-      
-      fullname: "",
-      phone: "",
+      Address:"",
+      avartar:"https://scontent.fvca1-1.fna.fbcdn.net/v/t1.0-9/123200100_1101399953612537_216885686923555778_o.jpg?_nc_cat=105&ccb=2&_nc_sid=09cbfe&_nc_ohc=BR0xDD-HJ28AX86xIFo&_nc_ht=scontent.fvca1-1.fna&oh=ce2f67f79f51f78bfa3ab446777536a0&oe=5FCAEEB4",
+      CMND:"000000",
+      Createby:"User",
+      CreateDate:"06/11/2020",
       email: "",
-      password: ""
+      fullname: "",
+      lastname:"",
+      modby:"",
+      moddate:"",
+      password: "",
+      phone: "",
+      statetus:"true",
+      UserID:"",
+      username:""    
     };
   }
-
-//   componentDidMount() {
-//     this.authSubscription = firebase.auth().onAuthStateChanged(user => {
-//       this.setState({
-//         loading: false,
-//         user
-//       });
-//     });
-//   }
-
-//   componentWillUnmount() {
-//     this.authSubscription();
-//   }
-
-//   onRegister = () => {
-//     const { email, password } = this.state;
-//     firebase
-//       .auth()
-//       .createUserWithEmailAndPassword(email, password)
-//       .then(response => {
-//         const { navigation } = this.props;
-//         const { fullname, phone, email } = this.state;
-//         const data = {
-//           email: email,
-//           fullname: fullname,
-//           phone: phone,
-//           appIdentifier: "rn-android-universal-listings"
-//         };
-//         user_uid = response.user._user.uid;
-//         firebase
-//           .firestore()
-//           .collection("users")
-//           .doc(user_uid)
-//           .set(data);
-//         firebase
-//           .firestore()
-//           .collection("users")
-//           .doc(user_uid)
-//           .get()
-//           .then(function(user) {
-//             navigation.dispatch({ type: "Login", user: user });
-//           })
-//           .catch(function(error) {
-//             const { code, message } = error;
-//             alert(message);
-//           });
-//       })
-//       .catch(error => {
-//         const { code, message } = error;
-//         alert(message);
-//       });
-//   };
-
 onRegister =() =>{
   
   fbApp.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
@@ -95,18 +52,28 @@ onRegister =() =>{
     var errorCode = error.code;
     var errorMessage = error.message;
     
-    // ...
+    
   });
-  //this.PushData();
+  this.PushData();
 }
 
 PushData = () =>{
   
   this.itemRef.ref('Users').push({
-    FirstName: this.state.fullname,
-    Phone: this.state.phone,
+    Address:this.state.Address,
+    Avatar:this.state.avartar,
+    CMND:this.state.CMND,
+    CreatedBy:this.state.Createby,
+    CreatedDate:this.state.CreateDate,
     Email: this.state.email,
-    Passwords: this.state.password
+    FirstName: this.state.fullname,
+    LastName:this.state.lastname,
+    ModifiedBy:this.state.modby,
+    ModifiedDate:this.state.moddate,
+    Passwords:this.state.password,
+    Phone: this.state.phone,
+    Status:this.state.statetus,
+   
   })
   console.log("done");
 }

@@ -20,48 +20,9 @@ class LoginScreen extends React.Component {
     };
   }
 
-//   onPressLogin = () => {
-//     const { email, password } = this.state;
-//     if (email.length <= 0 || password.length <= 0) {
-//       alert("Please fill out the required fields.");
-//       return;
-//     }
-//     firebase
-//       .auth()
-//       .signInWithEmailAndPassword(email, password)
-//       .then(response => {
-//         const { navigation } = this.props;
-//         user_uid = response.user._user.uid;
-//         firebase
-//           .firestore()
-//           .collection("users")
-//           .doc(user_uid)
-//           .get()
-//           .then(function(user) {
-//             if (user.exists) {
-//               AsyncStorage.setItem("@loggedInUserID:id", user_uid);
-//               AsyncStorage.setItem("@loggedInUserID:key", email);
-//               AsyncStorage.setItem("@loggedInUserID:password", password);
-//               navigation.dispatch({ type: "Login", user: user });
-//             } else {
-//               alert("User does not exist. Please try again.");
-//             }
-//           })
-//           .catch(function(error) {
-//             const { code, message } = error;
-//             alert(message);
-//           });
-//       })
-//       .catch(error => {
-//         const { code, message } = error;
-//         alert(message);
-//         // For details of error codes, see the docs
-//         // The message contains the default Firebase string
-//         // representation of the error
-//       });
-//   };
+
   onPressLogin(){
-    console.log("bam duoc roi");
+    
     fbApp.auth().signInWithEmailAndPassword(this.state.email, this.state.password).then(()=>{
       Alert.alert(
         'Alert Title',
@@ -69,7 +30,7 @@ class LoginScreen extends React.Component {
         [
           {text:'Ask me later', onPress:()=>console.log('Ask me later')},
           {text:'Cancel', onPress:()=>console.log("cancel pressed"),style: "cancel"},
-          {text:"okay",onPress:()=> {this.props.navigation.navigate("Account")}},
+          {text:"okay",onPress:()=> {this.props.navigation.navigate("Home")}},
         ],
         {cancelable:false}
       )
@@ -79,8 +40,9 @@ class LoginScreen extends React.Component {
       })
     }).catch(function(error) {
       // Handle Errors here.
-      var errorCode = error.code;
+      
       var errorMessage = error.message;
+      console.log("log in fail")
       console.log(errorMessage);
       // ...
   });

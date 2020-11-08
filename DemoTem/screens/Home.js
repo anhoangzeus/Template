@@ -22,17 +22,22 @@ export default class Home extends React.Component {
     }; 
   }
 
+  componentDidMount(){
+    this.ListenForItems();
+  }
   ListenForItems(){
     var items=[];
     this.itemRef.ref('/Products').on('value', snapshot => {
       snapshot.forEach(function (childSnapshot){
         items.push({
-          key:snapshot.key,
+          // key:snapshot.key,
           title:childSnapshot.val().Name,
           price:childSnapshot.val().Price,
           metades:childSnapshot.val().MetaDescription,
-          image:childSnapshot.val().Image
+          image:childSnapshot.val().Image,
+          id: childSnapshot.val().ProductID,
         })
+        
       })
      
   })
@@ -40,9 +45,6 @@ export default class Home extends React.Component {
   return items;
 }
 
-
-
-  
   renderProducts = (items) => {
     const { navigation } = this.props;   
     return (
@@ -50,7 +52,7 @@ export default class Home extends React.Component {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.products}>
         <Block flex>
-          <TouchableOpacity  onPress={() =>  navigation.navigate('Product')}>
+          <TouchableOpacity >
           <Product product={products[0]} full />
           </TouchableOpacity>    
         </Block>
@@ -61,37 +63,21 @@ export default class Home extends React.Component {
     const { navigation, product, horizontal, full, style, priceColor, imageStyle } = this.props;
     const imageStyles = [styles.image, full ? styles.fullImage : styles.horizontalImage, imageStyle];
     return (
-      <SafeAreaView>
+      <SafeAreaView >
      
        <FlatList
        data={this.ListenForItems()}
        renderItem={({item})=>
-    //    <ScrollView
-    //    showsVerticalScrollIndicator={true}
-    //    contentContainerStyle={styles.products}>
-    //    <Block row={horizontal} card flex style={[styles.product, styles.shadow, style]}>
-    //     <TouchableWithoutFeedback >
-    //       <Block  style={[styles.imageContainer, styles.shadow]}>
-    //         <Image source={{ uri: item.image }} style={styles.imageStyle} />
-    //         <Text size={20} style={styles.productTitle}>{item.name}</Text>
-    //       </Block>
-    //     </TouchableWithoutFeedback>
-    //     <TouchableWithoutFeedback >
-    //       <Block flex space="between" style={styles.productDescription}>
-           
-    //         <Text size={12} muted={!priceColor} color={priceColor}>{item.metades}</Text>
-    //         <Text size={12} muted={!priceColor} color={priceColor}>${item.price}</Text>
-    //       </Block>
-    //     </TouchableWithoutFeedback>
-    //   </Block>
-    //  </ScrollView>
+ 
     <ScrollView
     showsVerticalScrollIndicator={false}
     contentContainerStyle={styles.products}>
       <Block flex>
-        <TouchableOpacity  onPress={() => navigation.navigate('Product',this.key)}>
+        <TouchableOpacity  onPress={() => navigation.navigate('Items', {id: item.id})}>
           <Product product={item} horizontal />
+    
         </TouchableOpacity>   
+        
         </Block>
     </ScrollView>
        } />      
@@ -149,11 +135,11 @@ const styles = StyleSheet.create({
   },
   products: {
     width: width - theme.SIZES.BASE * 2,
-    paddingVertical: theme.SIZES.BASE * 2,
+    paddingVertical: theme.SIZES.BASE /10,
   },
   product: {
     backgroundColor: theme.COLORS.WHITE,
-    marginVertical: theme.SIZES.BASE,
+    marginVertical: theme.SIZES.BASE/4,
     borderWidth: 0,
     minHeight: 114,
   },

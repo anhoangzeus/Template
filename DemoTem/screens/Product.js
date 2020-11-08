@@ -14,7 +14,7 @@ import { Route } from 'react-router-dom';
 
 const { width, height } = Dimensions.get('screen');
 const thumbMeasure = (width - 48 - 32) / 3;
-const {key} = Route.param
+
 
 export default class Product extends Component {
 
@@ -34,8 +34,8 @@ export default class Product extends Component {
   }
   
   getData =()=>{
-    console.log("da vao ham");
-    this.itemRef.ref('/Products/AIzaSyDSWIekvpvwQbRiGh4WF88H91tqFzL6OWI')
+    console.log(this.props.content);
+    this.itemRef.ref('/Products/').child(this.props.content)
     .on('value', snapshot => {
       this.setState({
         Decription:snapshot.val().Description,
@@ -62,24 +62,8 @@ export default class Product extends Component {
             imageStyle={styles.profileImage}>
             <Block flex style={styles.profileDetails}>
               <Block style={styles.profileTexts}>
-              <Text color="white" size={28} style={{ paddingBottom: 8 }}>{this.state.Name}</Text>
-                {/* <Block row space="between">
-                  <Block row>
-                    <Block middle style={styles.pro}>
-                      <Text size={16} color="white">Pro</Text>
-                    </Block>
-                    <Text color="white" size={16} muted style={styles.seller}>Seller</Text>
-                    <Text size={16} color={materialTheme.COLORS.WARNING}>
-                      4.8 <Icon name="shape-star" family="GalioExtra" size={14} />
-                    </Text>
-                  </Block>
-                  <Block>
-                    <Text color={theme.COLORS.MUTED} size={16}>
-                      <Icon name="map-marker" family="font-awesome" color={theme.COLORS.MUTED} size={16} />
-                      {` `} Los Angeles, CA
-                      </Text>
-                  </Block>
-                </Block> */}
+              <Text color="Black" size={28} style={{ paddingBottom: 8 }}>{this.state.Name}</Text>
+             
               </Block>
               
             </Block>
@@ -98,7 +82,7 @@ export default class Product extends Component {
                 <Text muted size={12}>Đánh giá</Text>
               </Block>
               <Block middle>
-              <Text bold size={12} style={{marginBottom: 8}}>{this.state.Waranty} năm</Text>
+              <Text bold size={12} style={{marginBottom: 8}}>{this.state.Waranty} tháng</Text>
                 <Text muted size={12}>Bảo hành</Text>
               </Block>
             </Block>

@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     marginHorizontal: theme.SIZES.BASE / 2,
     marginTop: -16,
+    
   },
   horizontalImage: {
     flex:1,
