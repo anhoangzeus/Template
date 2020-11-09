@@ -1,17 +1,29 @@
 import React from 'react';
-import { StyleSheet, Dimensions, ScrollView, View,Image ,SafeAreaView,TouchableWithoutFeedback,LogBox} from 'react-native';
+import { StyleSheet, Dimensions, ScrollView, View,Image ,SafeAreaView,TouchableWithoutFeedback,LogBox,StatusBar} from 'react-native';
 import { Button, Block, Text, theme, Input } from 'galio-framework';
 
 import { Icon, Product } from '../components/';
 
+const section_banner = require('../assets/section_banner.png');
 const { width } = Dimensions.get('screen');
 import products from '../constants/products';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import HomeSectionComponent from '../components/HomeSectionComponents';
+
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 
-
+const ProductItem = ({image, name, price}) => (
+  <View style={styles.itemContainer}>
+    <Image source={{uri:image}} style={styles.itemImage} />
+    <Text style={styles.itemName} numberOfLines={2}>
+      {name}
+    </Text>
+    <Text style={styles.itemPrice}>{price}</Text>
+  </View>
+);
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -39,7 +51,7 @@ export default class Home extends React.Component {
         })
         
       })
-     
+     console.log({items});
   })
   console.log(items);
   return items;
@@ -53,7 +65,7 @@ export default class Home extends React.Component {
         contentContainerStyle={styles.products}>
         <Block flex>
           <TouchableOpacity >
-          <Product product={products[0]} full />
+          <Product product={products[0]}  />
           </TouchableOpacity>    
         </Block>
       </ScrollView>    
@@ -63,112 +75,285 @@ export default class Home extends React.Component {
     const { navigation, product, horizontal, full, style, priceColor, imageStyle } = this.props;
     const imageStyles = [styles.image, full ? styles.fullImage : styles.horizontalImage, imageStyle];
     return (
-      <SafeAreaView >
-     
-       <FlatList
-       data={this.ListenForItems()}
-       renderItem={({item})=>
- 
-    <ScrollView
-    showsVerticalScrollIndicator={false}
-    contentContainerStyle={styles.products}>
-      <Block flex>
-        <TouchableOpacity  onPress={() => navigation.navigate('Items', {id: item.id})}>
-          <Product product={item} horizontal />
+    //   <SafeAreaView >
+    //  <Block center style={styles.home}  >
+    //  <ScrollView
+    // showsVerticalScrollIndicator={true}
+    // horizontal={false}
+    // pagingEnabled={true}
+    // contentContainerStyle={styles.products}>
+    //    <FlatList
+    //    horizontal={true}
+    //    pagingEnabled={false}
+    //    data={this.ListenForItems()}
+    //    renderItem={({item})=>
+    //    <View>
+    //       <TouchableOpacity  onPress={() => navigation.navigate('Items', {id: item.id})}>
+    //       <Product product={item} horizontal />
+    //     </TouchableOpacity>   
+    //    </View>
+       
+    //    } />   
+    //   </ScrollView>   
+    //  </Block>
+    //   </SafeAreaView>  
     
-        </TouchableOpacity>   
-        
-        </Block>
-    </ScrollView>
-       } />      
-     
-      </SafeAreaView>
+    <View style={styles.screenContainer}>
+    <StatusBar barStyle="light-content" />
+    {/*  */}
+    <View style={styles.headerContainer}>
       
-    );
+      <View style={styles.inputContainer}>
+        <FontAwesome name="search" size={24} color="#969696" />
+        <Text style={styles.inputText}>Bạn tìm gì hôm nay?</Text>
+      </View>
+      {/*  */}
+      <View style={styles.cartContainer}>
+        <FontAwesome name="shopping-cart" size={24} color="#fff" />
+      </View>
+    </View>
+    {/*  */}
+    <View style={styles.bodyContainer}>
     
+    
+    <View style={styles.sectionContainer}>
+      {/*  */}
+      <Text style={styles.sectionTitle}>Điện thoại - Máy tính bảng</Text>
+      {/*  */}
+      <Image source={section_banner} style={styles.sectionImage} />
+      {/*  */}
+      <ScrollView horizontal={true}>
+        <View style={styles.filterContainer}>
+          {[
+            'Tất cả',
+            'Điện thoại SmartPhone',
+            'Máy tính bảng',
+            'Điện thoại',
+          ].map((e, index) => (
+            <View
+              key={index.toString()}
+              style={
+                index === 0
+                  ? styles.filterActiveButtonContainer
+                  : styles.filterInactiveButtonContainer
+              }>
+              <Text
+                style={
+                  index === 0
+                    ? styles.filterActiveText
+                    : styles.filterInactiveText
+                }>
+                {e}
+              </Text>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+      <ScrollView>
+      <View style={styles.listItemContainer}>
+        <FlatList 
+        horizontal={true}
+        pagingEnabled={false}
+        data={this.ListenForItems()}
+        renderItem={({item})=>
+        <ProductItem
+        name={item.title}
+        image={item.image}
+        price={item.price}
+      />
+        }
+        ></FlatList>
+        {/* <HomeSectionComponent /> */}
+      </View>
+      </ScrollView>
+      </View>
+    </View>
+    </View>
+    ); 
   }
 }
+// const styles = StyleSheet.create({
+//   home: {
+//     width: width,    
+//   },
+//   search: {
+//     height: 48,
+//     width: width - 32,
+//     marginHorizontal: 16,
+//     borderWidth: 1,
+//     borderRadius: 3,
+//   },
+//   header: {
+//     backgroundColor: theme.COLORS.WHITE,
+//     shadowColor: theme.COLORS.BLACK,
+//     shadowOffset: {
+//       width: 0,
+//       height: 2
+//     },
+//     shadowRadius: 8,
+//     shadowOpacity: 0.2,
+//     elevation: 4,
+//     zIndex: 2,
+//   },
+//   tabs: {
+//     marginBottom: 24,
+//     marginTop: 10,
+//     elevation: 4,
+//   },
+//   tab: {
+//     backgroundColor: theme.COLORS.TRANSPARENT,
+//     width: width * 0.50,
+//     borderRadius: 0,
+//     borderWidth: 0,
+//     height: 24,
+//     elevation: 0,
+//   },
+//   tabTitle: {
+//     lineHeight: 19,
+//     fontWeight: '300'
+//   },
+//   divider: {
+//     borderRightWidth: 0.3,
+//     borderRightColor: theme.COLORS.MUTED,
+//   },
+//   products: {
+//     width: width - theme.SIZES.BASE * 2,
+//     paddingVertical: theme.SIZES.BASE /10,
+//   },
+//   product: {
+//     backgroundColor: theme.COLORS.WHITE,
+//     marginVertical: theme.SIZES.BASE/4,
+//     borderWidth: 0,
+//     minHeight: 114,
+//   },
+//   productTitle: {
+//     flex: 1,
+//     flexWrap: 'wrap',
+//     paddingBottom: 6,
+//   },
+//   shadow: {
+//     shadowColor: theme.COLORS.BLACK,
+//     shadowOffset: { width: 0, height: 2 },
+//     shadowRadius: 4,
+//     shadowOpacity: 0.1,
+//     elevation: 2,
+//   },
+//   imageContainer: {
+//     elevation: 1,
+//   },
+//   productDescription: {
+//     padding: theme.SIZES.BASE / 2,
+//   },
+//    productTitle: {
+//     flex: 1,
+//     flexWrap: 'wrap',
+//     paddingBottom: 6,
+//   },
+//   imageStyle:{
+//     width:150,
+//     height:200,
+//     marginLeft:20
+//   }
+// });
 
 const styles = StyleSheet.create({
-  home: {
-    width: width,    
+  screenContainer: {
+    flex: 1,
   },
-  search: {
-    height: 48,
-    width: width - 32,
-    marginHorizontal: 16,
-    borderWidth: 1,
-    borderRadius: 3,
+  headerContainer: {
+    flexDirection: 'row',
+    paddingTop: 50,
+    paddingBottom: 4,
+    backgroundColor: '#1e88e5',
   },
-  header: {
-    backgroundColor: theme.COLORS.WHITE,
-    shadowColor: theme.COLORS.BLACK,
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowRadius: 8,
-    shadowOpacity: 0.2,
-    elevation: 4,
-    zIndex: 2,
+  inputContainer: {
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    flex: 1,
+    marginLeft: 10,
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 2,
   },
-  tabs: {
-    marginBottom: 24,
+  inputText: {
+    color: '#969696',
+    fontSize: 14,
+    marginLeft: 8,
+    fontWeight: '500',
+  },
+  cartContainer: {
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  //
+  bodyContainer: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  itemContainer: {
+    width: 100,
+    marginRight: 12,
     marginTop: 10,
-    elevation: 4,
   },
-  tab: {
-    backgroundColor: theme.COLORS.TRANSPARENT,
-    width: width * 0.50,
-    borderRadius: 0,
-    borderWidth: 0,
-    height: 24,
-    elevation: 0,
+  listItemContainer: {
+    flexDirection: 'row',
   },
-  tabTitle: {
-    lineHeight: 19,
-    fontWeight: '300'
+  itemImage: {
+    width: 100,
+    height: 120,
   },
-  divider: {
-    borderRightWidth: 0.3,
-    borderRightColor: theme.COLORS.MUTED,
+  itemName: {
+    fontSize: 14,
+    color: '#484848',
+    marginVertical: 4,
   },
-  products: {
-    width: width - theme.SIZES.BASE * 2,
-    paddingVertical: theme.SIZES.BASE /10,
+  itemPrice: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#2a2a2a',
   },
-  product: {
-    backgroundColor: theme.COLORS.WHITE,
-    marginVertical: theme.SIZES.BASE/4,
-    borderWidth: 0,
-    minHeight: 114,
+  sectionContainer: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 12,
   },
-  productTitle: {
-    flex: 1,
-    flexWrap: 'wrap',
-    paddingBottom: 6,
+  sectionTitle: {
+    fontWeight: '700',
+    fontSize: 16,
+    color: '#2f2f2f',
+    marginVertical: 12,
   },
-  shadow: {
-    shadowColor: theme.COLORS.BLACK,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    shadowOpacity: 0.1,
-    elevation: 2,
+  sectionImage: {
+    width: width - 24,
+    height: 130,
+    borderRadius: 4,
   },
-  imageContainer: {
-    elevation: 1,
+  //
+  filterContainer: {
+    flexDirection: 'row',
+    marginTop: 10,
   },
-  productDescription: {
-    padding: theme.SIZES.BASE / 2,
+  filterActiveButtonContainer: {
+    backgroundColor: '#242424',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 4,
+    marginRight: 10,
   },
-   productTitle: {
-    flex: 1,
-    flexWrap: 'wrap',
-    paddingBottom: 6,
+  filterInactiveButtonContainer: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 4,
+    borderColor: '#5a5a5a',
+    borderWidth: 1,
+    marginRight: 10,
   },
-  imageStyle:{
-    width:150,
-    height:200,
-    marginLeft:20
-  }
+  filterActiveText: {
+    color: '#fff',
+  },
+  filterInactiveText: {
+    color: '#5a5a5a',
+  },
 });

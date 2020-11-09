@@ -7,9 +7,12 @@ import { Block, Text, theme } from 'galio-framework';
 import materialTheme from '../constants/Theme';
 
 const { width } = Dimensions.get('screen');
+const {height} = Dimensions.get('screen');
+
 
 class Product extends React.Component {
   render() {
+    console.log(width);
     const { navigation, product, horizontal, full, style, priceColor, imageStyle } = this.props;
     const imageStyles = [styles.image, full ? styles.fullImage : styles.horizontalImage, imageStyle];
 
@@ -17,7 +20,7 @@ class Product extends React.Component {
       <Block row={horizontal} card flex style={[styles.product, styles.shadow, style]}>
         <TouchableWithoutFeedback >
           <Block flex style={[styles.imageContainer, styles.shadow]}>
-            <Image source={{ uri: product.image }} style={imageStyles} />
+            <Image source={{ uri: product.image }} style={styles.horizontalImage} />
           </Block>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback >
@@ -37,9 +40,12 @@ export default Product;
 const styles = StyleSheet.create({
   product: {
     backgroundColor: theme.COLORS.WHITE,
-    marginVertical: theme.SIZES.BASE,
+    marginVertical: theme.SIZES.BASE/10,
     borderWidth: 0,
-    minHeight: 114,
+    marginLeft:2,
+    width:width/1.5 ,
+    height:114,
+   
   },
   productTitle: {
     flex: 1,
@@ -54,8 +60,9 @@ const styles = StyleSheet.create({
   },
   image: {
     borderRadius: 3,
-    marginHorizontal: theme.SIZES.BASE / 2,
-    marginTop: -16,
+    // marginHorizontal: theme.SIZES.BASE / 2,
+    height:100,
+    width:50,
     
   },
   horizontalImage: {

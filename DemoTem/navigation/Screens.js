@@ -2,6 +2,7 @@ import React from 'react';
 import { Easing, Animated, Dimensions } from 'react-native';
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { Block, Text, theme } from "galio-framework";
 
@@ -24,6 +25,7 @@ const { width } = Dimensions.get("screen");
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
+const Tab = createBottomTabNavigator();
 
 
 
@@ -112,17 +114,17 @@ function HomeStack(props) {
       <Stack.Screen 
         name="Home"
         component={HomeScreen}
-        options={{
-          header: ({ navigation, scene }) => (
-            <Header 
-              search
-              tabs
-              title="Home"
-              navigation={navigation}
-              scene={scene}
-            />
-          )
-        }}
+        // options={{
+        //   header: ({ navigation, scene }) => (
+        //     <Header 
+        //       search
+        //       tabs
+        //       title="Home"
+        //       navigation={navigation}
+        //       scene={scene}
+        //     />
+        //   )
+        // }}
       />
       <Stack.Screen 
         name="Pro"
@@ -140,7 +142,7 @@ function HomeStack(props) {
 
 export function AppStack(props) {
   return (
-    <Drawer.Navigator
+    <Tab.Navigator
     style={{ flex: 1 }}
     // drawerContent={props => (
     //   <CustomDrawerContent {...props} profile={profile} />
@@ -172,7 +174,7 @@ export function AppStack(props) {
     >
  
 
-      <Drawer.Screen
+      <Tab.Screen
         name="Home"
         component={HomeStack}
 
@@ -187,9 +189,9 @@ export function AppStack(props) {
           )
         }}
       >
-      </Drawer.Screen>
+      </Tab.Screen>
 
-      <Drawer.Screen
+      {/* <Tab.Screen
         name="Laptop"
         component={HomeStack}
         options={{
@@ -204,7 +206,7 @@ export function AppStack(props) {
           )
         }}
       />
-      <Drawer.Screen
+      <Tab.Screen
         name="Phone"
         component={HomeStack}
         options={{
@@ -218,7 +220,7 @@ export function AppStack(props) {
           )
         }}
       />
-      <Drawer.Screen
+      <Tab.Screen
         name="Accesories"
         component={HomeStack}
         options={{
@@ -231,8 +233,8 @@ export function AppStack(props) {
             />
           )
         }}
-      />
-      <Drawer.Screen
+      /> */}
+      <Tab.Screen
         name="Sale"
         component={ProScreen}
         options={{
@@ -246,7 +248,7 @@ export function AppStack(props) {
           )
         }}
       />
-      <Drawer.Screen
+      <Tab.Screen
         name="Profile"
         component={ProfileStack}
         options={{
@@ -260,7 +262,7 @@ export function AppStack(props) {
           )
         }}
       />
-      <Drawer.Screen
+      <Tab.Screen
         name="Settings"
         component={SettingsStack}
         options={{
@@ -277,7 +279,7 @@ export function AppStack(props) {
       />
      
       
-      <Drawer.Screen
+      {/* <Tab.Screen
         name="Sign In"
         component={LoginScreen}
         options={{
@@ -292,7 +294,7 @@ export function AppStack(props) {
         }}
       />
       
-      <Drawer.Screen
+      <Tab.Screen
         name="Sign Up"
         component={Signup}
         options={{
@@ -305,8 +307,8 @@ export function AppStack(props) {
             />
           )
         }}
-      /> 
-    </Drawer.Navigator>
+      />  */}
+    </Tab.Navigator>
     
   );
 }
