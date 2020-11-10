@@ -179,11 +179,11 @@ export function AppStack(props) {
         component={HomeStack}
 
         options={{
-          drawerIcon: ({ focused }) => (
+          tabBarIcon: ({ focused }) => (
             <Icon
               size={24}
-              name="shop"
-              family="entypo"
+              name="home"
+              family="antdesign"
               color={focused ? "white" : materialTheme.COLORS.MUTED}
             />
           )
@@ -238,7 +238,7 @@ export function AppStack(props) {
         name="Sale"
         component={ProScreen}
         options={{
-          drawerIcon: ({ focused }) => (
+          tabBarIcon: ({ focused }) => (
             <Icon
               size={24}
               name="burst-sale"
@@ -252,7 +252,7 @@ export function AppStack(props) {
         name="Profile"
         component={ProfileStack}
         options={{
-          drawerIcon: ({ focused }) => (
+          tabBarIcon: ({ focused }) => (
             <Icon
               size={24}
               name="profile"
@@ -266,7 +266,7 @@ export function AppStack(props) {
         name="Settings"
         component={SettingsStack}
         options={{
-          drawerIcon: ({ focused }) => (
+          tabBarIcon: ({ focused }) => (
             <Icon
               size={24}
               name="gears"
