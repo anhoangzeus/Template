@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Switch, FlatList, Platform, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Switch, FlatList, Platform, TouchableOpacity, View ,StatusBar} from "react-native";
 import { Block, Text, theme, Icon } from "galio-framework";
 
 import materialTheme from '../constants/Theme';
@@ -63,6 +63,7 @@ export default class Settings extends React.Component {
       <View
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.settings}>
+           <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
         <FlatList
           data={recommended}
           keyExtractor={(item, index) => item.id}

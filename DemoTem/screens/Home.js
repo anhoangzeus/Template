@@ -15,6 +15,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 
+const {listlap} = [];
+
 const ProductItem = ({image, name, price}) => (
   <View style={styles.itemContainer}>
     <Image source={{uri:image}} style={styles.itemImage} />
@@ -35,7 +37,7 @@ export default class Home extends React.Component {
   }
 
   componentDidMount(){
-    this.ListenForItemsSamsung();
+      this.ListenForItemsLaptop();
   }
   
   ListenForItems(){
@@ -52,9 +54,7 @@ export default class Home extends React.Component {
         })
         
       })
-     console.log({items});
   })
-  console.log(items);
   return items;
 }
 
@@ -93,7 +93,13 @@ ListenForItemsLaptop(){
           image:childSnapshot.val().Image,
           id: childSnapshot.val().ProductID,
         })
-        
+        listlap.push({
+          title:childSnapshot.val().Name,
+          price:childSnapshot.val().Price,
+          metades:childSnapshot.val().MetaDescription,
+          image:childSnapshot.val().Image,
+          id: childSnapshot.val().ProductID,
+        })
       })
       console.log(items);
   })
@@ -142,7 +148,7 @@ ListenForItemsSamsung(){
     
     
     <View style={styles.screenContainer}>
-    <StatusBar barStyle="light-content" />
+    <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
     {/*  */}
     <View style={styles.headerContainer}>
       
@@ -200,12 +206,12 @@ ListenForItemsSamsung(){
         data={this.ListenForItemsPhone()}
         renderItem={({item})=>
         <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id})}>
-             <ProductItem
-            name={item.title}
-            image={item.image}
-        price={item.price}
-      />
-        </TouchableOpacity>    
+            <ProductItem
+                    name={item.title}
+                    image={item.image}
+                    price={item.price}
+                  />
+        </TouchableOpacity>  
         }
         ></FlatList>    
       </View>
@@ -243,7 +249,7 @@ ListenForItemsSamsung(){
         <FlatList 
         horizontal={true}
         pagingEnabled={false}
-        data={this.ListenForItemsLaptop()}
+        data={this.listlap}
         renderItem={({item})=>
         <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id})}>
              <ProductItem
@@ -267,14 +273,13 @@ ListenForItemsSamsung(){
   }
 }
 
-
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
   },
   headerContainer: {
     flexDirection: 'row',
-    paddingTop: 10,
+    paddingTop: 15,
     paddingBottom: 4,
     backgroundColor: '#1e88e5',
   },
@@ -300,7 +305,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  //
   bodyContainer: {
     flex: 1,
     backgroundColor: '#fff',
@@ -344,7 +348,6 @@ const styles = StyleSheet.create({
     height: 130,
     borderRadius: 4,
   },
-  //
   filterContainer: {
     flexDirection: 'row',
     marginTop: 10,

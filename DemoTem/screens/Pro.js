@@ -83,7 +83,7 @@ export default class Pro extends React.Component {
       {/*  */}
       <View >
           <ScrollView horizontal={true} style={styles.scrollCate}>
-            <TouchableOpacity onPress= {ChangBrand("Oppo")}>
+            <TouchableOpacity >
               <Image source={{uri:"https://upload.wikimedia.org/wikipedia/commons/a/a2/OPPO_LOGO_2019.png"}} style={styles.cateImage} />
             </TouchableOpacity>
             <TouchableOpacity>
