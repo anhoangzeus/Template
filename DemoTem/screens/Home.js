@@ -10,7 +10,7 @@ import products from '../constants/products';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import HomeSectionComponent from '../components/HomeSectionComponents';
+
 
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
@@ -35,8 +35,9 @@ export default class Home extends React.Component {
   }
 
   componentDidMount(){
-    this.ListenForItems();
+    this.ListenForItemsSamsung();
   }
+  
   ListenForItems(){
     var items=[];
     this.itemRef.ref('/Products').on('value', snapshot => {
@@ -54,6 +55,69 @@ export default class Home extends React.Component {
      console.log({items});
   })
   console.log(items);
+  return items;
+}
+
+ListenForItemsPhone(){
+  var items=[];
+    this.itemRef.ref('/Products').on('value', snapshot => {
+      snapshot.forEach(function (childSnapshot){
+        
+        if(childSnapshot.val().CategoryID=="AIzaSyDSWIekvpvwQbRiGh4WF88H91tqFzL6OWI")
+        items.push({
+          // key:snapshot.key,
+          title:childSnapshot.val().Name,
+          price:childSnapshot.val().Price,
+          metades:childSnapshot.val().MetaDescription,
+          image:childSnapshot.val().Image,
+          id: childSnapshot.val().ProductID,
+        })
+        
+      })
+      console.log(items);
+  })
+  return items;
+}
+
+ListenForItemsLaptop(){
+  var items=[];
+    this.itemRef.ref('/Products').on('value', snapshot => {
+      snapshot.forEach(function (childSnapshot){
+        
+        if(childSnapshot.val().CategoryID=="-MJaC7kTLJOYZjt9G4zs")
+        items.push({
+          // key:snapshot.key,
+          title:childSnapshot.val().Name,
+          price:childSnapshot.val().Price,
+          metades:childSnapshot.val().MetaDescription,
+          image:childSnapshot.val().Image,
+          id: childSnapshot.val().ProductID,
+        })
+        
+      })
+      console.log(items);
+  })
+  return items;
+}
+
+ListenForItemsSamsung(){
+  var items=[];
+    this.itemRef.ref('/Products').on('value', snapshot => {
+      snapshot.forEach(function (childSnapshot){
+        
+        if(childSnapshot.val().CategoryID=="AIzaSyDSWIekvpvwQbRiGh4WF88H91tqFzL6OWI")
+        items.push({
+          // key:snapshot.key,
+          title:childSnapshot.val().Name,
+          price:childSnapshot.val().Price,
+          metades:childSnapshot.val().MetaDescription,
+          image:childSnapshot.val().Image,
+          id: childSnapshot.val().ProductID,
+        })
+        
+      })
+      console.log(items);
+  })
   return items;
 }
 
@@ -75,28 +139,7 @@ export default class Home extends React.Component {
     const { navigation, product, horizontal, full, style, priceColor, imageStyle } = this.props;
     const imageStyles = [styles.image, full ? styles.fullImage : styles.horizontalImage, imageStyle];
     return (
-    //   <SafeAreaView >
-    //  <Block center style={styles.home}  >
-    //  <ScrollView
-    // showsVerticalScrollIndicator={true}
-    // horizontal={false}
-    // pagingEnabled={true}
-    // contentContainerStyle={styles.products}>
-    //    <FlatList
-    //    horizontal={true}
-    //    pagingEnabled={false}
-    //    data={this.ListenForItems()}
-    //    renderItem={({item})=>
-    //    <View>
-    //       <TouchableOpacity  onPress={() => navigation.navigate('Items', {id: item.id})}>
-    //       <Product product={item} horizontal />
-    //     </TouchableOpacity>   
-    //    </View>
-       
-    //    } />   
-    //   </ScrollView>   
-    //  </Block>
-    //   </SafeAreaView>  
+    
     
     <View style={styles.screenContainer}>
     <StatusBar barStyle="light-content" />
@@ -120,15 +163,16 @@ export default class Home extends React.Component {
       {/*  */}
       <Text style={styles.sectionTitle}>Điện thoại - Máy tính bảng</Text>
       {/*  */}
-      <Image source={section_banner} style={styles.sectionImage} />
+     
       {/*  */}
+  
+      <ScrollView>
+      <Image source={section_banner} style={styles.sectionImage} />
       <ScrollView horizontal={true}>
+     
         <View style={styles.filterContainer}>
           {[
-            'Tất cả',
-            'Điện thoại SmartPhone',
-            'Máy tính bảng',
-            'Điện thoại',
+            'Điện thoại SmartPhone',       
           ].map((e, index) => (
             <View
               key={index.toString()}
@@ -149,112 +193,80 @@ export default class Home extends React.Component {
           ))}
         </View>
       </ScrollView>
-      <ScrollView>
       <View style={styles.listItemContainer}>
         <FlatList 
         horizontal={true}
         pagingEnabled={false}
-        data={this.ListenForItems()}
+        data={this.ListenForItemsPhone()}
         renderItem={({item})=>
-        <ProductItem
-        name={item.title}
-        image={item.image}
+        <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id})}>
+             <ProductItem
+            name={item.title}
+            image={item.image}
         price={item.price}
       />
+        </TouchableOpacity>    
         }
-        ></FlatList>
-        {/* <HomeSectionComponent /> */}
+        ></FlatList>    
       </View>
+     
+      
+
+      <ScrollView horizontal={true}>
+        <View style={styles.filterContainer}>
+          {[
+            
+            'Laptop',
+            
+          ].map((e, index) => (
+            <View
+              key={index.toString()}
+              style={
+                index === 0
+                  ? styles.filterActiveButtonContainer
+                  : styles.filterInactiveButtonContainer
+              }>
+              <Text
+                style={
+                  index === 0
+                    ? styles.filterActiveText
+                    : styles.filterInactiveText
+                }>
+                {e}
+              </Text>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+
+      <View style={styles.listItemContainer}>
+        <FlatList 
+        horizontal={true}
+        pagingEnabled={false}
+        data={this.ListenForItemsLaptop()}
+        renderItem={({item})=>
+        <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id})}>
+             <ProductItem
+            name={item.title}
+            image={item.image}
+        price={item.price}
+      />
+        </TouchableOpacity>    
+        }
+        ></FlatList>    
+      </View>
+
+        <View style={{height:200}}></View>
+
       </ScrollView>
       </View>
+      
     </View>
     </View>
     ); 
   }
 }
-// const styles = StyleSheet.create({
-//   home: {
-//     width: width,    
-//   },
-//   search: {
-//     height: 48,
-//     width: width - 32,
-//     marginHorizontal: 16,
-//     borderWidth: 1,
-//     borderRadius: 3,
-//   },
-//   header: {
-//     backgroundColor: theme.COLORS.WHITE,
-//     shadowColor: theme.COLORS.BLACK,
-//     shadowOffset: {
-//       width: 0,
-//       height: 2
-//     },
-//     shadowRadius: 8,
-//     shadowOpacity: 0.2,
-//     elevation: 4,
-//     zIndex: 2,
-//   },
-//   tabs: {
-//     marginBottom: 24,
-//     marginTop: 10,
-//     elevation: 4,
-//   },
-//   tab: {
-//     backgroundColor: theme.COLORS.TRANSPARENT,
-//     width: width * 0.50,
-//     borderRadius: 0,
-//     borderWidth: 0,
-//     height: 24,
-//     elevation: 0,
-//   },
-//   tabTitle: {
-//     lineHeight: 19,
-//     fontWeight: '300'
-//   },
-//   divider: {
-//     borderRightWidth: 0.3,
-//     borderRightColor: theme.COLORS.MUTED,
-//   },
-//   products: {
-//     width: width - theme.SIZES.BASE * 2,
-//     paddingVertical: theme.SIZES.BASE /10,
-//   },
-//   product: {
-//     backgroundColor: theme.COLORS.WHITE,
-//     marginVertical: theme.SIZES.BASE/4,
-//     borderWidth: 0,
-//     minHeight: 114,
-//   },
-//   productTitle: {
-//     flex: 1,
-//     flexWrap: 'wrap',
-//     paddingBottom: 6,
-//   },
-//   shadow: {
-//     shadowColor: theme.COLORS.BLACK,
-//     shadowOffset: { width: 0, height: 2 },
-//     shadowRadius: 4,
-//     shadowOpacity: 0.1,
-//     elevation: 2,
-//   },
-//   imageContainer: {
-//     elevation: 1,
-//   },
-//   productDescription: {
-//     padding: theme.SIZES.BASE / 2,
-//   },
-//    productTitle: {
-//     flex: 1,
-//     flexWrap: 'wrap',
-//     paddingBottom: 6,
-//   },
-//   imageStyle:{
-//     width:150,
-//     height:200,
-//     marginLeft:20
-//   }
-// });
+
 
 const styles = StyleSheet.create({
   screenContainer: {
@@ -262,7 +274,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     flexDirection: 'row',
-    paddingTop: 50,
+    paddingTop: 10,
     paddingBottom: 4,
     backgroundColor: '#1e88e5',
   },
@@ -275,6 +287,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 2,
+    
   },
   inputText: {
     color: '#969696',
@@ -291,6 +304,7 @@ const styles = StyleSheet.create({
   bodyContainer: {
     flex: 1,
     backgroundColor: '#fff',
+    
   },
   itemContainer: {
     width: 100,
@@ -317,6 +331,7 @@ const styles = StyleSheet.create({
   sectionContainer: {
     backgroundColor: '#fff',
     paddingHorizontal: 12,
+    marginBottom:10,
   },
   sectionTitle: {
     fontWeight: '700',

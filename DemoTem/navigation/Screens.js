@@ -176,74 +176,32 @@ export function AppStack(props) {
 
       <Tab.Screen
         name="Home"
-        component={HomeStack}
+        component={HomeScreen}
 
         options={{
           tabBarIcon: ({ focused }) => (
             <Icon
               size={24}
               name="home"
-              family="antdesign"
-              color={focused ? "white" : materialTheme.COLORS.MUTED}
+              family="ionicons"
+              color={focused ? "blue" : materialTheme.COLORS.MUTED}
             />
           )
         }}
       >
       </Tab.Screen>
 
-      {/* <Tab.Screen
-        name="Laptop"
-        component={HomeStack}
-        options={{
-          drawerIcon: ({ focused }) => (
-            <Icon
-              size={24}
-              name="laptop"
-              family="entypo"
-              color={focused ? "white" : materialTheme.COLORS.MUTED}
-              style={{ marginLeft: 4, marginRight: 4 }}
-            />
-          )
-        }}
-      />
+     
       <Tab.Screen
-        name="Phone"
-        component={HomeStack}
-        options={{
-          drawerIcon: ({ focused }) => (
-            <Icon
-              size={24}
-              name="mobile1"
-              family="antdesign"
-              color={focused ? "white" : materialTheme.COLORS.MUTED}
-            />
-          )
-        }}
-      />
-      <Tab.Screen
-        name="Accesories"
-        component={HomeStack}
-        options={{
-          drawerIcon: ({ focused }) => (
-            <Icon
-              size={24}
-              name="cpu"
-              family="feather"
-              color={focused ? "white" : materialTheme.COLORS.MUTED}
-            />
-          )
-        }}
-      /> */}
-      <Tab.Screen
-        name="Sale"
+        name="Danh mục"
         component={ProScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <Icon
               size={24}
-              name="burst-sale"
-              family="foundation"
-              color={focused ? "white" : materialTheme.COLORS.MUTED}
+              name="appstore1"
+              family="antdesign"
+              color={focused ? "blue" : materialTheme.COLORS.MUTED}
             />
           )
         }}
@@ -257,7 +215,7 @@ export function AppStack(props) {
               size={24}
               name="profile"
               family="antdesign"
-              color={focused ? "white" : materialTheme.COLORS.MUTED}
+              color={focused ? "blue" : materialTheme.COLORS.MUTED}
             />
           )
         }}
@@ -271,7 +229,7 @@ export function AppStack(props) {
               size={24}
               name="gears"
               family="font-awesome"
-              color={focused ? "white" : materialTheme.COLORS.MUTED}
+              color={focused ? "blue" : materialTheme.COLORS.MUTED}
               style={{ marginRight: -3 }}
             />
           )
