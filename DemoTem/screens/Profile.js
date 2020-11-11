@@ -1,215 +1,113 @@
-import React,{Component} from 'react';
-import { StyleSheet, Dimensions, ScrollView, Image, ImageBackground, Platform } from 'react-native';
-import { Block, Text, theme } from 'galio-framework';
-import { LinearGradient } from 'react-native-linear-gradient';
+import React, { Component} from 'react';
+import {StyleSheet, View, Text, StatusBar} from 'react-native';
 
-import { Icon } from '../components';
-import { Images, materialTheme } from '../constants';
-import { HeaderHeight } from "../constants/utils";
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Header from '../components/HeaderComponent';
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
-const { width, height } = Dimensions.get('screen');
-const thumbMeasure = (width - 48 - 32) / 3;
-
-const user = fbApp.auth().currentUser;
+const ProfileItem = ({icon, name}) => (
+  <View style={styles.itemContainer}>
+    <MaterialCommunityIcons name={icon} size={26} color="#1e1e1e" />
+    <Text style={[styles.itemText, {marginLeft: icon ? 20 : 0}]}>{name}</Text>
+    <FontAwesome name="angle-right" size={26} color="#1e1e1e" />
+  </View>
+);
 
 
 
 export default class Profile extends Component {
-  constructor(props) {
-    super(props);
+  render(){
+    const {navigation} = this.props;
+  return (
+    <View style={styles.screenContainer}>
+       <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
+      <Header title="Cá nhân" />
+      <View style={styles.bodyContainer}>
+        <View style={styles.userContainer}>
+          <View style={styles.avatarContainer}>
+            <MaterialIcons name="person" size={26} color="#fff" />
+          </View>
+          <View style={styles.textContainer}>
+            <Text style={styles.welcomeText}>Chào mừng bạn đến với TiAn</Text>
+            <TouchableOpacity onPress={()=> navigation.navigate("Top")}>
+            <Text style={styles.authText}>Đăng nhập/Đăng ký</Text>
+            </TouchableOpacity>
+          </View>
+          <FontAwesome name="angle-right" size={26} color="#1e88e5" />
+        </View>
+        <View style={styles.divider} />
+        <ProfileItem icon="format-list-bulleted" name="Quản lý đơn hàng" />
+        <ProfileItem icon="cart-outline" name="Sản phẩm đã mua" />
+        <ProfileItem icon="eye-outline" name="Sản phẩm đã xem" />
+        <ProfileItem icon="heart-outline" name="Sản phẩm yêu thích" />
+        <ProfileItem icon="bookmark-outline" name="Sản phẩm mua sau" />
+        <ProfileItem icon="star-outline" name="Sản phẩm đánh giá" />
+        <View style={styles.divider} />
+        <ProfileItem name="Ưu đãi cho chủ thẻ ngân hàng" />
+        <ProfileItem name="Cài đặt" />
+        <View style={styles.divider} />
+        <ProfileItem icon="headphones" name="Hỗ trợ" />
 
-    this.itemRef = fbApp.database();
-    this.state = {
-      
-      fullname: "",
-      phone: "",
-      email: "",
-      address: "",
-      cmnd:"",
-      image:"",
-    };
-   
-  }
-
-  getData =()=>{
-    
-    fbApp.auth().onAuthStateChanged((user) => {
-      if (user) {
-        console.log('User email: ', user.email);
-      }
-    });
-    this.itemRef.ref('/Users/AIzaSyDSWIekvpvwQbRiGh4WF88H91tqFzL6OWE')
-    .on('value', snapshot => {
-      this.setState({
-        fullname:snapshot.val().LastName,
-        phone:snapshot.val().Phone,
-        address:snapshot.val().Address,
-        cmnd:snapshot.val().CMND,
-        image:snapshot.val().Avatar,
-        email:snapshot.val().Email
-      })
-      console.log(snapshot.val());
-    });
-  }
-
- 
-  componentDidMount(){
-    this.getData()
-  }
-  
- 
-  
-  render() {
-    return (
-      <Block flex style={styles.profile}>
-        <Block flex>
-          <ImageBackground
-            source={{uri: this.state.image}}
-            style={styles.profileContainer}
-            imageStyle={styles.profileImage}>
-            <Block flex style={styles.profileDetails}>
-              <Block style={styles.profileTexts}>
-              <Text color="white" size={28} style={{ paddingBottom: 8 }}>{this.state.fullname}</Text>
-                <Block row space="between">
-                  <Block row>
-                    {/* <Block middle style={styles.pro}>
-                      <Text size={16} color="white">Gold</Text>
-                    </Block> */}
-                    {/* <Text color="white" size={16} muted style={styles.seller}>Seller</Text>
-                    <Text size={16} color={materialTheme.COLORS.WARNING}>
-                      4.8 <Icon name="shape-star" family="GalioExtra" size={14} />
-                    </Text> */}
-                  </Block>
-                  <Block>
-                    <TouchableOpacity onPress={() => this.getData()}>
-                        <Text color="white" size={16}>
-                          <Icon name="map-marker" family="font-awesome" color={"red"} size={22} />
-                          {` `} {this.state.address}
-                      </Text>
-                    </TouchableOpacity>
-                    
-                  </Block>
-                  
-                </Block>
-              </Block>
-              
-            </Block>
-          </ImageBackground>
-        </Block>
-        <Block flex style={styles.options}>
-          <ScrollView showsVerticalScrollIndicator={true} horizontal={false}>
-            <Block row space="between" style={{ padding: theme.SIZES.BASE, }}>
-              <Block middle marginTop={0}>
-                <Text bold size={12} style={{marginBottom: 8}}>Phone</Text>                
-              </Block>
-              <Block middle>
-                  <Text bold size={12} style={{marginBottom: 8}}>{this.state.phone}</Text>                
-              </Block>             
-            </Block>
-            <Block row space="between" style={{ padding: theme.SIZES.BASE, }}>
-              <Block middle marginTop={0}>
-                <Text bold size={12} style={{marginBottom: 8}}>Email</Text>               
-              </Block>
-              <Block middle>
-                  <Text bold size={12} style={{marginBottom: 8}}>{this.state.email}</Text>                
-              </Block>               
-            </Block>
-            <Block row space="between" style={{ padding: theme.SIZES.BASE, }}>
-              <Block middle marginTop={0}>
-                <Text bold size={12} style={{marginBottom: 8}}>CMND</Text>               
-              </Block>
-              <Block middle>
-                  <Text bold size={12} style={{marginBottom: 8}}>{this.state.cmnd}</Text>                
-              </Block>               
-            </Block>
-            
-            {/* <Block row space="between" style={{ paddingVertical: 16, alignItems: 'baseline' }}>
-              <Text size={16}>Recently viewed</Text>
-              <Text size={12} color={theme.COLORS.PRIMARY} onPress={() => this.props.navigation.navigate('Home')}>View All</Text>
-            </Block>
-            <Block style={{ paddingBottom: -HeaderHeight * 2 }}>
-              <Block row space="between" style={{ flexWrap: 'wrap' }} >
-                {Images.Viewed.map((img, imgIndex) => (
-                  <Image
-                    source={{ uri: img }}
-                    key={`viewed-${img}`}  
-                    resizeMode="cover"
-                    style={styles.thumb}
-                  />
-                ))}
-              </Block>
-            </Block> */}
-          </ScrollView>
-        </Block>
-      </Block>
-    );
-  }
+      </View>
+    </View>
+  );
+};
 }
 
+
 const styles = StyleSheet.create({
-  profile: {
-    marginTop: Platform.OS === 'android' ? -HeaderHeight : 0,
-    marginBottom: -HeaderHeight * 2,
+  screenContainer: {
+    flex: 1,
   },
-  profileImage: {
-    width: width * 1.1,
-    height: 'auto',
+  bodyContainer: {
+    flex: 1,
+    backgroundColor: '#ededed',
   },
-  profileContainer: {
-    width: width,
-    height: height / 2,
+  userContainer: {
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    paddingVertical: 22,
+    alignItems: 'center',
   },
-  profileDetails: {
-    paddingTop: theme.SIZES.BASE * 4,
-    justifyContent: 'flex-end',
-    position: 'relative',
+  avatarContainer: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#1e88e5',
   },
-  profileTexts: {
-    paddingHorizontal: theme.SIZES.BASE * 2,
-    paddingVertical: theme.SIZES.BASE * 2,
-    zIndex: 2
+  textContainer: {
+    flex: 1,
+    marginLeft: 20,
   },
-  pro: {
-    backgroundColor: materialTheme.COLORS.LABEL,
-    paddingHorizontal: 6,
-    marginRight: theme.SIZES.BASE / 2,
-    borderRadius: 4,
-    height: 19,
-    width: 38,
+  welcomeText: {
+    color: '#828282',
   },
-  seller: {
-    marginRight: theme.SIZES.BASE / 2,
+  authText: {
+    color: '#1e88e5',
+    fontSize: 18,
+    fontWeight: '500',
   },
-  options: {
-    position: 'relative',
-    padding: theme.SIZES.BASE,
-    marginHorizontal: theme.SIZES.BASE,
-    marginTop: -theme.SIZES.BASE * 7,
-    borderTopLeftRadius: 13,
-    borderTopRightRadius: 13,
-    backgroundColor: theme.COLORS.WHITE,
-    shadowColor: 'black',
-    shadowOffset: { width: 0, height: 0 },
-    shadowRadius: 8,
-    shadowOpacity: 0.2,
-    zIndex: 2,
+  //
+  itemContainer: {
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    alignItems: 'center',
   },
-  thumb: {
-    borderRadius: 4,
-    marginVertical: 4,
-    alignSelf: 'center',
-    width: thumbMeasure,
-    height: thumbMeasure
+  itemText: {
+    flex: 1,
+    color: '#1e1e1e',
   },
-  gradient: {
-    zIndex: 1,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: '30%',
-    position: 'absolute',
+  //
+  divider: {
+    height: 10,
   },
 });

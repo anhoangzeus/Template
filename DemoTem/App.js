@@ -1,20 +1,6 @@
-/*!
-
- =========================================================
- * Material Kit React Native - v1.4.0
- =========================================================
- * Product Page: https://demos.creative-tim.com/material-kit-react-native/
- * Copyright 2019 Creative Tim (http://www.creative-tim.com)
- * Licensed under MIT (https://github.com/creativetimofficial/material-kit-react-native/blob/master/LICENSE)
- =========================================================
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 
 import React from 'react';
 import { Platform, StatusBar, Image,Text } from 'react-native';
-//import { AppLoading } from 'expo';
-//import { Asset } from 'react-native-asset';
 import { Block, GalioProvider } from 'galio-framework';
 
 import { Images, products, materialTheme } from './constants/';
@@ -22,11 +8,9 @@ import { Images, products, materialTheme } from './constants/';
 import { NavigationContainer } from '@react-navigation/native';
 import Screens from './navigation/Screens';
 
-// Before rendering any navigation stack
 import { enableScreens } from 'react-native-screens';
 enableScreens();
 
-// cache app images
 const assetImages = [
   Images.Pro,
   Images.Profile,
@@ -60,7 +44,6 @@ export default class App extends React.Component {
             <Block flex>
               {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
               <Screens />
-              
             </Block>
           </GalioProvider>
         </NavigationContainer>

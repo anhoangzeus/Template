@@ -35,7 +35,7 @@ export default class Home extends React.Component {
   }
 
   componentDidMount(){
-    this.ListenForItems();
+      this.ListenForItems();
   }
   ListenForItems(){
     var items=[];
@@ -49,11 +49,8 @@ export default class Home extends React.Component {
           image:childSnapshot.val().Image,
           id: childSnapshot.val().ProductID,
         })
-        
       })
-     console.log({items});
   })
-  console.log(items);
   return items;
 }
 
@@ -99,7 +96,7 @@ export default class Home extends React.Component {
     //   </SafeAreaView>  
     
     <View style={styles.screenContainer}>
-    <StatusBar barStyle="light-content" />
+    <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
     {/*  */}
     <View style={styles.headerContainer}>
       
@@ -156,11 +153,13 @@ export default class Home extends React.Component {
         pagingEnabled={false}
         data={this.ListenForItems()}
         renderItem={({item})=>
-        <ProductItem
-        name={item.title}
-        image={item.image}
-        price={item.price}
-      />
+        <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id})}>
+            <ProductItem
+                    name={item.title}
+                    image={item.image}
+                    price={item.price}
+                  />
+        </TouchableOpacity>  
         }
         ></FlatList>
         {/* <HomeSectionComponent /> */}
@@ -172,89 +171,6 @@ export default class Home extends React.Component {
     ); 
   }
 }
-// const styles = StyleSheet.create({
-//   home: {
-//     width: width,    
-//   },
-//   search: {
-//     height: 48,
-//     width: width - 32,
-//     marginHorizontal: 16,
-//     borderWidth: 1,
-//     borderRadius: 3,
-//   },
-//   header: {
-//     backgroundColor: theme.COLORS.WHITE,
-//     shadowColor: theme.COLORS.BLACK,
-//     shadowOffset: {
-//       width: 0,
-//       height: 2
-//     },
-//     shadowRadius: 8,
-//     shadowOpacity: 0.2,
-//     elevation: 4,
-//     zIndex: 2,
-//   },
-//   tabs: {
-//     marginBottom: 24,
-//     marginTop: 10,
-//     elevation: 4,
-//   },
-//   tab: {
-//     backgroundColor: theme.COLORS.TRANSPARENT,
-//     width: width * 0.50,
-//     borderRadius: 0,
-//     borderWidth: 0,
-//     height: 24,
-//     elevation: 0,
-//   },
-//   tabTitle: {
-//     lineHeight: 19,
-//     fontWeight: '300'
-//   },
-//   divider: {
-//     borderRightWidth: 0.3,
-//     borderRightColor: theme.COLORS.MUTED,
-//   },
-//   products: {
-//     width: width - theme.SIZES.BASE * 2,
-//     paddingVertical: theme.SIZES.BASE /10,
-//   },
-//   product: {
-//     backgroundColor: theme.COLORS.WHITE,
-//     marginVertical: theme.SIZES.BASE/4,
-//     borderWidth: 0,
-//     minHeight: 114,
-//   },
-//   productTitle: {
-//     flex: 1,
-//     flexWrap: 'wrap',
-//     paddingBottom: 6,
-//   },
-//   shadow: {
-//     shadowColor: theme.COLORS.BLACK,
-//     shadowOffset: { width: 0, height: 2 },
-//     shadowRadius: 4,
-//     shadowOpacity: 0.1,
-//     elevation: 2,
-//   },
-//   imageContainer: {
-//     elevation: 1,
-//   },
-//   productDescription: {
-//     padding: theme.SIZES.BASE / 2,
-//   },
-//    productTitle: {
-//     flex: 1,
-//     flexWrap: 'wrap',
-//     paddingBottom: 6,
-//   },
-//   imageStyle:{
-//     width:150,
-//     height:200,
-//     marginLeft:20
-//   }
-// });
 
 const styles = StyleSheet.create({
   screenContainer: {
@@ -262,7 +178,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     flexDirection: 'row',
-    paddingTop: 50,
+    paddingTop: 15,
     paddingBottom: 4,
     backgroundColor: '#1e88e5',
   },
@@ -287,7 +203,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  //
   bodyContainer: {
     flex: 1,
     backgroundColor: '#fff',
@@ -329,7 +244,6 @@ const styles = StyleSheet.create({
     height: 130,
     borderRadius: 4,
   },
-  //
   filterContainer: {
     flexDirection: 'row',
     marginTop: 10,
