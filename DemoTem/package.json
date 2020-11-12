@@ -17,7 +17,7 @@
     "@react-navigation/bottom-tabs": "^5.10.7",
     "@react-navigation/compat": "^5.2.8",
     "@react-navigation/drawer": "^5.9.3",
-    "@react-navigation/material-top-tabs": "^5.3.8",
+    "@react-navigation/material-top-tabs": "^5.3.9",
     "@react-navigation/native": "^5.7.6",
     "@react-navigation/stack": "^5.9.3",
     "@unimodules/core": "^5.5.1",

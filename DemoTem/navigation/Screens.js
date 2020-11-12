@@ -23,7 +23,7 @@ import Signup1 from '../screens/SignUp1';
 import CustomDrawerContent from './Menu';
 import { Icon, Header } from '../components';
 import { Images, materialTheme } from "../constants/";
-import { color } from 'react-native-reanimated';
+//import { color } from 'react-native-reanimated';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import AsyncStorage from '@react-native-community/async-storage';
@@ -75,11 +75,14 @@ export function AppStack(props) {
       <Tab.Screen
         name="Home"
         component={HomeScreen}
+
         options={{
           tabBarIcon: ({ focused }) => (
             <Icon
               size={24}
               name="home"
+              family="ionicons"
+              color={focused ? "blue" : materialTheme.COLORS.MUTED}
               family="antdesign"
               color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
             />
@@ -87,13 +90,18 @@ export function AppStack(props) {
         }}
       >
       </Tab.Screen>
+
+     
       <Tab.Screen
-        name="Sale"
+        name="Danh mục"
         component={ProScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <Icon
               size={24}
+              name="appstore1"
+              family="antdesign"
+              color={focused ? "blue" : materialTheme.COLORS.MUTED}
               name="burst-sale"
               family="foundation"
               color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
@@ -110,6 +118,7 @@ export function AppStack(props) {
               size={24}
               name="user"
               family="antdesign"
+              color={focused ? "blue" : materialTheme.COLORS.MUTED}
               color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
             />
           )
@@ -124,6 +133,7 @@ export function AppStack(props) {
               size={24}
               name="gears"
               family="font-awesome"
+              color={focused ? "blue" : materialTheme.COLORS.MUTED}
               color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
               style={{ marginRight: -3 }}
             />

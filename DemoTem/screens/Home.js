@@ -10,10 +10,12 @@ import products from '../constants/products';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import HomeSectionComponent from '../components/HomeSectionComponents';
+
 
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
+
+const {listlap} = [];
 
 const ProductItem = ({image, name, price}) => (
   <View style={styles.itemContainer}>
@@ -35,8 +37,9 @@ export default class Home extends React.Component {
   }
 
   componentDidMount(){
-      this.ListenForItems();
+      this.ListenForItemsLaptop();
   }
+  
   ListenForItems(){
     var items=[];
     this.itemRef.ref('/Products').on('value', snapshot => {
@@ -49,7 +52,77 @@ export default class Home extends React.Component {
           image:childSnapshot.val().Image,
           id: childSnapshot.val().ProductID,
         })
+        
       })
+  })
+  return items;
+}
+
+ListenForItemsPhone(){
+  var items=[];
+    this.itemRef.ref('/Products').on('value', snapshot => {
+      snapshot.forEach(function (childSnapshot){
+        
+        if(childSnapshot.val().CategoryID=="AIzaSyDSWIekvpvwQbRiGh4WF88H91tqFzL6OWI")
+        items.push({
+          // key:snapshot.key,
+          title:childSnapshot.val().Name,
+          price:childSnapshot.val().Price,
+          metades:childSnapshot.val().MetaDescription,
+          image:childSnapshot.val().Image,
+          id: childSnapshot.val().ProductID,
+        })
+        
+      })
+      console.log(items);
+  })
+  return items;
+}
+
+ListenForItemsLaptop(){
+  var items=[];
+    this.itemRef.ref('/Products').on('value', snapshot => {
+      snapshot.forEach(function (childSnapshot){
+        
+        if(childSnapshot.val().CategoryID=="-MJaC7kTLJOYZjt9G4zs")
+        items.push({
+          // key:snapshot.key,
+          title:childSnapshot.val().Name,
+          price:childSnapshot.val().Price,
+          metades:childSnapshot.val().MetaDescription,
+          image:childSnapshot.val().Image,
+          id: childSnapshot.val().ProductID,
+        })
+        listlap.push({
+          title:childSnapshot.val().Name,
+          price:childSnapshot.val().Price,
+          metades:childSnapshot.val().MetaDescription,
+          image:childSnapshot.val().Image,
+          id: childSnapshot.val().ProductID,
+        })
+      })
+      console.log(items);
+  })
+  return items;
+}
+
+ListenForItemsSamsung(){
+  var items=[];
+    this.itemRef.ref('/Products').on('value', snapshot => {
+      snapshot.forEach(function (childSnapshot){
+        
+        if(childSnapshot.val().CategoryID=="AIzaSyDSWIekvpvwQbRiGh4WF88H91tqFzL6OWI")
+        items.push({
+          // key:snapshot.key,
+          title:childSnapshot.val().Name,
+          price:childSnapshot.val().Price,
+          metades:childSnapshot.val().MetaDescription,
+          image:childSnapshot.val().Image,
+          id: childSnapshot.val().ProductID,
+        })
+        
+      })
+      console.log(items);
   })
   return items;
 }
@@ -72,28 +145,7 @@ export default class Home extends React.Component {
     const { navigation, product, horizontal, full, style, priceColor, imageStyle } = this.props;
     const imageStyles = [styles.image, full ? styles.fullImage : styles.horizontalImage, imageStyle];
     return (
-    //   <SafeAreaView >
-    //  <Block center style={styles.home}  >
-    //  <ScrollView
-    // showsVerticalScrollIndicator={true}
-    // horizontal={false}
-    // pagingEnabled={true}
-    // contentContainerStyle={styles.products}>
-    //    <FlatList
-    //    horizontal={true}
-    //    pagingEnabled={false}
-    //    data={this.ListenForItems()}
-    //    renderItem={({item})=>
-    //    <View>
-    //       <TouchableOpacity  onPress={() => navigation.navigate('Items', {id: item.id})}>
-    //       <Product product={item} horizontal />
-    //     </TouchableOpacity>   
-    //    </View>
-       
-    //    } />   
-    //   </ScrollView>   
-    //  </Block>
-    //   </SafeAreaView>  
+    
     
     <View style={styles.screenContainer}>
     <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
@@ -117,15 +169,16 @@ export default class Home extends React.Component {
       {/*  */}
       <Text style={styles.sectionTitle}>Điện thoại - Máy tính bảng</Text>
       {/*  */}
-      <Image source={section_banner} style={styles.sectionImage} />
+     
       {/*  */}
+  
+      <ScrollView>
+      <Image source={section_banner} style={styles.sectionImage} />
       <ScrollView horizontal={true}>
+     
         <View style={styles.filterContainer}>
           {[
-            'Tất cả',
-            'Điện thoại SmartPhone',
-            'Máy tính bảng',
-            'Điện thoại',
+            'Điện thoại SmartPhone',       
           ].map((e, index) => (
             <View
               key={index.toString()}
@@ -146,12 +199,11 @@ export default class Home extends React.Component {
           ))}
         </View>
       </ScrollView>
-      <ScrollView>
       <View style={styles.listItemContainer}>
         <FlatList 
         horizontal={true}
         pagingEnabled={false}
-        data={this.ListenForItems()}
+        data={this.ListenForItemsPhone()}
         renderItem={({item})=>
         <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id})}>
             <ProductItem
@@ -161,11 +213,60 @@ export default class Home extends React.Component {
                   />
         </TouchableOpacity>  
         }
-        ></FlatList>
-        {/* <HomeSectionComponent /> */}
+        ></FlatList>    
       </View>
+     
+      
+
+      <ScrollView horizontal={true}>
+        <View style={styles.filterContainer}>
+          {[
+            
+            'Laptop',
+            
+          ].map((e, index) => (
+            <View
+              key={index.toString()}
+              style={
+                index === 0
+                  ? styles.filterActiveButtonContainer
+                  : styles.filterInactiveButtonContainer
+              }>
+              <Text
+                style={
+                  index === 0
+                    ? styles.filterActiveText
+                    : styles.filterInactiveText
+                }>
+                {e}
+              </Text>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+
+      <View style={styles.listItemContainer}>
+        <FlatList 
+        horizontal={true}
+        pagingEnabled={false}
+        data={this.listlap}
+        renderItem={({item})=>
+        <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id})}>
+             <ProductItem
+            name={item.title}
+            image={item.image}
+        price={item.price}
+      />
+        </TouchableOpacity>    
+        }
+        ></FlatList>    
+      </View>
+
+        <View style={{height:200}}></View>
+
       </ScrollView>
       </View>
+      
     </View>
     </View>
     ); 
@@ -191,6 +292,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 2,
+    
   },
   inputText: {
     color: '#969696',
@@ -206,6 +308,7 @@ const styles = StyleSheet.create({
   bodyContainer: {
     flex: 1,
     backgroundColor: '#fff',
+    
   },
   itemContainer: {
     width: 100,
@@ -232,6 +335,7 @@ const styles = StyleSheet.create({
   sectionContainer: {
     backgroundColor: '#fff',
     paddingHorizontal: 12,
+    marginBottom:10,
   },
   sectionTitle: {
     fontWeight: '700',
