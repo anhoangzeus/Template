@@ -8,54 +8,61 @@ import Header from '../components/HeaderComponent';
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-community/async-storage';
+
+
 
 const ProfileItem = ({icon, name}) => (
   <View style={styles.itemContainer}>
     <MaterialCommunityIcons name={icon} size={26} color="#1e1e1e" />
     <Text style={[styles.itemText, {marginLeft: icon ? 20 : 0}]}>{name}</Text>
-    <FontAwesome name="angle-right" size={26} color="#1e1e1e" />
+    <FontAwesome name="angle-right" size={15} color="#1e1e1e" />
   </View>
 );
 
-
-
 export default class Profile extends Component {
+  constructor(props){
+    super(props);
+    this.state= {
+      Hoten: '',
+      Email:'',
+      CreatDate:''
+    }
+  }
   render(){
-    const {navigation} = this.props;
-  return (
-    <View style={styles.screenContainer}>
-       <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
-      <Header title="Cá nhân" />
-      <View style={styles.bodyContainer}>
-        <View style={styles.userContainer}>
-          <View style={styles.avatarContainer}>
-            <MaterialIcons name="person" size={26} color="#fff" />
+    return (
+      <View style={styles.screenContainer}>
+        <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
+        <Header title="Cá nhân" />
+        <View style={styles.bodyContainer}>
+          <View style={styles.userContainer}>
+            <View style={styles.avatarContainer}>
+              <MaterialIcons name="person" size={26} color="#fff" />
+            </View>
+            <View style={styles.textContainer}>
+              <Text style={styles.welcomeText}>Chào mừng bạn đến với TiAn</Text>
+              <TouchableOpacity onPress={()=> this.props.navigation.navigate("Top")}>
+              <Text style={styles.authText}>Đăng nhập/Đăng ký</Text>
+              </TouchableOpacity>
+            </View>
+            <FontAwesome name="angle-right" size={26} color="#1e88e5" />
           </View>
-          <View style={styles.textContainer}>
-            <Text style={styles.welcomeText}>Chào mừng bạn đến với TiAn</Text>
-            <TouchableOpacity onPress={()=> navigation.navigate("Top")}>
-            <Text style={styles.authText}>Đăng nhập/Đăng ký</Text>
-            </TouchableOpacity>
-          </View>
-          <FontAwesome name="angle-right" size={26} color="#1e88e5" />
+          <View style={styles.divider} />
+          <ProfileItem icon="format-list-bulleted" name="Quản lý đơn hàng" />
+          <ProfileItem icon="cart-outline" name="Sản phẩm đã mua" />
+          <ProfileItem icon="eye-outline" name="Sản phẩm đã xem" />
+          <ProfileItem icon="heart-outline" name="Sản phẩm yêu thích" />
+          <ProfileItem icon="bookmark-outline" name="Sản phẩm mua sau" />
+          <ProfileItem icon="star-outline" name="Sản phẩm đánh giá" />
+          <View style={styles.divider} />
+          <ProfileItem name="Ưu đãi cho chủ thẻ ngân hàng" />
+          <ProfileItem name="Cài đặt" />
+          <View style={styles.divider} />
+          <ProfileItem icon="headphones" name="Hỗ trợ" />
         </View>
-        <View style={styles.divider} />
-        <ProfileItem icon="format-list-bulleted" name="Quản lý đơn hàng" />
-        <ProfileItem icon="cart-outline" name="Sản phẩm đã mua" />
-        <ProfileItem icon="eye-outline" name="Sản phẩm đã xem" />
-        <ProfileItem icon="heart-outline" name="Sản phẩm yêu thích" />
-        <ProfileItem icon="bookmark-outline" name="Sản phẩm mua sau" />
-        <ProfileItem icon="star-outline" name="Sản phẩm đánh giá" />
-        <View style={styles.divider} />
-        <ProfileItem name="Ưu đãi cho chủ thẻ ngân hàng" />
-        <ProfileItem name="Cài đặt" />
-        <View style={styles.divider} />
-        <ProfileItem icon="headphones" name="Hỗ trợ" />
-
       </View>
-    </View>
-  );
-};
+    );
+  };
 }
 
 

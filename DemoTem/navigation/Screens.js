@@ -11,6 +11,7 @@ import ComponentsScreen from '../screens/Components';
 import HomeScreen from '../screens/Home';
 import ItemsScreen from '../screens/Items';
 import ProfileScreen from '../screens/Profile';
+import Profile_User from '../screens/Profile_User';
 import ProScreen from '../screens/Pro';
 import Signup from '../screens/Signup';
 import SettingsScreen from '../screens/Settings';
@@ -25,30 +26,42 @@ import { Images, materialTheme } from "../constants/";
 import { color } from 'react-native-reanimated';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
+import AsyncStorage from '@react-native-community/async-storage';
+import {fbApp} from "../firebaseconfig";
+import "firebase/auth";
+import InfoUser from "../screens/InfoUser";
+
+
 const { width } = Dimensions.get("screen");
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const TabTop = createMaterialTopTabNavigator();
+const RootStack = createStackNavigator();
+
+
 
 export function TopStackLogin(props){
   return (
     <View style={styles.containner}>
-      <Image
-          source={require("../assets/shop2.png")}
-          style={styles.image}
+      {/* <InfoUser/> */}
+    <Image
+        source={require("../assets/shop2.png")}
+        style={styles.image}
+    />
+    <HeaderBackButton style={styles.texthead} onPress={() =>props.navigation.navigate("App")}></HeaderBackButton>
+      <TabTop.Navigator
+           tabBarOptions={{
+            activeTintColor: 'blue',
+          }}
+      >
+      <Tab.Screen name="Đăng nhập" component={Login1} 
+      
       />
-      <HeaderBackButton style={styles.texthead} onPress={() =>props.navigation.navigate("App")}></HeaderBackButton>
-        <TabTop.Navigator
-             tabBarOptions={{
-              activeTintColor: 'blue',
-            }}
-        >
-        <Tab.Screen name="Đăng nhập" component={Login1} 
-        
-        />
-        <Tab.Screen name="Đăng kí" component={Signup1}/>
-  </TabTop.Navigator></View>
+      <Tab.Screen name="Đăng kí" component={Signup1}/>
+</TabTop.Navigator>
+</View>
+    
 
   );
 }
@@ -95,7 +108,7 @@ export function AppStack(props) {
           tabBarIcon: ({ focused }) => (
             <Icon
               size={24}
-              name="profile"
+              name="user"
               family="antdesign"
               color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
             />
@@ -104,7 +117,7 @@ export function AppStack(props) {
       />
       <Tab.Screen
         name="Settings"
-        component={SettingsScreen}
+        component={Profile_User}
         options={{
           tabBarIcon: ({ focused }) => (
             <Icon
