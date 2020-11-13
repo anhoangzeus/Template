@@ -1,4 +1,4 @@
-import React, { Component} from 'react';
+import React, { Component, useState, useEffect} from 'react';
 import {StyleSheet, View, Text, StatusBar, ScrollView} from 'react-native';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -8,76 +8,65 @@ import LinearGradient from 'react-native-linear-gradient';
 import Header from '../components/HeaderComponent';
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
+import{ AuthContext } from '../components/context';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import {getToken, storeToken} from '../navigation/Storeged';
 
-const ProfileItem = ({icon, name}) => (
-  <View style={styles.itemContainer}>
-    <MaterialCommunityIcons name={icon} size={26} color="#1e1e1e" />
-    <Text style={[styles.itemText, {marginLeft: icon ? 20 : 0}]}>{name}</Text>
-    <FontAwesome name="angle-right" size={15} color="#1e1e1e" />
-  </View>
-);
+// const logOut = async()=>{
+//   await fbApp.auth().signOut().then(function() {
+// }).catch(function(error) {
+//   console.log(error)
+// });
+// }         
+const ProfileUser =(navigation)=> {
 
-export default class ProfileUser extends Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      FirstName: '',
-      LastName:"",
-      Email:'',
-      CreatedDate:''
-    }
-  }
-  componentDidMount() {
+  const [FirstName, setFirstName] = useState("");
+  const [LastName, setLastName] = useState("");
+  const [Email, setEmail] = useState("");
+  const [CreatedDate, setCreatedDate] = useState("");
+  const [Avatar, setAvatar] = useState("");
+
+  const { signOut } = React.useContext(AuthContext);
+
+  const ProfileItem = ({icon, name}) => (
+    <View style={styles.itemContainer}>
+      <MaterialCommunityIcons name={icon} size={26} color="#1e1e1e" />
+      <Text style={[styles.itemText, {marginLeft: icon ? 20 : 0}]}>{name}</Text>
+      <FontAwesome name="angle-right" size={15} color="#1e1e1e" />
+    </View>
+  );
+
+  useEffect(()=>{
+      fbApp.database().ref('Shippers').child(fbApp.auth().currentUser.uid)
+      .on('value', (snapshot) => {
+        setCreatedDate(snapshot.val().CreatedDate);
+        setFirstName(snapshot.val().FirstName);
+        setLastName(snapshot.val().LastName);
+        setEmail(snapshot.val().Phone);
+        setAvatar(snapshot.val().Avatar);
+      });
     
-var aaa = getToken();
-console.log(aaa);
-console.log("Here");
-
-    var shipper = {
-      CreatedDate:'',
-        Email: '',
-        FirstName: '',
-        LastName: '',
-    }
-    fbApp.database().ref('Shippers').child("jiEDYkCK90bCYArk7QLcL1MCnCk2")
-    .on('value', (snapshot) => {
-      shipper.FirstName = snapshot.val().FirstName;
-      shipper.LastName = snapshot.val().LastName;
-      shipper.Email = snapshot.val().Phone;
-      shipper.CreatedDate = snapshot.val().CreatedDate;     
-        this.setState({
-          CreatedDate : shipper.CreatedDate,
-            Email : shipper.Email,
-            FirstName : shipper.FirstName,
-            LastName : shipper.LastName,
-        });     
-    });              
-  } 
-  render(){
+})
     return (
-      
       <View style={styles.screenContainer}>
         <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
         <Header title="Cá nhân" />
         <ScrollView>
         <View style={styles.bodyContainer}>
-        <TouchableOpacity onPress={()=> this.props.navigation.navigate("Top")}>
+        <TouchableOpacity onPress={()=>{}}>
           <View style={styles.userContainer}>
             <View style={styles.avatarContainer}>
               <MaterialIcons name="person" size={26} color="#fff" />
             </View>
             <View style={styles.textContainer}>
-                <Text style={styles.welcomeText}>{this.state.FirstName} {this.state.LastName}</Text>
-                <Text style={styles.authText}>{this.state.Email}</Text>
-                <Text style={styles.authText}>Thành viên từ {this.state.CreatedDate}</Text>
+                <Text style={styles.welcomeText}>{FirstName} {LastName}</Text>
+                <Text style={styles.authText}>{Email}</Text>
+                <Text style={styles.authText}>Thành viên từ {CreatedDate}</Text>
             </View>
             <FontAwesome name="angle-right" size={26} color="#1e88e5" />
           </View>
           </TouchableOpacity>
           <View style={styles.divider} />
-          <ProfileItem icon="file-link-outline" name="Kêt nối mạng xã hội" />
+          <ProfileItem icon="file-link-outline" name="Kết nối mạng xã hội" />
           <View style={styles.divider} />
           <ProfileItem icon="cart-outline" name="Săn thưởng" />
           <View style={styles.divider} />
@@ -114,10 +103,10 @@ console.log("Here");
           <ProfileItem icon="headphones" name="Hỗ trợ" />
           <View style={styles.divider} />
           <View style={styles.divider} />
-          
+        
           <TouchableOpacity
                   style={styles.signIn}
-                  onPress={() => {}}
+                  onPress={() => {signOut()}}
               >
               <LinearGradient
                     colors={['blue', 'blue']}
@@ -130,14 +119,14 @@ console.log("Here");
               </TouchableOpacity>
               <View style={styles.divider} />
               <View style={styles.divider} />
-
         </View>
         </ScrollView>
+      
       </View>
-
     );
   };
-}
+export default ProfileUser;
+
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
@@ -164,6 +153,11 @@ const styles = StyleSheet.create({
   textContainer: {
     flex: 1,
     marginLeft: 20,
+  },
+  authText1: {
+    color: '#1e88e5',
+    fontSize: 18,
+    fontWeight: '500',
   },
   welcomeText: {
     color:"black"

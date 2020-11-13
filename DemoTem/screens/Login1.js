@@ -16,16 +16,11 @@ import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import { useTheme } from 'react-native-paper';
-// import { AuthContext } from '../components/context';
-// import {fbApp} from "../firebaseconfig";
-// import "firebase/auth";
-// import FormInput from '../components/FormInput';
-// import FormButton from '../components/FormButton';
-// import SocialButton from '../components/SocialButton';
-// import {AuthContext} from '../navigation/AuthProvider';
+import { AuthContext } from '../components/context';
+import {fbApp} from "../firebaseconfig";
+import "firebase/auth";
 
-
-const Login1 = () => {
+const Login1 = ({navigation}) => {
     const [data, setData] = React.useState({
         username: '',
         password: '',
@@ -37,7 +32,7 @@ const Login1 = () => {
 
     const { colors } = useTheme();
 
-    // const { signIn } = React.useContext(AuthContext);
+    const { signIn } = React.useContext(AuthContext);
 
     const textInputChange = (val) => {
         if( val.trim().length >= 6 ) {
@@ -102,16 +97,20 @@ const Login1 = () => {
                     ]);
                     return;
                 }
-                fbApp.auth().signInWithEmailAndPassword(userName,password).catch(function(error) {
-                    console.log('here')
+                fbApp
+                .auth()
+                .signInWithEmailAndPassword(userName,password)
+                .catch(function(error) {
                     var errorCode = error.code;
                     var errorMessage = error.message;
                     Alert.alert('Lỗi!', error.message, [
                         {text: 'Okay'}
                     ]);                  
                     return;
-                  });             
-        signIn(fbApp.auth().currentUser);
+                });   
+                console.log("here")
+        signIn(fbApp.auth().currentUser)    
+        console.log("here1")
     }
     return (
         <View style={styles.container}>
@@ -204,7 +203,7 @@ const Login1 = () => {
           </Animatable.View>
           }
           <TouchableOpacity
-                onPress={()=> firebaseapp.auth().sendPasswordResetEmail}                   
+                onPress={()=> fbApp.auth().sendPasswordResetEmail}                   
           >
               <Text style={{color: '#009387', marginTop:15}}>Quên mật khẩu?</Text>
           </TouchableOpacity>
@@ -222,10 +221,7 @@ const Login1 = () => {
                   }]}>Đăng nhập</Text>
               </LinearGradient>
               </TouchableOpacity>
-          </View>
-          
-
-
+          </View>         
       </Animatable.View>
     </View>
     );
