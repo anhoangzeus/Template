@@ -1,7 +1,6 @@
 import React from 'react';
 import { Easing, Animated, Dimensions, View , StyleSheet, Image} from 'react-native';
 import { createStackNavigator, HeaderBackButton } from "@react-navigation/stack";
-import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
@@ -11,7 +10,6 @@ import ComponentsScreen from '../screens/Components';
 import HomeScreen from '../screens/Home';
 import ItemsScreen from '../screens/Items';
 import ProfileScreen from '../screens/Profile';
-import Profile_User from '../screens/Profile_User';
 import ProScreen from '../screens/Pro';
 import Signup from '../screens/Signup';
 import SettingsScreen from '../screens/Settings';
@@ -23,45 +21,31 @@ import Signup1 from '../screens/SignUp1';
 import CustomDrawerContent from './Menu';
 import { Icon, Header } from '../components';
 import { Images, materialTheme } from "../constants/";
-//import { color } from 'react-native-reanimated';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-
-import AsyncStorage from '@react-native-community/async-storage';
-import {fbApp} from "../firebaseconfig";
-import "firebase/auth";
-import InfoUser from "../screens/InfoUser";
-
 
 const { width } = Dimensions.get("screen");
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const TabTop = createMaterialTopTabNavigator();
-const RootStack = createStackNavigator();
-
-
 
 export function TopStackLogin(props){
   return (
     <View style={styles.containner}>
-      {/* <InfoUser/> */}
-    <Image
-        source={require("../assets/shop2.png")}
-        style={styles.image}
-    />
-    <HeaderBackButton style={styles.texthead} onPress={() =>props.navigation.navigate("App")}></HeaderBackButton>
-      <TabTop.Navigator
-           tabBarOptions={{
-            activeTintColor: 'blue',
-          }}
-      >
-      <Tab.Screen name="Đăng nhập" component={Login1} 
-      
+      <Image
+          source={require("../assets/shop2.png")}
+          style={styles.image}
       />
-      <Tab.Screen name="Đăng kí" component={Signup1}/>
-</TabTop.Navigator>
-</View>
-    
+      <HeaderBackButton style={styles.texthead} onPress={() =>props.navigation.navigate("App")}></HeaderBackButton>
+        <TabTop.Navigator
+             tabBarOptions={{
+              activeTintColor: 'blue',
+            }}
+        >
+        <Tab.Screen name="Đăng nhập" component={Login1} 
+        />
+        <Tab.Screen name="Đăng kí" component={Signup1}/>
+  </TabTop.Navigator></View>
 
   );
 }
@@ -126,7 +110,7 @@ export function AppStack(props) {
       />
       <Tab.Screen
         name="Settings"
-        component={Profile_User}
+        component={SettingsScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <Icon
@@ -141,7 +125,6 @@ export function AppStack(props) {
         }}
       />
     </Tab.Navigator>
-    
   );
 }
 
@@ -161,6 +144,7 @@ export default function OnboardingStack(props) {
     </Stack.Navigator>
   );
 }
+
 const styles = StyleSheet.create({
   containner: {
     flex: 1,
@@ -177,5 +161,3 @@ const styles = StyleSheet.create({
     position: "absolute",
   }
 });
-
-

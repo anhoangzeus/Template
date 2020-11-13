@@ -15,7 +15,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 
-const {listlap} = [];
+// const {listlap} = [];
 
 const ProductItem = ({image, name, price}) => (
   <View style={styles.itemContainer}>
@@ -93,13 +93,13 @@ ListenForItemsLaptop(){
           image:childSnapshot.val().Image,
           id: childSnapshot.val().ProductID,
         })
-        listlap.push({
-          title:childSnapshot.val().Name,
-          price:childSnapshot.val().Price,
-          metades:childSnapshot.val().MetaDescription,
-          image:childSnapshot.val().Image,
-          id: childSnapshot.val().ProductID,
-        })
+        // listlap.push({
+        //   title:childSnapshot.val().Name,
+        //   price:childSnapshot.val().Price,
+        //   metades:childSnapshot.val().MetaDescription,
+        //   image:childSnapshot.val().Image,
+        //   id: childSnapshot.val().ProductID,
+        // })
       })
       console.log(items);
   })
