@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, Dimensions, ScrollView, View,Image ,SafeAreaView,TouchableWithoutFeedback,LogBox,StatusBar} from 'react-native';
+import React,{useState} from 'react';
+import { StyleSheet, Dimensions, ScrollView, View,Image ,SafeAreaView,ActivityIndicator ,LogBox,StatusBar} from 'react-native';
 import { Button, Block, Text, theme, Input } from 'galio-framework';
 
 import { Icon, Product } from '../components/';
@@ -15,7 +15,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 
-// const {listlap} = [];
+
 
 const ProductItem = ({image, name, price}) => (
   <View style={styles.itemContainer}>
@@ -27,126 +27,98 @@ const ProductItem = ({image, name, price}) => (
   </View>
 );
 
+
+
+
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
     LogBox.ignoreAllLogs();
     this.itemRef = fbApp.database();
     this.state = { 
+     listpro:[],
+     listphone:[],
     }; 
   }
 
-  componentDidMount(){
-      this.ListenForItemsLaptop();
-  }
   
-  ListenForItems(){
-    var items=[];
-    this.itemRef.ref('/Products').on('value', snapshot => {
-      snapshot.forEach(function (childSnapshot){
-        items.push({
-          // key:snapshot.key,
-          title:childSnapshot.val().Name,
-          price:childSnapshot.val().Price,
-          metades:childSnapshot.val().MetaDescription,
-          image:childSnapshot.val().Image,
-          id: childSnapshot.val().ProductID,
-        })
-        
-      })
-  })
-  return items;
+componentDidMount(){
+  this.ListenForItemsLaptop();
+  this.ListenForItemsPhone();
+  
 }
 
-ListenForItemsPhone(){
-  var items=[];
-    this.itemRef.ref('/Products').on('value', snapshot => {
-      snapshot.forEach(function (childSnapshot){
-        
+ListenForItemsPhone = () => {
+  
+    this.itemRef.ref('/Products').once('value').then((snapshot) => {
+      var items=[];
+      snapshot.forEach(function (childSnapshot){   
+        var product={
+          title:'',
+          price:'',
+          metades:'',
+          image:'',
+          id: '',
+        } 
         if(childSnapshot.val().CategoryID=="AIzaSyDSWIekvpvwQbRiGh4WF88H91tqFzL6OWI")
-        items.push({
-          // key:snapshot.key,
-          title:childSnapshot.val().Name,
-          price:childSnapshot.val().Price,
-          metades:childSnapshot.val().MetaDescription,
-          image:childSnapshot.val().Image,
-          id: childSnapshot.val().ProductID,
-        })
-        
+        {
+          product.title = childSnapshot.val().Name;
+          product.price=childSnapshot.val().Price;
+          product.metades=childSnapshot.val().MetaDescription;
+          product.image=childSnapshot.val().Image;
+          product.id=childSnapshot.val().ProductID;
+          items.push(product);     
+        }
+      });
+      this.setState({
+        listphone:items,
       })
-      console.log(items);
-  })
-  return items;
-}
-
-ListenForItemsLaptop(){
-  var items=[];
-    this.itemRef.ref('/Products').on('value', snapshot => {
-      snapshot.forEach(function (childSnapshot){
-        
-        if(childSnapshot.val().CategoryID=="-MJaC7kTLJOYZjt9G4zs")
-        items.push({
-          // key:snapshot.key,
-          title:childSnapshot.val().Name,
-          price:childSnapshot.val().Price,
-          metades:childSnapshot.val().MetaDescription,
-          image:childSnapshot.val().Image,
-          id: childSnapshot.val().ProductID,
-        })
-        // listlap.push({
-        //   title:childSnapshot.val().Name,
-        //   price:childSnapshot.val().Price,
-        //   metades:childSnapshot.val().MetaDescription,
-        //   image:childSnapshot.val().Image,
-        //   id: childSnapshot.val().ProductID,
-        // })
-      })
-      console.log(items);
-  })
-  return items;
-}
-
-ListenForItemsSamsung(){
-  var items=[];
-    this.itemRef.ref('/Products').on('value', snapshot => {
-      snapshot.forEach(function (childSnapshot){
-        
-        if(childSnapshot.val().CategoryID=="AIzaSyDSWIekvpvwQbRiGh4WF88H91tqFzL6OWI")
-        items.push({
-          // key:snapshot.key,
-          title:childSnapshot.val().Name,
-          price:childSnapshot.val().Price,
-          metades:childSnapshot.val().MetaDescription,
-          image:childSnapshot.val().Image,
-          id: childSnapshot.val().ProductID,
-        })
-        
-      })
-      console.log(items);
-  })
-  return items;
-}
-
-  renderProducts = (items) => {
-    const { navigation } = this.props;   
-    return (
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.products}>
-        <Block flex>
-          <TouchableOpacity >
-          <Product product={products[0]}  />
-          </TouchableOpacity>    
-        </Block>
-      </ScrollView>    
-    )
+      console.log(items); 
+    })
   }
+
+
+ListenForItemsLaptop = () =>{
+    
+    this.itemRef.ref('/Products').once('value').then((snapshot) => {
+      var items=[];
+      snapshot.forEach( function(childSnapshot){       
+        var product={
+          title:'',
+          price:'',
+          metades:'',
+          image:'',
+          id: '',
+        }
+        if (childSnapshot.val().CategoryID === "-MJaC7kTLJOYZjt9G4zs" ){        
+          product.title = childSnapshot.val().Name;
+          product.price=childSnapshot.val().Price;
+          product.metades=childSnapshot.val().MetaDescription;
+          product.image=childSnapshot.val().Image;
+          product.id=childSnapshot.val().ProductID;
+          items.push(product);     
+        }              
+    });
+    this.setState({
+      listpro:items,
+    })
+    console.log(items); 
+  })
+}
+
   render() {
-    const { navigation, product, horizontal, full, style, priceColor, imageStyle } = this.props;
-    const imageStyles = [styles.image, full ? styles.fullImage : styles.horizontalImage, imageStyle];
+    const { navigation } = this.props;
+    if (this.state.loading) {
+      return (
+        <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
+          <ActivityIndicator size="large" color="dodgerblue" />
+        </View>
+      )
+    }
+    
+    
     return (
-    
-    
+     
     <View style={styles.screenContainer}>
     <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
     {/*  */}
@@ -171,7 +143,7 @@ ListenForItemsSamsung(){
       {/*  */}
      
       {/*  */}
-  
+      <SafeAreaView>
       <ScrollView>
       <Image source={section_banner} style={styles.sectionImage} />
       <ScrollView horizontal={true}>
@@ -203,7 +175,7 @@ ListenForItemsSamsung(){
         <FlatList 
         horizontal={true}
         pagingEnabled={false}
-        data={this.ListenForItemsPhone()}
+        data={this.state.listphone}
         renderItem={({item})=>
         <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id})}>
             <ProductItem
@@ -217,7 +189,7 @@ ListenForItemsSamsung(){
       </View>
      
       
-
+      
       <ScrollView horizontal={true}>
         <View style={styles.filterContainer}>
           {[
@@ -249,13 +221,13 @@ ListenForItemsSamsung(){
         <FlatList 
         horizontal={true}
         pagingEnabled={false}
-        data={this.listlap}
+        data={this.state.listpro}
         renderItem={({item})=>
         <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id})}>
              <ProductItem
             name={item.title}
             image={item.image}
-        price={item.price}
+            price={item.price}
       />
         </TouchableOpacity>    
         }
@@ -265,10 +237,12 @@ ListenForItemsSamsung(){
         <View style={{height:200}}></View>
 
       </ScrollView>
+      </SafeAreaView>
       </View>
       
     </View>
     </View>
+   
     ); 
   }
 }
