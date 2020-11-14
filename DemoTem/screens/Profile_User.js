@@ -4,19 +4,15 @@ import {StyleSheet, View, Text, StatusBar, ScrollView} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import Header from '../components/HeaderComponent';
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 import{ AuthContext } from '../components/context';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-
-// const logOut = async()=>{
-//   await fbApp.auth().signOut().then(function() {
-// }).catch(function(error) {
-//   console.log(error)
-// });
-// }         
+import AsyncStorage from '@react-native-community/async-storage';
+       
 const ProfileUser =(navigation)=> {
 
   const [FirstName, setFirstName] = useState("");
@@ -27,6 +23,18 @@ const ProfileUser =(navigation)=> {
 
   const { signOut } = React.useContext(AuthContext);
 
+  const  getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('userid')
+      if(value !== null) {
+        console.log(value);
+        return value;
+      }
+    } catch(e) {
+      // error reading value
+    }
+  }
+
   const ProfileItem = ({icon, name}) => (
     <View style={styles.itemContainer}>
       <MaterialCommunityIcons name={icon} size={26} color="#1e1e1e" />
@@ -34,9 +42,17 @@ const ProfileUser =(navigation)=> {
       <FontAwesome name="angle-right" size={15} color="#1e1e1e" />
     </View>
   );
+  const ProfileItem1 = ({icon, name}) => (
+    <View style={styles.itemContainer}>
+      <Ionicons name={icon} size={26} color="#1e1e1e" />
+      <Text style={[styles.itemText, {marginLeft: icon ? 20 : 0}]}>{name}</Text>
+      <FontAwesome name="angle-right" size={15} color="#1e1e1e" />
+    </View>
+  );
 
   useEffect(()=>{
-      fbApp.database().ref('Shippers').child(fbApp.auth().currentUser.uid)
+    console.log("here")
+      fbApp.database().ref('Users').child(fbApp.auth().currentUser.uid)
       .on('value', (snapshot) => {
         setCreatedDate(snapshot.val().CreatedDate);
         setFirstName(snapshot.val().FirstName);
@@ -44,7 +60,7 @@ const ProfileUser =(navigation)=> {
         setEmail(snapshot.val().Phone);
         setAvatar(snapshot.val().Avatar);
       });
-    
+      // console.log(fbApp.auth().currentUser.uid);
 })
     return (
       <View style={styles.screenContainer}>
@@ -66,11 +82,11 @@ const ProfileUser =(navigation)=> {
           </View>
           </TouchableOpacity>
           <View style={styles.divider} />
-          <ProfileItem icon="file-link-outline" name="Kết nối mạng xã hội" />
+          <ProfileItem icon="facebook" name="Kết nối mạng xã hội" />
           <View style={styles.divider} />
-          <ProfileItem icon="cart-outline" name="Săn thưởng" />
+          <ProfileItem icon="trophy-outline" name="Săn thưởng" />
           <View style={styles.divider} />
-          <ProfileItem icon="eye-outline" name="Quản lí đơn hàng" />
+          <ProfileItem icon="form-select" name="Quản lí đơn hàng" />
           <View style={styles.divider1} />
           <ProfileItem name="Tian đã tiếp nhận" />
           <View style={styles.divider1} />
@@ -84,21 +100,21 @@ const ProfileUser =(navigation)=> {
           <View style={styles.divider1} />
           <ProfileItem  name="Đơn hàng đã huỷ" />
           <View style={styles.divider} />
-          <ProfileItem icon="eye-outline" name="Số địa chỉ" />
+          <ProfileItem1 icon="location-outline" name="Số địa chỉ" />
           <View style={styles.divider1} />
-          <ProfileItem icon="eye-outline" name="Thông tin thanh toán" />
+          <ProfileItem icon="credit-card-settings-outline" name="Thông tin thanh toán" />
           <View style={styles.divider} />
-          <ProfileItem icon="eye-outline" name="Sản phẩm đã mua" />
+          <ProfileItem icon="cart-outline" name="Sản phẩm đã mua" />
           <View style={styles.divider1} />
           <ProfileItem icon="eye-outline" name="Sản phẩm đã xem" />
           <View style={styles.divider1} />
-          <ProfileItem icon="eye-outline" name="Sản phẩm yêu thích" />
+          <ProfileItem icon="heart-outline" name="Sản phẩm yêu thích" />
           <View style={styles.divider1} />
-          <ProfileItem icon="eye-outline" name="Sản phẩm mua sau" />
+          <ProfileItem icon="clock-outline" name="Sản phẩm mua sau" />
           <View style={styles.divider} />
-          <ProfileItem icon="eye-outline" name="Ưu đãi cho chủ thẻ ngân hàng" />
+          <ProfileItem  name="Ưu đãi cho chủ thẻ ngân hàng" />
           <View style={styles.divider1} />
-          <ProfileItem icon="eye-outline" name="Cài đặt" />
+          <ProfileItem name="Cài đặt" />
           <View style={styles.divider} />
           <ProfileItem icon="headphones" name="Hỗ trợ" />
           <View style={styles.divider} />

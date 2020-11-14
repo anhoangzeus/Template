@@ -108,9 +108,7 @@ const Login1 = ({navigation}) => {
                     ]);                  
                     return;
                 });   
-                console.log("here")
-        signIn(fbApp.auth().currentUser)    
-        console.log("here1")
+        signIn();
     }
     return (
         <View style={styles.container}>

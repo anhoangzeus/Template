@@ -17,6 +17,7 @@ import AccountScreen from '../screens/Account';
 import ProductScreen from '../screens/Product';
 import Login1 from '../screens/Login1';
 import Signup1 from '../screens/SignUp1';
+import Profile_User from '../screens/Profile_User';
 
 import CustomDrawerContent from './Menu';
 import { Icon, Header } from '../components';
