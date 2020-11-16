@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
-import { StyleSheet, Dimensions, ScrollView, Image, ImageBackground, Platform,View } from 'react-native';
-import { Block, Text, theme } from 'galio-framework';
-import { LinearGradient } from 'react-native-linear-gradient';
+import { StyleSheet, Dimensions, ScrollView, Image, TouchableOpacity, Platform,View } from 'react-native';
+import { Block, Text, theme,Button } from 'galio-framework';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 
 import { Images, materialTheme } from '../constants';
@@ -71,6 +71,15 @@ export default class Product extends Component {
       //   </View>
       // </View>
       <Block flex style={styles.profile}>
+        <View style={styles.headerFont}>
+          <TouchableOpacity onPress={()=> navigation.goBack()}> 
+              <FontAwesome name="angle-left" size={30} color="#1e88e5" />
+          </TouchableOpacity>
+         
+          <FontAwesome name="search" size={24} color="#1e88e5" style={{marginLeft:width*0.6}}/>
+          <FontAwesome name="home" size={30} color="#1e88e5" style={{marginLeft:width*0.05}}/>
+          <FontAwesome name="shopping-cart" size={30} color="#1e88e5" style={{marginLeft:width*0.05}}/>
+        </View>
         <ScrollView showsVerticalScrollIndicator={false}>
         <Block flex backgroundColor="white">
           <ScrollView horizontal = {true}
@@ -132,6 +141,10 @@ export default class Product extends Component {
          
         </Block>
         </ScrollView>
+        <View style={{backgroundColor:"#fff"}}>
+          
+          <Button style={styles.btnSubmit}>thêm vào giỏ hàng</Button>
+        </View>
       </Block>
     );
   }
@@ -140,6 +153,15 @@ export default class Product extends Component {
 const styles = StyleSheet.create({
   profile: {
     flex:1,
+  },
+  headerFont:{
+    position: 'relative', 
+    zIndex: 1, 
+    flexDirection:"row",
+    borderRadius: 27,
+    backgroundColor: 'white', 
+    opacity: 1 ,
+    marginLeft:10,
   },
   ImageContainer:{
       marginTop:5,
@@ -157,7 +179,6 @@ const styles = StyleSheet.create({
     height: height*0.5,
   },
   profileDetails: {
-    
     justifyContent: 'flex-end',
     position: 'relative',
   },
@@ -205,4 +226,8 @@ const styles = StyleSheet.create({
     height: '30%',
     position: 'absolute',
   },
+  btnSubmit:{
+    width:width*0.9,
+    marginLeft:width*0.05,
+  }
 });

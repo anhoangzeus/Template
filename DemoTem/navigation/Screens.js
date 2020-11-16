@@ -13,6 +13,7 @@ import SettingsScreen from '../screens/Settings';
 import ProductScreen from '../screens/Product';
 import Login1 from '../screens/Login1';
 import Signup1 from '../screens/SignUp1';
+import Cart from '../screens/Cart';
 import Profile_User from '../screens/Profile_User';
 // import NotificationScreen from '../screens/NotificationScreen';
 
@@ -85,10 +86,8 @@ export function AppStack(props) {
               size={24}
               name="appstore1"
               family="antdesign"
-              color={focused ? "blue" : materialTheme.COLORS.MUTED}
-              name="burst-sale"
-              family="foundation"
               color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
+             
             />
           )
         }}
@@ -139,6 +138,7 @@ export default function OnboardingStack(props) {
       <Stack.Screen name="Setting" component={SettingsScreen} />
       {/* <Stack.Screen name="NotificationItem" component={NotificationScreen}/> */}
       <Stack.Screen name="Components" component={ComponentsScreen} />
+      <Stack.Screen name="Cart" component={Cart}/>
       <Stack.Screen name="Product" component={ProductScreen}/>
       <Stack.Screen name="Items" component={ItemsScreen}/>
     </Stack.Navigator>

@@ -1,14 +1,12 @@
 import React,{useState} from 'react';
 import { StyleSheet, Dimensions, ScrollView, View,Image ,SafeAreaView,ActivityIndicator ,LogBox,StatusBar} from 'react-native';
-import { Button, Block, Text, theme, Input } from 'galio-framework';
+import {  Text } from 'galio-framework';
 
-import { Icon, Product } from '../components/';
+
 
 const section_banner = require('../assets/section_banner.png');
 const { width } = Dimensions.get('screen');
-import products from '../constants/products';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
-
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 
@@ -130,7 +128,9 @@ ListenForItemsLaptop = () =>{
       </View>
       {/*  */}
       <View style={styles.cartContainer}>
-        <FontAwesome name="shopping-cart" size={24} color="#fff" />
+      <TouchableOpacity onPress={() => navigation.push("Cart")}>
+             <FontAwesome name="shopping-cart" size={24} color="#fff" /> 
+          </TouchableOpacity> 
       </View>
     </View>
     {/*  */}
@@ -171,29 +171,15 @@ ListenForItemsLaptop = () =>{
           ))}
         </View>
       </ScrollView>
+      
       <View style={styles.listItemContainer}>
         <FlatList 
         horizontal={true}
         pagingEnabled={false}
+        numberOfLines={2}
         data={this.state.listphone}
         renderItem={({item})=>
-        <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id})}>
-            <ProductItem
-                    name={item.title}
-                    image={item.image}
-                    price={item.price}
-                  />
-        </TouchableOpacity>  
-        }
-        ></FlatList>    
-      </View>
-      <View style={styles.listItemContainer}>
-        <FlatList 
-        horizontal={true}
-        pagingEnabled={false}
-        data={this.state.listphone}
-        renderItem={({item})=>
-        <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id})}>
+        <TouchableOpacity onPress={() => navigation.push('Items', {id: item.id})}>
             <ProductItem
                     name={item.title}
                     image={item.image}
@@ -231,7 +217,7 @@ ListenForItemsLaptop = () =>{
         </View>
       </ScrollView>
 
-      <View style={styles.listItemContainer}>
+      {/* <View style={styles.listItemContainer}>
         <FlatList 
         horizontal={true}
         pagingEnabled={false}
@@ -246,14 +232,15 @@ ListenForItemsLaptop = () =>{
         </TouchableOpacity>    
         }
         ></FlatList>    
-      </View>
+      </View> */}
       <View style={styles.listItemContainer}>
         <FlatList 
         horizontal={true}
+        numberOfLines={2}
         pagingEnabled={false}
         data={this.state.listpro}
         renderItem={({item})=>
-        <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id})}>
+        <TouchableOpacity onPress={() => navigation.push('Items', {id: item.id})}>
              <ProductItem
             name={item.title}
             image={item.image}
