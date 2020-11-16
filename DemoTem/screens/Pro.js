@@ -1,43 +1,4 @@
-import React from 'react';
-import { ImageBackground, Image, StyleSheet,ScrollView, StatusBar, Dimensions, Platform,View,LogBox } from 'react-native';
-import { Block, Button, Text, theme } from 'galio-framework';
-
-
-const { height, width } = Dimensions.get('screen');
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-const section_banner = require('../assets/section_banner.png');
-import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
-
-import {fbApp} from "../firebaseconfig";
-import "firebase/auth";
-
-
-const ProductItem = ({image, name, price}) => (
-  <View style={styles.itemContainer}>
-    <Image source={{uri:image}} style={styles.itemImage} />
-    <Text style={styles.itemName} numberOfLines={2}>
-      {name}
-    </Text>
-    <Text style={styles.itemPrice}>{price}</Text>
-  </View>
-);
-
-export default class Pro extends React.Component {
-
-  constructor(props) {
-    super(props);
-    LogBox.ignoreAllLogs();
-    this.itemRef = fbApp.database();
-    this.state = { 
-      brand:"Oppo",
-    }; 
-  }
-
-  ChangBrand(Brand){
-    
-  }
-
-  ListenForItemsSamsung(){import React from 'react';
+  import React from 'react';
   import { ImageBackground, Image, StyleSheet,ScrollView, StatusBar, Dimensions, Platform,View,LogBox } from 'react-native';
   import { Block, Button, Text, theme } from 'galio-framework';
   
