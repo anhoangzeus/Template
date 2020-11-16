@@ -1,16 +1,16 @@
 import React,{Component} from 'react';
-import { StyleSheet, Dimensions, ScrollView, Image, ImageBackground, Platform } from 'react-native';
+import { StyleSheet, Dimensions, ScrollView, Image, ImageBackground, Platform,View } from 'react-native';
 import { Block, Text, theme } from 'galio-framework';
 import { LinearGradient } from 'react-native-linear-gradient';
-import { HeaderBackButton } from "@react-navigation/stack";
-import { Icon } from '../components';
+
+
 import { Images, materialTheme } from '../constants';
 import { HeaderHeight } from "../constants/utils";
-import CateImg from "../assets/images/phone/laptop.jpg"
+
 
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
-import { Route } from 'react-router-dom';
+
 
 const { width, height } = Dimensions.get('screen');
 const thumbMeasure = (width - 48 - 32) / 3;
@@ -53,27 +53,49 @@ export default class Product extends Component {
 
   render() {
     const { navigation } = this.props;
+    console.log("vao product");
     return (
-
+      // <View style={styles.profile}>
+      //   <ScrollView
+      //   horizontal={true}
+      //   pagingEnabled={true}
+      //   style={{height:100}}     
+      //   >
+      //    <View style={styles.ImageContainer}>
+      //        <Image source={{uri:this.state.Image}} style={styles.profileImage}></Image>
+            
+      //    </View>
+      //   </ScrollView>
+      //   <View>
+      //   <Text>{this.state.Name}</Text>
+      //   </View>
+      // </View>
       <Block flex style={styles.profile}>
-        <Block flex>
-          <ImageBackground
+        <ScrollView showsVerticalScrollIndicator={false}>
+        <Block flex backgroundColor="white">
+          <ScrollView horizontal = {true}
+          pagingEnabled={true}
+          >
+          <Image
             source={{uri : this.state.Image}}
             style={styles.profileContainer}
             imageStyle={styles.profileImage}>
- 
-            <Block flex style={styles.profileDetails}>
-              <Block style={styles.profileTexts}>
-              <Text color="Black" size={28} style={{ paddingBottom: 8 }}>{this.state.Name}</Text>
-             
-              </Block>
-            </Block>
-          </ImageBackground>
+            
+          </Image>
+          </ScrollView>
+          
         </Block>
         <Block flex style={styles.options}>
           
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <Block row space="between" style={{ padding: theme.SIZES.BASE, }}>
+         
+          <Block flex style={styles.profileDetails}>
+              <Block style={styles.profileTexts}>
+              <Text color="Black" size={18} style={{ paddingBottom: 8 }}>{this.state.Name}</Text>
+              <Text color="Black" size={28} style={{ paddingBottom: 0 }}>{this.state.Price} đ</Text>
+              </Block>
+              
+            </Block>
+            <Block row space="between" style={{ }}>
               <Block middle>
                 <Text bold size={12} style={{marginBottom: 8}}>136</Text>
                 <Text muted size={12}>sản phẩm</Text>
@@ -89,7 +111,7 @@ export default class Product extends Component {
             </Block>
             <Block row space="between" style={{ paddingVertical: 16, alignItems: 'baseline' }}>
               <Text size={16}>Ảnh sản phẩm</Text>
-              <Text size={12} color={theme.COLORS.PRIMARY} >Add Cart</Text>
+              <Text size={12} color={theme.COLORS.PRIMARY} >Buy now</Text>
             </Block>
             <Block style={{ paddingBottom: -HeaderHeight * 2 }}>
               <Block row space="between" style={{ flexWrap: 'wrap' }} >
@@ -107,8 +129,9 @@ export default class Product extends Component {
           <Text bold size={12} style={{marginBottom: 8}}>Decription</Text>
               <Text muted size={12}>{this.state.Decription}</Text>
           </Block>
-          </ScrollView>
+         
         </Block>
+        </ScrollView>
       </Block>
     );
   }
@@ -116,19 +139,25 @@ export default class Product extends Component {
 
 const styles = StyleSheet.create({
   profile: {
-    marginTop: Platform.OS === 'android' ? -HeaderHeight : 0,
-    marginBottom: -HeaderHeight * 2,
+    flex:1,
+  },
+  ImageContainer:{
+      marginTop:5,
+      paddingLeft:10,
+      paddingBottom:height/2,    
   },
   profileImage: {
-    width: width * 1.1,
-    height: 'auto',
+    width: width*0.95 ,
+    height: height*0.6,
   },
   profileContainer: {
+    paddingTop:5,
+    paddingLeft:10,
     width: width,
-    height: height / 2,
+    height: height*0.5,
   },
   profileDetails: {
-    paddingTop: theme.SIZES.BASE * 4,
+    
     justifyContent: 'flex-end',
     position: 'relative',
   },
@@ -150,9 +179,8 @@ const styles = StyleSheet.create({
   },
   options: {
     position: 'relative',
-    padding: theme.SIZES.BASE,
-    marginHorizontal: theme.SIZES.BASE,
-    marginTop: -theme.SIZES.BASE * 7,
+    paddingTop: -5,
+    marginTop: -theme.SIZES.BASE ,
     borderTopLeftRadius: 13,
     borderTopRightRadius: 13,
     backgroundColor: theme.COLORS.WHITE,
@@ -177,9 +205,4 @@ const styles = StyleSheet.create({
     height: '30%',
     position: 'absolute',
   },
-  texthead:{
-    position:'absolute',
-    color:"black",
-    fontSize:30
-  }
 });
