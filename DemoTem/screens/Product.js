@@ -2,7 +2,7 @@ import React,{Component} from 'react';
 import { StyleSheet, Dimensions, ScrollView, Image, ImageBackground, Platform } from 'react-native';
 import { Block, Text, theme } from 'galio-framework';
 import { LinearGradient } from 'react-native-linear-gradient';
-
+import { HeaderBackButton } from "@react-navigation/stack";
 import { Icon } from '../components';
 import { Images, materialTheme } from '../constants';
 import { HeaderHeight } from "../constants/utils";
@@ -54,18 +54,19 @@ export default class Product extends Component {
   render() {
     const { navigation } = this.props;
     return (
+
       <Block flex style={styles.profile}>
         <Block flex>
           <ImageBackground
             source={{uri : this.state.Image}}
             style={styles.profileContainer}
             imageStyle={styles.profileImage}>
+ 
             <Block flex style={styles.profileDetails}>
               <Block style={styles.profileTexts}>
               <Text color="Black" size={28} style={{ paddingBottom: 8 }}>{this.state.Name}</Text>
              
               </Block>
-              
             </Block>
           </ImageBackground>
         </Block>
@@ -88,7 +89,7 @@ export default class Product extends Component {
             </Block>
             <Block row space="between" style={{ paddingVertical: 16, alignItems: 'baseline' }}>
               <Text size={16}>Ảnh sản phẩm</Text>
-              <Text size={12} color={theme.COLORS.PRIMARY} >Buy now</Text>
+              <Text size={12} color={theme.COLORS.PRIMARY} >Add Cart</Text>
             </Block>
             <Block style={{ paddingBottom: -HeaderHeight * 2 }}>
               <Block row space="between" style={{ flexWrap: 'wrap' }} >
@@ -176,4 +177,9 @@ const styles = StyleSheet.create({
     height: '30%',
     position: 'absolute',
   },
+  texthead:{
+    position:'absolute',
+    color:"black",
+    fontSize:30
+  }
 });

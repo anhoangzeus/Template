@@ -187,8 +187,22 @@ ListenForItemsLaptop = () =>{
         }
         ></FlatList>    
       </View>
-     
-      
+      <View style={styles.listItemContainer}>
+        <FlatList 
+        horizontal={true}
+        pagingEnabled={false}
+        data={this.state.listphone}
+        renderItem={({item})=>
+        <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id})}>
+            <ProductItem
+                    name={item.title}
+                    image={item.image}
+                    price={item.price}
+                  />
+        </TouchableOpacity>  
+        }
+        ></FlatList>    
+      </View>
       
       <ScrollView horizontal={true}>
         <View style={styles.filterContainer}>
@@ -217,6 +231,22 @@ ListenForItemsLaptop = () =>{
         </View>
       </ScrollView>
 
+      <View style={styles.listItemContainer}>
+        <FlatList 
+        horizontal={true}
+        pagingEnabled={false}
+        data={this.state.listpro}
+        renderItem={({item})=>
+        <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id})}>
+             <ProductItem
+            name={item.title}
+            image={item.image}
+            price={item.price}
+      />
+        </TouchableOpacity>    
+        }
+        ></FlatList>    
+      </View>
       <View style={styles.listItemContainer}>
         <FlatList 
         horizontal={true}
