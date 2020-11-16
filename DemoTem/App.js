@@ -14,7 +14,6 @@ import { fbApp } from './firebaseconfig';
 import { faSlack } from '@fortawesome/free-brands-svg-icons';
 
 const App = () => {
-  let an;
   const initialLoginState = {
     isLoading: true,
     userToken: null

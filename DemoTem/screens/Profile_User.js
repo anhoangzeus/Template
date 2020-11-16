@@ -46,6 +46,8 @@ const ProfileUser =(props)=> {
   );
 
   useEffect(()=>{
+    if(fbApp.auth().currentUser != null)
+    {
       fbApp.database().ref('Users').child(fbApp.auth().currentUser.uid)
       .on('value', (snapshot) => {
         setCreatedDate(snapshot.val().CreatedDate);
@@ -53,6 +55,7 @@ const ProfileUser =(props)=> {
         setEmail(snapshot.val().Phone);
         setAvatar(snapshot.val().Avatar);
       });
+    }    
 })
     return (
       <View style={styles.screenContainer}>
