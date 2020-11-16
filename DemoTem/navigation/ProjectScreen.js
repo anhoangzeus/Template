@@ -45,13 +45,13 @@ export function TopOrder(props){
       <View style={{flexDirection: 'row', justifyContent:'space-between', paddingHorizontal: 5}}>
       <Ionicons name="arrow-back-outline" color={'white'}  size={30} onPress={() =>props.navigation.navigate("App")}/>
       <Text style={styles.texthead}>ĐƠN HÀNG CỦA TÔI</Text>
-      <Ionicons name="arrow-undo" color={'#1ca8ff'} size={26} />
+      <Ionicons name="arrow-undo" color={'#1e88e5'} size={26} />
       </View>
           <TopStackOrder.Navigator
           tabBarOptions={{
           activeTintColor: 'blue',
           scrollEnabled: true
-        }}
+        }}      
       >
       <Tab.Screen name="Order" component={Order} 
       options={{
