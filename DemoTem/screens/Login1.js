@@ -10,6 +10,7 @@ import {
     StatusBar,
     Alert,
     Image,
+    Dimensions
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
@@ -20,6 +21,7 @@ import { AuthContext } from '../components/context';
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 
+const {height,width}=Dimensions.get("screen");
 const Login1 = ({navigation}) => {
     const [data, setData] = React.useState({
         username: '',
@@ -100,6 +102,9 @@ const Login1 = ({navigation}) => {
                 fbApp
                 .auth()
                 .signInWithEmailAndPassword(userName,password)
+                .then(()=>{
+                    signIn();
+                })
                 .catch(function(error) {
                     var errorCode = error.code;
                     var errorMessage = error.message;
@@ -107,8 +112,8 @@ const Login1 = ({navigation}) => {
                         {text: 'Okay'}
                     ]);                  
                     return;
-                });   
-        signIn();
+                });  
+                 
     }
     return (
         <View style={styles.container}>
@@ -244,7 +249,8 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         paddingHorizontal: 20,
-        paddingVertical: 30
+        paddingVertical: 30,
+        margin: height / 100
     },
     text_header: {
         color: '#fff',

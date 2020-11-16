@@ -39,12 +39,21 @@ export default class Profile extends Component {
               <FontAwesome name="angle-right" size={26} color="#1e88e5" />
             </View>
             <View style={styles.divider} />
+            <TouchableOpacity onPress={()=> this.props.navigation.navigate("Top")}>
             <ProfileItem icon="format-list-bulleted" name="Quản lý đơn hàng" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=> this.props.navigation.navigate("Top")}>
             <ProfileItem icon="cart-outline" name="Sản phẩm đã mua" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=> this.props.navigation.navigate("Top")}>
             <ProfileItem icon="eye-outline" name="Sản phẩm đã xem" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=> this.props.navigation.navigate("Top")}>
             <ProfileItem icon="heart-outline" name="Sản phẩm yêu thích" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=> this.props.navigation.navigate("Top")}>
             <ProfileItem icon="bookmark-outline" name="Sản phẩm mua sau" />
-            <ProfileItem icon="star-outline" name="Sản phẩm đánh giá" />
+            </TouchableOpacity>
             <View style={styles.divider} />
             <ProfileItem name="Ưu đãi cho chủ thẻ ngân hàng" />
             <ProfileItem name="Cài đặt" />

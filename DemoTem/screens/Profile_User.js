@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, StatusBar, ScrollView} from 'react-native';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -13,25 +13,20 @@ import{ AuthContext } from '../components/context';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
        
-const ProfileUser =(navigation)=> {
+const ProfileUser =(props)=> {
 
-  const [FirstName, setFirstName] = useState("");
-  const [LastName, setLastName] = useState("");
+  const [FullName, setFullName] = useState("");
   const [Email, setEmail] = useState("");
   const [CreatedDate, setCreatedDate] = useState("");
   const [Avatar, setAvatar] = useState("");
 
   const { signOut } = React.useContext(AuthContext);
 
-  const  getData = async () => {
+  const  LogOut = () => {
     try {
-      const value = await AsyncStorage.getItem('userid')
-      if(value !== null) {
-        console.log(value);
-        return value;
-      }
+        fbApp.auth().signOut();
+        signOut();
     } catch(e) {
-      // error reading value
     }
   }
 
@@ -51,16 +46,13 @@ const ProfileUser =(navigation)=> {
   );
 
   useEffect(()=>{
-    console.log("here")
       fbApp.database().ref('Users').child(fbApp.auth().currentUser.uid)
       .on('value', (snapshot) => {
         setCreatedDate(snapshot.val().CreatedDate);
-        setFirstName(snapshot.val().FirstName);
-        setLastName(snapshot.val().LastName);
+        setFullName(snapshot.val().FullName);;
         setEmail(snapshot.val().Phone);
         setAvatar(snapshot.val().Avatar);
       });
-      // console.log(fbApp.auth().currentUser.uid);
 })
     return (
       <View style={styles.screenContainer}>
@@ -68,13 +60,13 @@ const ProfileUser =(navigation)=> {
         <Header title="Cá nhân" />
         <ScrollView>
         <View style={styles.bodyContainer}>
-        <TouchableOpacity onPress={()=>{}}>
+        <TouchableOpacity onPress={()=> {}}>
           <View style={styles.userContainer}>
             <View style={styles.avatarContainer}>
               <MaterialIcons name="person" size={26} color="#fff" />
             </View>
             <View style={styles.textContainer}>
-                <Text style={styles.welcomeText}>{FirstName} {LastName}</Text>
+                <Text style={styles.welcomeText}>{FullName}</Text>
                 <Text style={styles.authText}>{Email}</Text>
                 <Text style={styles.authText}>Thành viên từ {CreatedDate}</Text>
             </View>
@@ -86,19 +78,33 @@ const ProfileUser =(navigation)=> {
           <View style={styles.divider} />
           <ProfileItem icon="trophy-outline" name="Săn thưởng" />
           <View style={styles.divider} />
+          <TouchableOpacity onPress={()=> {props.navigation.navigate("TopOrder")}}>
           <ProfileItem icon="form-select" name="Quản lí đơn hàng" />
+          </TouchableOpacity>
           <View style={styles.divider1} />
+          <TouchableOpacity onPress={()=> {props.navigation.navigate("TopOrder",{screen: "Order"})}}>
           <ProfileItem name="Tian đã tiếp nhận" />
+          </TouchableOpacity>
           <View style={styles.divider1} />
+          <TouchableOpacity onPress={()=> {props.navigation.navigate("TopOrder",{screen: "Order_Payment"})}}>
           <ProfileItem  name="Đơn hàng chờ thanh toán lại" />
+          </TouchableOpacity>
           <View style={styles.divider1} />
+          <TouchableOpacity onPress={()=> {props.navigation.navigate("TopOrder",{screen: "OrderXuli"})}}>
+          <ProfileItem name="Tian đã tiếp nhận" />
+          </TouchableOpacity>
+          <View style={styles.divider1} />
+          <TouchableOpacity onPress={()=> {props.navigation.navigate("TopOrder",{screen: "Order_DangVanChuyen"})}}>
           <ProfileItem  name="Đơn hàng đang chờ vận chuyển" />
+          </TouchableOpacity>
           <View style={styles.divider1} />
+          <TouchableOpacity onPress={()=> {props.navigation.navigate("TopOrder",{screen: "Order_DaGiao"})}}>
           <ProfileItem  name="Đơn hàng thành công" />
+          </TouchableOpacity>
           <View style={styles.divider1} />
-          <ProfileItem  name="Đánh giá sản phẩm đã mua" />
-          <View style={styles.divider1} />
+          <TouchableOpacity onPress={()=> {props.navigation.navigate("TopOrder",{screen: "Order_DaHuy"})}}>
           <ProfileItem  name="Đơn hàng đã huỷ" />
+          </TouchableOpacity>
           <View style={styles.divider} />
           <ProfileItem1 icon="location-outline" name="Số địa chỉ" />
           <View style={styles.divider1} />
@@ -122,7 +128,7 @@ const ProfileUser =(navigation)=> {
         
           <TouchableOpacity
                   style={styles.signIn}
-                  onPress={() => {signOut()}}
+                  onPress={() => {LogOut()}}
               >
               <LinearGradient
                     colors={['blue', 'blue']}

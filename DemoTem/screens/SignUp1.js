@@ -8,7 +8,8 @@ import {
     StyleSheet ,
     StatusBar,
     Alert,
-    ScrollView
+    ScrollView,
+    Dimensions
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
@@ -19,42 +20,87 @@ import { useTheme } from 'react-native-paper';
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 
-const SignUp1 = () => {
+const {height,width}=Dimensions.get("screen");
+
+const SignUp1 = (navigation) => {
+
   const [data, setData] = React.useState({
     username: '',
     password: '',
-    confirm_password: '',
+    phone:'',
+    fullname:'',
+    Createby:"User",
+    CreateDate:"06/11/2020",
+    Status:"true",
+    UserID:"",
     check_textInputChange: false,
+    check_textInputChange1: false, 
+    check_textInputChange2: false, 
     secureTextEntry: true,
     confirm_secureTextEntry: true,
 });
+
+const GetCurrentDate =()=>{
+    var date = new Date().getDate();
+    var month = new Date().getMonth() + 1; 
+    var year = new Date().getFullYear();
+    setData({
+        ...data,
+        CreateDate: date + '/' +month+ "/" +year 
+    }); 
+}
+
+const textInputChange2 = (val) => {
+    if( val.length !== 0 ) {
+        setData({
+            ...data,
+            phone: val,
+            check_textInputChange2: true
+        });
+    } else {
+        setData({
+            ...data,
+            phone: val,
+            check_textInputChange2: false
+        });
+    }
+  }
+
 const textInputChange = (val) => {
   if( val.length !== 0 ) {
       setData({
           ...data,
-          username: val,
+          fullname: val,
           check_textInputChange: true
       });
   } else {
       setData({
           ...data,
-          username: val,
+          fullname: val,
           check_textInputChange: false
       });
   }
 }
+const textInputChange1 = (val) => {
+    if( val.length !== 0 ) {
+        setData({
+            ...data,
+            username: val,
+            check_textInputChange1: true
+        });
+    } else {
+        setData({
+            ...data,
+            username: val,
+            check_textInputChange1: false
+        });
+    }
+  }
 
 const handlePasswordChange = (val) => {
   setData({
       ...data,
       password: val
-  });
-}
-
-const handleConfirmPasswordChange = (val) => {
-  setData({
-      ...data,
-      confirm_password: val
   });
 }
 
@@ -65,11 +111,52 @@ const updateSecureTextEntry = () => {
   });
 }
 
-const updateConfirmSecureTextEntry = () => {
-  setData({
-      ...data,
-      confirm_secureTextEntry: !data.confirm_secureTextEntry
-  });
+const registerHandle = (userName, password, fullname , phone ) => {
+    if ( data.username.length == 0 || data.password.length == 0 || data.fullname.length == 0 
+        || data.phone.length == 0) {
+        Alert.alert('Lỗi!', 'Bạn chưa điền đầy đủ thông tin', [
+            {text: 'Okay'}
+        ]);
+        return;
+    }
+    GetCurrentDate();
+    fbApp
+    .auth()
+    .createUserWithEmailAndPassword(userName,password)
+    .then(() =>{
+        fbApp.database().ref("Users").child(fbApp.auth().currentUser.uid).set({
+            FullName: data.fullname,
+            Phone: data.phone,
+            CreatedDate: data.CreateDate,
+            CreatedBy: data.Createby,
+            Status: data.Status,
+            UserID: fbApp.auth().currentUser.uid
+        });
+        Alert.alert(
+            'Thông báo',
+            'Đăng kí thành công ' + data.username,
+            [
+                {text: 'OK', onPress:() =>{navigation.navigate("App")}}
+            ],
+            {cancelable: false}
+        )
+        setData({
+            username:"",
+            password:"",
+            CreateDate:"",
+            fullname:"",
+            phone:"",
+            UserID:""
+        })
+    })
+    .catch(function(error) {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        Alert.alert('Lỗi mạng!', error.message, [
+            {text: 'Okay'}
+        ]);                  
+        return;
+    });   
 }
     return (
       <View style={styles.container}>
@@ -78,7 +165,7 @@ const updateConfirmSecureTextEntry = () => {
             animation="fadeInUpBig"
             style={styles.footer}
         >
-            <ScrollView>
+            <ScrollView >
             <Text style={styles.text_footer}>Họ tên</Text>
             <View style={styles.action}>
                 <FontAwesome 
@@ -119,9 +206,9 @@ const updateConfirmSecureTextEntry = () => {
                     placeholder="Số điện thoại"
                     style={styles.textInput}
                     autoCapitalize="none"
-                    onChangeText={(val) => textInputChange(val)}
+                    onChangeText={(val) => textInputChange2(val)}
                 />
-                {data.check_textInputChange ? 
+                {data.check_textInputChange2 ? 
                 <Animatable.View
                     animation="bounceIn"
                 >
@@ -148,9 +235,9 @@ const updateConfirmSecureTextEntry = () => {
                     placeholder="Tài khoản"
                     style={styles.textInput}
                     autoCapitalize="none"
-                    onChangeText={(val) => textInputChange(val)}
+                    onChangeText={(val) => textInputChange1(val)}
                 />
-                {data.check_textInputChange ? 
+                {data.check_textInputChange1 ? 
                 <Animatable.View
                     animation="bounceIn"
                 >
@@ -203,7 +290,7 @@ const updateConfirmSecureTextEntry = () => {
             <View style={styles.button}>
                 <TouchableOpacity
                     style={styles.signIn}
-                    onPress={() => {}}
+                    onPress={() => {registerHandle(data.username, data.password, data.fullname, data.phone)}}
                 >
                 <LinearGradient
                       colors={['red', 'red']}
@@ -227,7 +314,7 @@ export default SignUp1;
 const styles = StyleSheet.create({
   container: {
     flex: 1, 
-    backgroundColor: '#1ba8ff'
+    backgroundColor: '#1ba8ff',
   },
   header: {
       flex: 1,
@@ -241,7 +328,8 @@ const styles = StyleSheet.create({
       borderTopLeftRadius: 30,
       borderTopRightRadius: 30,
       paddingHorizontal: 20,
-      paddingVertical: 30
+      paddingVertical: 30,
+      margin: height / 100
   },
   text_header: {
       color: '#fff',
@@ -249,7 +337,7 @@ const styles = StyleSheet.create({
       fontSize: 30
   },
   text_footer: {
-      color: '#1ba8ff',
+      color: 'black',
       fontSize: 18
   },
   action: {
@@ -270,7 +358,7 @@ const styles = StyleSheet.create({
         flex: 1,
         marginTop: Platform.OS === 'ios' ? 0 : -12,
         paddingLeft: 10,
-        color: '#1ba8ff',
+        color: '#000',
     },
     errorMsg: {
         color: '#FF0000',

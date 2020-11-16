@@ -3,21 +3,18 @@ import { Easing, Animated, Dimensions, View , StyleSheet, Image} from 'react-nat
 import { createStackNavigator, HeaderBackButton } from "@react-navigation/stack";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-
 import { Block, Text, theme } from "galio-framework";
-
 import ComponentsScreen from '../screens/Components';
 import HomeScreen from '../screens/Home';
 import ItemsScreen from '../screens/Items';
 import ProfileScreen from '../screens/Profile';
 import ProScreen from '../screens/Pro';
-import Signup from '../screens/Signup';
 import SettingsScreen from '../screens/Settings';
-import AccountScreen from '../screens/Account';
 import ProductScreen from '../screens/Product';
 import Login1 from '../screens/Login1';
 import Signup1 from '../screens/SignUp1';
 import Profile_User from '../screens/Profile_User';
+// import NotificationScreen from '../screens/NotificationScreen';
 
 import CustomDrawerContent from './Menu';
 import { Icon, Header } from '../components';
@@ -30,6 +27,7 @@ const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const TabTop = createMaterialTopTabNavigator();
 
+
 export function TopStackLogin(props){
   return (
     <View style={styles.containner}>
@@ -37,7 +35,7 @@ export function TopStackLogin(props){
           source={require("../assets/shop2.png")}
           style={styles.image}
       />
-      <HeaderBackButton style={styles.texthead} onPress={() =>props.navigation.navigate("App")}></HeaderBackButton>
+      <HeaderBackButton style={styles.texthead} onPress={() =>props.navigation.navigate("App")}/>
         <TabTop.Navigator
              tabBarOptions={{
               activeTintColor: 'blue',
@@ -51,6 +49,7 @@ export function TopStackLogin(props){
   );
 }
 
+
 export function AppStack(props) {
   return (
     <Tab.Navigator
@@ -58,7 +57,7 @@ export function AppStack(props) {
       initialRouteName="Home"
     >
       <Tab.Screen
-        name="Home"
+        name="Trang chủ"
         component={HomeScreen}
 
         options={{
@@ -138,8 +137,8 @@ export default function OnboardingStack(props) {
       <Stack.Screen name="Pro" component={ProScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="Setting" component={SettingsScreen} />
+      {/* <Stack.Screen name="NotificationItem" component={NotificationScreen}/> */}
       <Stack.Screen name="Components" component={ComponentsScreen} />
-      <Stack.Screen name='Account' component={AccountScreen}/>
       <Stack.Screen name="Product" component={ProductScreen}/>
       <Stack.Screen name="Items" component={ItemsScreen}/>
     </Stack.Navigator>
