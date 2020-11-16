@@ -75,7 +75,7 @@
       const { navigation } = this.props;
   
       return (
-        <View style={styles.screenContainer}>
+      <View style={styles.screenContainer}>
       <StatusBar barStyle="light-content" />
       {/*  */}
       <View style={styles.headerContainer}>
@@ -86,7 +86,9 @@
         </View>
         {/*  */}
         <View style={styles.cartContainer}>
-          <FontAwesome name="shopping-cart" size={24} color="#fff" />
+          <TouchableOpacity onPress={() => navigation.push("Cart")}>
+             <FontAwesome name="shopping-cart" size={24} color="#fff" /> 
+          </TouchableOpacity> 
         </View>
       </View>
       {/*  */}
@@ -97,7 +99,7 @@
         {/*  */}
         <View >
             <ScrollView horizontal={true} style={styles.scrollCate}>
-              <TouchableOpacity onPress={{backgroundColor:"blue"}}>
+              <TouchableOpacity >
                 <Image source={{uri:"https://upload.wikimedia.org/wikipedia/commons/a/a2/OPPO_LOGO_2019.png"}} style={styles.cateImage} />
               </TouchableOpacity>
               <TouchableOpacity>
