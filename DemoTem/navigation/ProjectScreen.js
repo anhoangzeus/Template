@@ -22,6 +22,7 @@ import Order_Payment from '../screens/Order_Payment';
 import Order_DaGiao from '../screens/Order_DaGiao';
 import Order_DangVanChuyen from '../screens/Order_DangVanChuyen';
 import Order_DaHuy from '../screens/Order_DaHuy';
+import Route_OrderDetail from '../screens/Detail_Order';
 
 import CustomDrawerContent from './Menu';
 import { Icon, Header } from '../components';
@@ -42,7 +43,7 @@ const StackProfile = createStackNavigator();
 export function TopOrder(props){
   return(
     <View style={styles.containner}>
-      <View style={{flexDirection: 'row', justifyContent:'space-between', paddingHorizontal: 5}}>
+      <View style={styles.headconteiner}>
       <Ionicons name="arrow-back-outline" color={'white'}  size={30} onPress={() =>props.navigation.navigate("App")}/>
       <Text style={styles.texthead}>ĐƠN HÀNG CỦA TÔI</Text>
       <Ionicons name="arrow-undo" color={'#1e88e5'} size={26} />
@@ -50,7 +51,7 @@ export function TopOrder(props){
           <TopStackOrder.Navigator
           tabBarOptions={{
           activeTintColor: 'blue',
-          scrollEnabled: true
+          scrollEnabled: true,
         }}      
       >
       <Tab.Screen name="Order" component={Order} 
@@ -169,14 +170,13 @@ export default function ProjectStack(props) {
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Pro" component={ProScreen} />
       <Stack.Screen name="Profile_User" component={Profile_User}/>
-      <Stack.Screen 
-        name="TopOrder" 
-        component={TopOrder}
-       />
+      <Stack.Screen name="TopOrder" component={TopOrder}/>
       <Stack.Screen name="Setting" component={SettingsScreen} />
       <Stack.Screen name="Components" component={ComponentsScreen} />
       <Stack.Screen name="Product" component={ProductScreen}/>
       <Stack.Screen name="Items" component={ItemsScreen}/>
+      <Stack.Screen name='View_OrderDetail' component={Route_OrderDetail}/>
+      <Stack.Screen name='All_Order' component={Order}/>
       {/* <Stack.Screen name="NotificationScreen" component={NotificationScreen}/> */}
     </Stack.Navigator>
   );
@@ -192,5 +192,12 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       marginBottom: 10,
       textAlign: 'center',
+    },
+    headconteiner:{
+      flexDirection: 'row', 
+      justifyContent:'space-between', 
+      paddingHorizontal: 5, 
+      paddingTop: 15,
+      paddingBottom:5
     }
   });

@@ -137,7 +137,7 @@ import React from 'react';
                <ProductItem
               name={item.title}
               image={item.image}
-          price={item.price}
+              price={item.price}
         />
           </TouchableOpacity>    
           }

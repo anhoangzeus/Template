@@ -2,52 +2,7 @@
 import React,{Component, useEffect, useState} from 'react';
 import { View, Text, Button, StyleSheet,FlatList, TouchableOpacity, ActivityIndicator} from 'react-native';
 import { fbApp } from '../firebaseconfig';
-
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'silver',
-    marginTop:60
-  },
-  listItem:{
-    margin:5,
-    backgroundColor:"#fff",
-    width:"90%",
-    flex:1,
-    alignSelf:"center",
-    flexDirection:"row",
-    borderRadius:5
-  },
-  loader:{
-    marginTop:10,
-    alignItems:"center"
-  },
-  address:{
-    fontWeight: '400'
-  },
-  buttonXem:{
-    paddingHorizontal: 10,
-    justifyContent:"center",
-    alignItems:"center", 
-    backgroundColor:'#FF00FF'
-  }
-});
-
-const RenderList = ({CreatedDate,ShipAddress,ShipName,ShipMoblie,ToTalPrice}) =>(
-    <View style={styles.listItem}>
-      <View style={{alignItems:"center",flex:1, margin: 10}}>
-         <Text style={{fontSize: 20, fontWeight:'bold'}}>{ShipName}</Text>
-          <Text>{ShipMoblie}</Text>
-          <Text >{CreatedDate}</Text>
-          <Text numberOfLines={1} style={styles.address}>{ShipAddress}</Text>
-          <Text style={{fontSize:20, color:"#FF00FF", fontWeight:'bold'}}>Giá: {ToTalPrice} đ </Text>
-      </View >
-          <TouchableOpacity style={styles.buttonXem}>
-            <Text style={{color:"white", textAlign:'center'}}>Xem</Text>
-          </TouchableOpacity>
-  </View>
-);
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 export default class Order extends Component{
   constructor(props) {
@@ -56,7 +11,31 @@ export default class Order extends Component{
      listOrder:[]
     }; 
   }
+  RenderList = ({CreatedDate,ShipAddress,ShipName,ShipMoblie,ToTalPrice,id}) =>(
 
+    <View style={styles.listItem}>
+      <View style={{flex:1, margin: 10}}>
+         <Text style={{fontSize: 20, fontWeight:'bold',textAlign:'center'}}>{ShipName}</Text>
+         <View style={{height:1,backgroundColor:'silver',marginTop:5}}/>
+         <View style={{flexDirection:'row',marginTop:10}} >
+            <MaterialIcons name='phone-in-talk' size={20} color="#1e88e5"/>
+            <Text style={{marginLeft: 10}}>{ShipMoblie}</Text>
+         </View>
+         <View style={{flexDirection:'row'}} >
+            <MaterialIcons name='event-available' size={20} color="#1e88e5"/>
+            <Text style={{marginLeft: 10}}>{CreatedDate}</Text>
+         </View>
+         <View style={{flexDirection:'row'}} >
+            <MaterialIcons name='location-on' size={20} color="#1e88e5"/>
+            <Text numberOfLines={1} style={styles.address}>{ShipAddress}</Text>
+         </View>
+          <Text style={{fontSize:20, color:"#FF00FF", fontWeight:'bold'}}>Giá: {ToTalPrice} đ </Text>
+      </View >
+          <TouchableOpacity style={styles.buttonXem} onPress={()=> {this.props.navigation.navigate('View_OrderDetail', {id: id})}}>
+            <Text style={{color:"white", textAlign:'center'}}>Xem</Text>
+          </TouchableOpacity>
+  </View>
+);
   componentDidMount(){
     this.ListenForOrder();
   }
@@ -93,19 +72,19 @@ export default class Order extends Component{
   })
 }
  render(){
-
     return (
       <View>
       <FlatList
           pagingEnabled={false}
           data={this.state.listOrder}
           renderItem={({item})=>
-            <RenderList
+            <this.RenderList
             CreatedDate={item.CreatedDate}
             ShipAddress={item.ShipAddress}
             ShipName={item.ShipName}
             ShipMoblie={item.ShipMoblie}
             ToTalPrice={item.ToTalPrice}
+            id={item.id}
         /> 
         }
       />
@@ -113,4 +92,34 @@ export default class Order extends Component{
     );
   }
 }
-
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'silver',
+    marginTop:60
+  },
+  listItem:{
+    margin:5,
+    backgroundColor:"#fff",
+    width:"90%",
+    flex:1,
+    alignSelf:"center",
+    flexDirection:"row",
+    borderRadius:5
+  },
+  loader:{
+    marginTop:10,
+    alignItems:"center"
+  },
+  address:{
+    fontWeight: '400',
+    marginLeft: 10,
+    width:'90%'
+  },
+  buttonXem:{
+    paddingHorizontal: 10,
+    justifyContent:"center",
+    alignItems:"center", 
+    backgroundColor:'#FF00FF'
+  }
+});
