@@ -130,7 +130,8 @@ const registerHandle = (userName, password, fullname , phone ) => {
             CreatedDate: data.CreateDate,
             CreatedBy: data.Createby,
             Status: data.Status,
-            UserID: fbApp.auth().currentUser.uid
+            UserID: fbApp.auth().currentUser.uid,
+            Password:data.password
         });
         Alert.alert(
             'Thông báo',

@@ -120,10 +120,8 @@ export function AppStack(props) {
               size={24}
               name="appstore1"
               family="antdesign"
-              color={focused ? "blue" : materialTheme.COLORS.MUTED}
-              name="burst-sale"
-              family="foundation"
               color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
+             
             />
           )
         }}
@@ -176,7 +174,8 @@ export default function ProjectStack(props) {
       <Stack.Screen name="Product" component={ProductScreen}/>
       <Stack.Screen name="Items" component={ItemsScreen}/>
       <Stack.Screen name='View_OrderDetail' component={Route_OrderDetail}/>
-      <Stack.Screen name='All_Order' component={Order}/>
+      <Stack.Screen name='InfoUser' component={InfoUser}/>
+
       {/* <Stack.Screen name="NotificationScreen" component={NotificationScreen}/> */}
     </Stack.Navigator>
   );

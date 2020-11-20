@@ -44,6 +44,7 @@ const ProfileUser =(props)=> {
       <FontAwesome name="angle-right" size={15} color="#1e1e1e" />
     </View>
   );
+  
 
   useEffect(()=>{
     if(fbApp.auth().currentUser != null)
@@ -63,7 +64,7 @@ const ProfileUser =(props)=> {
         <Header title="Cá nhân" />
         <ScrollView>
         <View style={styles.bodyContainer}>
-        <TouchableOpacity onPress={()=> {}}>
+        <TouchableOpacity onPress={()=> {props.navigation.navigate("InfoUser")}}>
           <View style={styles.userContainer}>
             <View style={styles.avatarContainer}>
               <MaterialIcons name="person" size={26} color="#fff" />

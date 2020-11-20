@@ -3,12 +3,13 @@ import React,{Component, useEffect, useState} from 'react';
 import { View, Text, Button, StyleSheet,FlatList, TouchableOpacity, ActivityIndicator} from 'react-native';
 import { fbApp } from '../firebaseconfig';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { or } from 'react-native-reanimated';
 
 export default class Order extends Component{
   constructor(props) {
     super(props);
     this.state = { 
-     listOrder:[]
+     listOrder:[],
     }; 
   }
   RenderList = ({CreatedDate,ShipAddress,ShipName,ShipMoblie,ToTalPrice,id}) =>(
@@ -42,29 +43,24 @@ export default class Order extends Component{
   ListenForOrder = () =>{    
     fbApp.database().ref('Orders').once('value').then((snapshot) => {
       var items=[];
-      snapshot.forEach( function(childSnapshot){       
-        var order={
-          CreatedDate:'',
-          ShipAddress:'',
-          ShipName:'',
-          ShipMoblie:'',
-          id: '',
-          ToTalPrice:0,
-        }             
-          order.CreatedDate = childSnapshot.val().CreatedDate;
-          order.ShipAddress=childSnapshot.val().ShipAddress;
-          order.ShipName=childSnapshot.val().ShipName;
-          order.ShipMoblie=childSnapshot.val().ShipMoblie;
-          order.id=childSnapshot.val().OrderID;
-          fbApp.database().ref('OrderDetails').on('value', (snapshot_detail)=>{
-            snapshot_detail.forEach(function(snapshot_detail){  
-              if(snapshot_detail.val().OrderID == childSnapshot.val().OrderID){
-
-                order.ToTalPrice += parseInt(snapshot_detail.val().Price) * parseInt(snapshot_detail.val().Quantity)  
-              }
-            })
-          })
-          items.push(order);                
+      snapshot.forEach( function(childSnapshot){      
+        if(childSnapshot.val().CustomerID == fbApp.auth().currentUser.uid){
+          var order={
+            CreatedDate:'',
+            ShipAddress:'',
+            ShipName:'',
+            ShipMoblie:'',
+            id: '',
+            ToTalPrice:0
+          }             
+            order.CreatedDate = childSnapshot.val().CreatedDate;
+            order.ShipAddress=childSnapshot.val().ShipAddress;
+            order.ShipName=childSnapshot.val().ShipName;
+            order.ShipMoblie=childSnapshot.val().ShipMoblie;
+            order.id=childSnapshot.val().OrderID;    
+            order.ToTalPrice=childSnapshot.val().Total;     
+            items.push(order);        
+        }              
     });
     this.setState({
       listOrder:items
@@ -85,6 +81,7 @@ export default class Order extends Component{
             ShipMoblie={item.ShipMoblie}
             ToTalPrice={item.ToTalPrice}
             id={item.id}
+            key={item.id}
         /> 
         }
       />
