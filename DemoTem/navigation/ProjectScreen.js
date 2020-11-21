@@ -23,6 +23,7 @@ import Order_DaGiao from '../screens/Order_DaGiao';
 import Order_DangVanChuyen from '../screens/Order_DangVanChuyen';
 import Order_DaHuy from '../screens/Order_DaHuy';
 import Route_OrderDetail from '../screens/Detail_Order';
+import Cart from '../screens/Cart';
 
 import CustomDrawerContent from './Menu';
 import { Icon, Header } from '../components';
@@ -175,6 +176,7 @@ export default function ProjectStack(props) {
       <Stack.Screen name="Components" component={ComponentsScreen} />
       <Stack.Screen name="Product" component={ProductScreen}/>
       <Stack.Screen name="Items" component={ItemsScreen}/>
+      <Stack.Screen name="Cart" component={Cart}/>
       <Stack.Screen name='View_OrderDetail' component={Route_OrderDetail}/>
       <Stack.Screen name='All_Order' component={Order}/>
       {/* <Stack.Screen name="NotificationScreen" component={NotificationScreen}/> */}
