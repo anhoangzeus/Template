@@ -77,7 +77,7 @@ export default class Cart extends Component{
         <StatusBar barStyle="light-content" />
         <View style={styles.headerContainer}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-          <FontAwesome name="times" size={24} color="#fff" />
+          <FontAwesome name="times" size={24} color="#fff" style={{marginLeft:width/40}}/>
           </TouchableOpacity>
         
           <Text style={styles.headerText}>Giỏ hàng</Text>  

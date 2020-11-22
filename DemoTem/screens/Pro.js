@@ -1,4 +1,4 @@
-import React from 'react';
+  import React from 'react';
   import { ImageBackground, Image, StyleSheet,ScrollView, StatusBar, Dimensions, Platform,View,LogBox } from 'react-native';
   import { Block, Button, Text, theme } from 'galio-framework';
   
@@ -133,11 +133,11 @@ import React from 'react';
           numColumns={3}
           data={this.state.listcate}
           renderItem={({item})=>
-          <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id})}>
+          <TouchableOpacity onPress={() => navigation.push('Items', {id: item.id})}>
                <ProductItem
               name={item.title}
               image={item.image}
-              price={item.price}
+          price={item.price}
         />
           </TouchableOpacity>    
           }
@@ -269,3 +269,5 @@ import React from 'react';
       resizeMode:"center",
     }
   });
+  
+   
