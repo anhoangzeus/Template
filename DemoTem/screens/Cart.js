@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { ImageBackground, Image, StyleSheet,ScrollView, StatusBar, Dimensions, Platform,View,LogBox } from 'react-native';
-import { Block, Button, Text, theme } from 'galio-framework';
+import {  Button, Text } from 'galio-framework';
 
 
 const { height, width } = Dimensions.get('screen');
@@ -10,7 +10,8 @@ import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
-import { SafeAreaView } from 'react-navigation';
+import { element } from 'prop-types';
+
 
 export default class Cart extends Component{
     constructor(props) {
@@ -18,11 +19,59 @@ export default class Cart extends Component{
         LogBox.ignoreAllLogs();
         this.itemRef = fbApp.database();
         this.state = { 
-         
+         CartItem:[],
+         refesh:true,
+         amount:0,
         }; 
       }
+    componentDidMount(){
+          this.ListenCart();
+         
+    }
+    
+
+    
+
+      ListenCart = () => {
+        console.log("vao gio hang");
+        if(fbApp.auth().currentUser){
+          this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid).once('value').then((snapshot) => {
+            var items =[];
+            snapshot.forEach(function(childSnapshot){
+              var product={
+              key:'',
+              Id:'',
+              Name:'',
+              Picture:'',
+              Price:'',
+              Quantity:'',
+              }
+              product.key=childSnapshot.key;
+              product.Id=childSnapshot.val().Id;
+              product.Name=childSnapshot.val().Name;
+              product.Picture=childSnapshot.val().Picture;
+              product.Price=childSnapshot.val().Price;
+              product.Quantity=childSnapshot.val().Quantity;
+              items.push(product);
+            });
+            this.setState({
+              CartItem:items,
+            })  
+            console.log(this.state.amount);
+          })  
+        }
+        }
     render(){
       const { navigation } = this.props;
+      console.log("bat dau tinh tong tien" +this.state.CartItem);
+      this.state.amount=0;
+      this.state.CartItem.forEach(element =>{
+        
+        const a = Number(element.Price);
+        console.log("gia san pham la: "+a);
+        this.state.amount+=(Number(element.Price) * element.Quantity);
+      })
+      console.log(this.state.amount);
         return(      
      <View style={styles.screenContainer}>
         <StatusBar barStyle="light-content" />
@@ -33,11 +82,16 @@ export default class Cart extends Component{
         
           <Text style={styles.headerText}>Giỏ hàng</Text>  
         </View>
-        <ScrollView>
+        <ScrollView style={{height:height}}>
 
-        <View style={styles.itemcard}>
+
+        <FlatList 
+          data={this.state.CartItem}
+          extraData={this.state.re}
+          renderItem={ ({item})=>
+          <View style={styles.itemcard}>
           <View style={{paddingLeft:10,paddingTop:5,flexDirection:"row"}}>
-            <Text style={styles.itemName}>Samsung Galaxy </Text>
+            <Text style={styles.itemName}>{item.Name} </Text>
           <View style={{marginTop:0}}>
           <FontAwesome name="angle-right" size={30} />
           </View>
@@ -47,14 +101,45 @@ export default class Cart extends Component{
           <Text style={{marginLeft:5, color:"green", fontSize:18}}>nhận một phần quà may mắn</Text>
           </View>
           <View style={styles.itemInfo}>
-            <Image style={styles.itemImage} source={{uri:"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQFDvqT3R4gALEzhX35l9GbjLcNt03yr7hUXQ&usqp=CAU" }}></Image>
+            <Image style={styles.itemImage} source={{uri:item.Picture }}></Image>
             <View style={styles.itemDec}>
-              <Text style={{marginVertical:4,fontSize:16}} numberOfLines={2}>samsung galaxy A9 64GB, màn hình tràn viền </Text>
-              <Text style={{marginVertical:4,fontSize:19, color:"red"}}>24.500.000 đ</Text>
+              <Text style={{marginVertical:4,fontSize:16}} numberOfLines={2}> </Text>
+              <Text style={{marginVertical:4,fontSize:19, color:"red"}}>{item.Price} đ</Text>
               <View style={{flexDirection:"row"}}>
-                <Button style={styles.buttonUpDown}>-</Button>
-                <View style={{marginTop:10}}><Text fontSize={18} >1</Text></View>
-                <Button style={styles.buttonUpDown}>+</Button>
+                <Button style={styles.buttonUpDown}  onPress={()=>{
+                  if(item.Quantity>1){
+                    console.log("vào sub");
+                    this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid+"/"+item.key).set({
+                      Id:item.Id,
+                      Name:item.Name,
+                      Picture:item.Picture,
+                      Price:item.Price,
+                      Quantity:item.Quantity-1,
+                     });
+                    this.state.CartItem.forEach(element => {if(element.Id == item.Id){element.Quantity=item.Quantity-1}});
+                    this.setState({ 
+                      refresh: !this.state.refresh
+                  });
+                  console.log(this.state.refesh);
+                  }
+                }}>-</Button>
+                <View style={{marginTop:10}}><Text fontSize={18} >{item.Quantity}</Text></View>
+                <Button style={styles.buttonUpDown} onPress={
+                  ()=>{
+                    console.log("vào add");
+                    this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid+"/"+item.key).set({
+                      Id:item.Id,
+                      Name:item.Name,
+                      Picture:item.Picture,
+                      Price:item.Price,
+                      Quantity:item.Quantity+1,
+                     })
+                     this.state.CartItem.forEach(element => {if(element.Id == item.Id){element.Quantity=item.Quantity+1}});
+                     this.setState({ 
+                      refresh: !this.state.refresh
+                  });
+                  }
+                }>+</Button>
               </View>
             </View>
             <View style={{marginLeft:width/8}}>
@@ -62,73 +147,19 @@ export default class Cart extends Component{
             </View>
           </View>
         </View>
-
-        <View style={styles.itemcard}>
-          <View style={{paddingLeft:10,paddingTop:5,flexDirection:"row"}}>
-            <Text style={styles.itemName}>Samsung Galaxy </Text>
-          <View style={{marginTop:0}}>
-          <FontAwesome name="angle-right" size={30} />
-          </View>
-          </View>
-          <View style={{flexDirection:"row"}}>
-          <FontAwesome name="gift" color="green" size={24} style={styles.itemGift} ></FontAwesome>
-          <Text style={{marginLeft:5, color:"green", fontSize:18}}>nhận một phần quà may mắn</Text>
-          </View>
-          <View style={styles.itemInfo}>
-            <Image style={styles.itemImage} source={{uri:"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQFDvqT3R4gALEzhX35l9GbjLcNt03yr7hUXQ&usqp=CAU" }}></Image>
-            <View style={styles.itemDec}>
-              <Text style={{marginVertical:4,fontSize:16}} numberOfLines={2}>samsung galaxy A9 64GB, màn hình tràn viền </Text>
-              <Text style={{marginVertical:4,fontSize:19, color:"red"}}>24.500.000 đ</Text>
-              <View style={{flexDirection:"row"}}>
-                <Button style={styles.buttonUpDown}>-</Button>
-                <View style={{marginTop:10}}><Text fontSize={18} >1</Text></View>
-                <Button style={styles.buttonUpDown}>+</Button>
-              </View>
-            </View>
-            <View style={{marginLeft:width/8}}>
-            <FontAwesome  name="times" size={18} color="silver" />
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.itemcard}>
-          <View style={{paddingLeft:10,paddingTop:5,flexDirection:"row"}}>
-            <Text style={styles.itemName}>Samsung Galaxy </Text>
-          <View style={{marginTop:0}}>
-          <FontAwesome name="angle-right" size={30} />
-          </View>
-          </View>
-          <View style={{flexDirection:"row"}}>
-          <FontAwesome name="gift" color="green" size={24} style={styles.itemGift} ></FontAwesome>
-          <Text style={{marginLeft:5, color:"green", fontSize:18}}>nhận một phần quà may mắn</Text>
-          </View>
-          <View style={styles.itemInfo}>
-            <Image style={styles.itemImage} source={{uri:"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQFDvqT3R4gALEzhX35l9GbjLcNt03yr7hUXQ&usqp=CAU" }}></Image>
-            <View style={styles.itemDec}>
-              <Text style={{marginVertical:4,fontSize:16}} numberOfLines={2}>samsung galaxy A9 64GB, màn hình tràn viền </Text>
-              <Text style={{marginVertical:4,fontSize:19, color:"red"}}>24.500.000 đ</Text>
-              <View style={{flexDirection:"row"}}>
-                <Button style={styles.buttonUpDown}>-</Button>
-                <View style={{marginTop:10}}><Text fontSize={18} >1</Text></View>
-                <Button style={styles.buttonUpDown}>+</Button>
-              </View>
-            </View>
-            <View style={{marginLeft:width/8}}>
-            <FontAwesome  name="times" size={18} color="silver" />
-            </View>
-          </View>
-        </View>
+          }
+        />
 
         
-       
+
         </ScrollView>
-        <View style={{backgroundColor:"#fff"}}>
+        <View style={{backgroundColor:"#fff",marginBottom:5}}>
           <View flexDirection="row">
               <Text style={{marginLeft:10, fontSize:16}}>Thành tiền: </Text>
-              <View style={{marginLeft:width*0.4}}><Text color="red" style={{fontSize:20}}>30.000.000 đ</Text></View>
+              <View style={{marginLeft:width*0.4}}><Text color="red" style={{fontSize:20}}>{this.state.amount} đ</Text></View>
               
           </View>
-          <Button style={styles.btnSubmit}>Tiến hành đặt hàng</Button>
+          <Button style={styles.btnSubmit} >Tiến hành đặt hàng</Button>
         </View>
       <View style={styles.bodyContainer}></View>
     </View>
@@ -157,7 +188,7 @@ const styles = StyleSheet.create({
       backgroundColor:'#fff',
       width:width,
       height:height*0.3,
-      marginTop:5,
+      marginTop:width/100,
     },
     
     inputContainer: {
@@ -197,13 +228,10 @@ const styles = StyleSheet.create({
     },
     itemInfo: {
       flexDirection: 'row',
-      marginTop:height/20,
+      marginTop:height/35,
       marginLeft:5
     },
-    itemImage: {
-      width: 100,
-      height: 120,
-    },
+    
     itemName: {
       fontSize: 16,
       color: '#484848',
