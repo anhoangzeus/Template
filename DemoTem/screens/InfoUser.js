@@ -280,6 +280,7 @@ const saveChangesHandle = () => {
               <Text style={styles.headerText}>Thông tin tài khoản</Text>
           </View>
           <View style={styles.divider} />
+          <ScrollView>
           <View style={styles.bodyContainer}>
           <View style={styles.userContainer}>
               <View style={styles.textContainer}>
@@ -500,12 +501,11 @@ const saveChangesHandle = () => {
         </View>
       ): null}
       </View>
-      
-     
-      <TouchableOpacity style={{backgroundColor:'red',
-      marginHorizontal:10,marginVertical:10,height:height/20}} onPress={()=> {saveChangesHandle()}}>
-          <Text style={{fontSize:25, textAlign:'center', color:'white', fontWeight:'bold'}}>Lưu Thay Đổi</Text>
+      <TouchableOpacity style={{backgroundColor:'#FF3333',
+      marginHorizontal:10,marginVertical:10,height:height/20,}} onPress={()=> {saveChangesHandle()}}>
+          <Text style={{fontSize:20, textAlign:'center', color:'white', marginTop:5}}>Lưu Thay Đổi</Text>
       </TouchableOpacity >
+      </ScrollView>
       </View>
     );
 };

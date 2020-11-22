@@ -15,9 +15,9 @@ import AsyncStorage from '@react-native-community/async-storage';
        
 const ProfileUser =(props)=> {
 
-  const [FullName, setFullName] = useState("");
-  const [Email, setEmail] = useState("");
-  const [CreatedDate, setCreatedDate] = useState("");
+  const [FullName, setFullName] = useState("username");
+  const [Email, setEmail] = useState("name@gmail.com");
+  const [CreatedDate, setCreatedDate] = useState("dd/mm/yy hh:mm AM");
   const [Avatar, setAvatar] = useState("");
 
   const { signOut } = React.useContext(AuthContext);
@@ -110,7 +110,9 @@ const ProfileUser =(props)=> {
           <ProfileItem  name="Đơn hàng đã huỷ" />
           </TouchableOpacity>
           <View style={styles.divider} />
+          <TouchableOpacity onPress={()=> {props.navigation.navigate("AddressScreen")}}>
           <ProfileItem1 icon="location-outline" name="Số địa chỉ" />
+          </TouchableOpacity>  
           <View style={styles.divider1} />
           <ProfileItem icon="credit-card-settings-outline" name="Thông tin thanh toán" />
           <View style={styles.divider} />
