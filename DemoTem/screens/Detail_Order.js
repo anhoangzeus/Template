@@ -40,6 +40,7 @@ export class Detail_Order extends Component{
           Payment:"",
           Total:0,
           ListProduct: [],
+          Temp:{},
         };
       }
       getListOrder =()=>{
@@ -83,20 +84,18 @@ export class Detail_Order extends Component{
                 product.Quantity = snapshot_detail.val().Quantity;      
 
                 fbApp.database().ref('Products').child(snapshot_detail.val().ProductID)
-                .on('value',snapshot_product =>{           
+                .on('value',snapshot_product =>{   
+
                   product.ProductName = snapshot_product.val().Name;
                   product.ProductImage = snapshot_product.val().Image;
                   fbApp.database().ref('Brands').child(snapshot_product.val().BrandID)
                   .on('value',snapshot_brand =>{
-                    product.Brand_Product = snapshot_brand.val().Name;         
+                    product.Brand_Product = snapshot_brand.val().Name;       
                   })
                 })
                 product.id=snapshot_detail.val().OrderDetailID;
-
-                console.log(product);
-
                 list_Details.push(product); 
-              }                           
+              }                        
             })
             this.setState({ListProduct: list_Details});
             this.setState({Total: ToTalPrice});
