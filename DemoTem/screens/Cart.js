@@ -77,7 +77,7 @@ export default class Cart extends Component{
         <StatusBar barStyle="light-content" />
         <View style={styles.headerContainer}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-          <FontAwesome name="times" size={24} color="#fff" />
+          <FontAwesome name="times" size={24} color="#fff" style={{marginLeft:width/40}}/>
           </TouchableOpacity>
         
           <Text style={styles.headerText}>Giỏ hàng</Text>  
@@ -143,7 +143,26 @@ export default class Cart extends Component{
               </View>
             </View>
             <View style={{marginLeft:width/8}}>
-            <FontAwesome  name="times" size={18} color="silver" />
+              <TouchableOpacity onPress={() =>{
+                this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid+'/'+item.key).set({
+
+                })
+                var dem=0;
+                this.state.CartItem.forEach(element => {
+                  if(element.Id == item.Id){return;}
+                  else{
+                    dem++;
+                  }
+                  
+                });
+                this.state.CartItem.splice(dem,1);
+                this.setState({ 
+                  refresh: !this.state.refresh
+              });
+              }}>
+                       <FontAwesome  name="times" size={18} color="silver" />
+              </TouchableOpacity>
+            
             </View>
           </View>
         </View>

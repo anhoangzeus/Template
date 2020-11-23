@@ -4,8 +4,7 @@ import { StyleSheet, Dimensions, ScrollView, Image, TouchableOpacity, Platform,V
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 
-import { Images, materialTheme } from '../constants';
-import { HeaderHeight } from "../constants/utils";
+
 
 
 import {fbApp} from "../firebaseconfig";
@@ -87,10 +86,10 @@ export default class Product extends Component {
     const { navigation } = this.props;
     
     return (
-        <View  style={{flex:1}}>
+        <View  style={{flex:1,backgroundColor:"silver"}}>
              <View style={styles.headerFont} >
              <TouchableOpacity onPress={()=> navigation.goBack()}> 
-                    <FontAwesome name="angle-left" size={30} color="#1e88e5" />
+                    <FontAwesome name="angle-left" size={30} color="#1e88e5" style={{marginLeft: width/25}} />
                 </TouchableOpacity>
          
                 <FontAwesome name="search" size={24} color="#1e88e5" style={{marginLeft:width*0.6}}/>
@@ -113,25 +112,23 @@ export default class Product extends Component {
           <View  style={styles.options}>
           
          
-          <View  style={styles.profileDetails}>
-              <View style={styles.profileTexts}>
-              <Text color="Black"  style={{ paddingBottom: 8 ,fontSize:18}}>{this.state.Name}</Text>
-              <Text color="Black"  style={{ paddingBottom: 0,fontSize:24 }}>{this.state.Price} đ</Text>
+          <View >
+              <View >
+              <Text color="Black"  style={{ paddingBottom: 8 ,fontSize:18,marginLeft:width/40}}>{this.state.Name}</Text>
+              <Image source={require("../assets/images/star.jpg")} style={{width:width/2,height:height/20,marginLeft:width/40}}/>
+              <Text color="Black"  style={{ paddingBottom: 0,fontSize:24,marginLeft:width/40 }}>{this.state.Price} đ</Text>
               </View>
               
             </View>
             <View  >
+              
+            <Text muted size={12} style={{marginLeft:width/40}}>Bảo hành</Text>
               <View >
-                <Text bold size={12} style={{marginBottom: 8}}>136</Text>
-                <Text muted size={12}>sản phẩm</Text>
-              </View>
-             
-              <View >
-              <Text  style={{marginBottom: 8,fontSize:12,fontWeight:"bold"}}>{this.state.Waranty} tháng</Text>
-                <Text muted size={12}>Bảo hành</Text>
+              <Text  style={{marginBottom: 8,fontSize:12,fontWeight:"bold",marginLeft:width/40}}>{this.state.Waranty} tháng</Text>
+                
               </View>
             </View>
-            <View  style={{ paddingVertical: 16, alignItems: 'baseline' }}>
+            <View  style={{ paddingVertical: 16, alignItems: 'baseline',marginLeft:width/40 }}>
               <Text size={16}>Ảnh sản phẩm</Text>
               
             </View>
@@ -148,16 +145,19 @@ export default class Product extends Component {
               </View>
             </View>
           <View>  
-          <Text bold size={12} style={{marginBottom: 8}}>Decription</Text>
-              <Text muted size={12}>{this.state.Decription}</Text>
+          <Text bold size={12} style={{marginBottom: 8,marginLeft:width/40}}>Mô tả</Text>
+              <Text muted size={12} style={{marginLeft:width/40}}>{this.state.Decription}</Text>
           </View>
          
         </View>
 
         </ScrollView>
-        <View style={{backgroundColor:"#fff"}}>
-
-          <Button style={styles.btnSubmit} title="thêm vào giỏ hàng" onPress={this.addCart}>thêm vào giỏ hàng</Button>
+        <View style={{backgroundColor:"#fff",flexDirection:"row",height:height/20}}>
+          <FontAwesome name="comments" size={24} color="#1e88e5" style={{marginLeft:width*0.1}}/>
+          <View style={{marginLeft:width*0.1,marginBottom:height*0.01,width:width*0.7}}>
+              <Button style={styles.btnSubmit} color="red" title="thêm vào giỏ hàng" onPress={this.addCart}/>
+          </View>
+         
         </View>
         </View>
       
@@ -168,7 +168,7 @@ export default class Product extends Component {
 const styles = StyleSheet.create({
  headerFont:{
    flexDirection:"row",
-   
+   backgroundColor:"#fff"
  },
  profileImage: {
   width: width*0.95 ,
@@ -201,8 +201,8 @@ thumb: {
   height: thumbMeasure
 },
 btnSubmit:{
-  width:width*0.9,
-  marginLeft:width*0.05,
-  backgroundColor:"red",
+  width:width*0.7,
+  marginLeft:width*0.3,
+  
 }
 });
