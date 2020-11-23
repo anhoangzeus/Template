@@ -142,19 +142,10 @@ const textInputFullName = (val) => {
   }
 }
 const textInputCMND = (val) => {
-  if( val.trim().length > 0 ) {
-      setData({
-          ...data,
-          CMND: val,
-          check_textInputCMND: true,
-      });
-  } else {
-      setData({
-          ...data,
-          CMND: val,
-          check_textInputCMND: false,
-      });
-  }
+    setData({
+      ...data,
+      CMND: val,
+  });
 }
 const textInputPhone = (val) => {
 
@@ -188,7 +179,7 @@ const saveChangesHandle = () => {
   var date = GetCurrentDate();
   if(isSelected == false)
   {
-    if ( data.FullName.length == 0 || data.Phone.length == 0 || data.CMND.length == 0) {
+    if ( data.FullName.length == 0 || data.Phone.length == 0) {
       Alert.alert('Lỗi!', 'Bạn chưa điền đầy đủ thông tin', [
           {text: 'Okay'}
       ]);
@@ -201,8 +192,7 @@ const saveChangesHandle = () => {
         CMND:data.CMND,
         ModifiedBy:"User",
         ModifiedDate:date
-    }).then()
-    .catch()
+      }).then().catch()
     }else{
       Alert.alert('Lỗi!', 'Xin quý khách kiểm tra lại mạng', [
         {text: 'Okay'}
@@ -211,7 +201,7 @@ const saveChangesHandle = () => {
 
   }
   else{
-    if ( data.FullName.length == 0 || data.Phone.length == 0 || data.CMND.length == 0
+    if ( data.FullName.length == 0 || data.Phone.length == 0 
       || data.oldpass.length == 0 || data.password.length == 0 || data.comfirm_pass.length == 0) {
       Alert.alert('Lỗi!', 'Bạn chưa điền đầy đủ thông tin', [
           {text: 'Okay'}
@@ -221,7 +211,7 @@ const saveChangesHandle = () => {
     if(fbApp.auth().currentUser.uid!=null){
 
       if(data.oldpass==data.pass){
-          if(data.password == data.comfirm_pass){
+        if(data.password == data.comfirm_pass){
             fbApp.auth().currentUser.updatePassword(data.password).then(function() {
             }).catch(function(error) {
             });
@@ -234,7 +224,7 @@ const saveChangesHandle = () => {
               Password:data.password
           }).catch()
           LogOut();
-          }         
+        }         
       } 
       else{
         Alert.alert('Lỗi!', 'Mật khẩu cũ không chính xác', [
@@ -248,7 +238,6 @@ const saveChangesHandle = () => {
     }
   }
 }
-
   useState(()=>{
     if(fbApp.auth().currentUser != null)
     {

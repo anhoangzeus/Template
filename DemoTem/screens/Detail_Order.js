@@ -40,11 +40,9 @@ export class Detail_Order extends Component{
           Payment:"",
           Total:0,
           ListProduct: [],
-          Temp:{},
         };
       }
-      getListOrder =()=>{
-  
+      getListOrder =async()=>{
         fbApp.database().ref('Orders').child(this.props.content)
         .on('value',snapshot => {
           if(snapshot.val().Status=="1"){
@@ -88,6 +86,7 @@ export class Detail_Order extends Component{
 
                   product.ProductName = snapshot_product.val().Name;
                   product.ProductImage = snapshot_product.val().Image;
+               
                   fbApp.database().ref('Brands').child(snapshot_product.val().BrandID)
                   .on('value',snapshot_brand =>{
                     product.Brand_Product = snapshot_brand.val().Name;       
@@ -99,16 +98,13 @@ export class Detail_Order extends Component{
             })
             this.setState({ListProduct: list_Details});
             this.setState({Total: ToTalPrice});
-          })
-        });
-
-        var order_id = this.state.OrderID;
-        
-        
+          })      
+        })   
       }
       componentDidMount(){
         this.getListOrder();
       }       
+      
 
       RenderList = ({ProductName, BrandName, ProductImage, Quantity, Price}) =>(
         <View style={styles.userContainer}>

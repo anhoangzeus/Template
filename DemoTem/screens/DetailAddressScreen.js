@@ -11,7 +11,7 @@ import { HeaderBackButton } from '@react-navigation/stack';
 import Feather from 'react-native-vector-icons/Feather';
 import * as Animatable from 'react-native-animatable';
 import DropDownPicker from 'react-native-dropdown-picker';
-import { Value } from 'react-native-reanimated';
+import AddressScreen from '../screens/AddressScreen';
 
 export default  function Route_AddressDetail({ route, navigation}) {  
     var searchContent = "";    
@@ -35,7 +35,6 @@ export default  function Route_AddressDetail({ route, navigation}) {
 const { width, height } = Dimensions.get('screen');
 
 export const DetailAddressScreen =({content,navigation}) =>  {
-  // const [isSelected, setSelection] = useState(false);
   const [data, setData] = React.useState({
     ListID:'',
     ShipName:'',
@@ -98,11 +97,12 @@ const textInputXa = (val) => {
   }
 }
 const CheckBoxChange = (val)=>{
-  // setSelection(!data.Main);
-  setData({
-    ...data,
-    Main: val
-  })
+  if(data.Main==false){
+    setData({
+      ...data,
+      Main: val
+    })
+  }
   console.log(data.Main);
 }
 const textInputFullName = (val) => {
@@ -151,7 +151,7 @@ const textInputPhone = (val) => {
       });
   }
 }
-const saveChangesHandle = () => {
+const saveChangesHandle = async() => {
   if ( data.ShipName.length == 0 || data.ShipPhone.length == 0 || data.NumberAddress.length == 0
     || data.City.length == 0|| data.Huyen.length == 0 || data.Xa.length == 0) {
     Alert.alert('Lỗi!', 'Bạn chưa điền đầy đủ thông tin', [
@@ -163,29 +163,56 @@ const saveChangesHandle = () => {
   if(fbApp.auth().currentUser.uid != null){
     if(data.ListID=="")
     {
-      var newPostKey = fbApp.database().ref().child('ListAddress').child(fbApp.auth().currentUser.uid).push().key;
-      fbApp.database().ref('ListAddress').child(fbApp.auth().currentUser.uid).child(newPostKey).set({
-          ListID:newPostKey,
-          ShipName:data.ShipName,
-          ShipPhone:data.ShipPhone,
-          City:data.City,
-          Huyen:data.Huyen,
-          Xa:data.Xa,
-          NumberAddress:data.NumberAddress,
-          Main:data.Main,
-      }).then(navigation.navigate('AddressScreen')).catch()
-
+      if(data.Main==true){
+        await(
+          fbApp.database().ref('ListAddress').child(fbApp.auth().currentUser.uid)
+          .orderByChild('Main')
+          .once('value').then((snapshot) =>{
+            snapshot.forEach(function(child) {
+              if(child!=data.ListID){
+                child.ref.update({Main: false});
+              }
+            })
+          })
+        )
+        var newPostKey = fbApp.database().ref().child('ListAddress').child(fbApp.auth().currentUser.uid).push().key;
+        fbApp.database().ref('ListAddress').child(fbApp.auth().currentUser.uid).child(newPostKey).set({
+            ListID:newPostKey,
+            ShipName:data.ShipName,
+            ShipPhone:data.ShipPhone,
+            City:data.City,
+            Huyen:data.Huyen,
+            Xa:data.Xa,
+            NumberAddress:data.NumberAddress,
+            Main:true,
+          }).then(navigation.navigate('App'),navigation.navigate('AddressScreen')).catch() 
+      }else{
+        var newPostKey = fbApp.database().ref().child('ListAddress').child(fbApp.auth().currentUser.uid).push().key;
+        fbApp.database().ref('ListAddress').child(fbApp.auth().currentUser.uid).child(newPostKey).set({
+            ListID:newPostKey,
+            ShipName:data.ShipName,
+            ShipPhone:data.ShipPhone,
+            City:data.City,
+            Huyen:data.Huyen,
+            Xa:data.Xa,
+            NumberAddress:data.NumberAddress,
+            Main:false,
+          }).then(navigation.navigate('App'),navigation.navigate('AddressScreen')).catch() 
+      }
+      
     }else{
       if(data.Main == true){
-          // fbApp.database().ref('ListAddress').child(fbApp.auth().currentUser.uid)
-          // .orderByChild('Main')
-          // .on('value',snapshot) {
-          //   snapshot.forEach(function(child) {
-          //     if(child!=data.ListID){
-          //       child.ref.update({Main: false});
-          //     }
-          //   });
-          // });
+        await(
+          fbApp.database().ref('ListAddress').child(fbApp.auth().currentUser.uid)
+          .orderByChild('Main')
+          .once('value').then((snapshot) =>{
+            snapshot.forEach(function(child) {
+              if(child!=data.ListID){
+                child.ref.update({Main: false});
+              }
+            })
+          })
+        )
           fbApp.database().ref('ListAddress').child(fbApp.auth().currentUser.uid).child(data.ListID)
           .update({
           ShipName:data.ShipName,
@@ -195,7 +222,7 @@ const saveChangesHandle = () => {
           Xa:data.Xa,
           NumberAddress:data.NumberAddress,
           Main:true,
-        }).then(navigation.navigate('AddressScreen')).catch() 
+        }).then(navigation.navigate('App'),navigation.navigate('AddressScreen')).catch() 
         
       }else{
         fbApp.database().ref('ListAddress').child(fbApp.auth().currentUser.uid).child(data.ListID)
@@ -207,7 +234,7 @@ const saveChangesHandle = () => {
           Xa:data.Xa,
           NumberAddress:data.NumberAddress,
           Main:data.Main,
-        }).then(navigation.navigate('AddressScreen')).catch() 
+        }).then(navigation.navigate('App'),navigation.navigate('AddressScreen')).catch() 
       }
 
     }
