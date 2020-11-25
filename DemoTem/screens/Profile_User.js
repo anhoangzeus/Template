@@ -137,7 +137,7 @@ const ProfileUser =(props)=> {
                   onPress={() => {LogOut()}}
               >
               <LinearGradient
-                    colors={['blue', 'blue']}
+                    colors={['#3eafff', '#3eafff']}
                   style={styles.signIn}
               >
                   <Text style={[styles.textSign, {
@@ -221,6 +221,7 @@ signIn: {
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius:10,
 
 },
 textSign: {

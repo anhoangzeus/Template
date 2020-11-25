@@ -1,12 +1,6 @@
 import React,{Component} from 'react';
-import { StyleSheet, Dimensions, ScrollView, Image, TouchableOpacity, Platform,View,Button,Text } from 'react-native';
-
+import { StyleSheet, Dimensions, ScrollView, Image, TouchableOpacity, Platform,View,Button,Text ,StatusBar} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
-
-
-
-
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 
@@ -87,6 +81,7 @@ export default class Product extends Component {
     
     return (
         <View  style={{flex:1,backgroundColor:"silver"}}>
+              <StatusBar barStyle="light-content" />
              <View style={styles.headerFont} >
              <TouchableOpacity onPress={()=> navigation.goBack()}> 
                     <FontAwesome name="angle-left" size={30} color="#1e88e5" style={{marginLeft: width/25}} />
@@ -98,13 +93,15 @@ export default class Product extends Component {
               </View>
               <ScrollView showsVerticalScrollIndicator={false}>
               <View backgroundColor="white">
-                  <ScrollView horizontal = {true}
+                  <ScrollView 
+                    horizontal = {true}
                     pagingEnabled={true}
                     >
                         <Image
                           source={{uri : this.state.Image}}
                           style={styles.profileContainer}
                           imageStyle={styles.profileImage}>
+                            
                     </Image>
                 </ScrollView>
                 </View>
@@ -173,12 +170,14 @@ const styles = StyleSheet.create({
  profileImage: {
   width: width*0.95 ,
   height: height*0.6,
+
 },
 profileContainer: {
   paddingTop:5,
   paddingLeft:10,
   width: width,
   height: height*0.5,
+  resizeMode: 'contain'
 },
 options: {
   position: 'relative',
@@ -198,7 +197,8 @@ thumb: {
   marginVertical: 4,
   alignSelf: 'center',
   width: thumbMeasure,
-  height: thumbMeasure
+  height: thumbMeasure,
+  resizeMode: 'contain'
 },
 btnSubmit:{
   width:width*0.7,

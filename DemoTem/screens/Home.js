@@ -2,8 +2,6 @@ import React,{useState} from 'react';
 import { StyleSheet, Dimensions, ScrollView, View,Image ,SafeAreaView,ActivityIndicator ,LogBox,StatusBar} from 'react-native';
 import {  Text } from 'galio-framework';
 
-
-
 const section_banner = require('../assets/section_banner.png');
 const { width } = Dimensions.get('screen');
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
@@ -12,8 +10,6 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
-
-
 
 const ProductItem = ({image, name, price}) => (
   <View style={styles.itemContainer}>
