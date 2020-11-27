@@ -77,7 +77,7 @@ export default class Cart extends Component{
         <ScrollView style={{height:height}}>
         <FlatList 
           data={this.state.CartItem}
-          extraData={this.state.re}
+          extraData={this.state.refesh}
           renderItem={ ({item})=>
           <View style={styles.itemcard}>
           <View style={{paddingLeft:10,paddingTop:5,flexDirection:"row"}}>

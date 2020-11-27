@@ -10,7 +10,8 @@ export default class Order_Payment extends Component{
   constructor(props) {
     super(props);
     this.state = { 
-     listOrder:[]
+     listOrder:[],
+     status:false,
     }; 
   }
   RenderList = ({CreatedDate,ShipAddress,ShipName,ShipMoblie,ToTalPrice,id}) =>(
@@ -54,7 +55,7 @@ export default class Order_Payment extends Component{
             id: '',
             ToTalPrice:0,
           }        
-          if(childSnapshot.val().Status =="3"){
+          if(childSnapshot.val().Status =="1"){
             order.CreatedDate = childSnapshot.val().CreatedDate;
             order.ShipAddress=childSnapshot.val().ShipAddress;
             order.ShipName=childSnapshot.val().ShipName;
@@ -68,31 +69,46 @@ export default class Order_Payment extends Component{
     this.setState({
       listOrder:items
     })
+    if(items[0].id==''){
+      this.setState({status:false})
+    }else{
+      this.setState({status:true})
+    }
   })
 }
- render(){
-
-    return (
-      <View>
-      <FlatList
-          pagingEnabled={false}
-          data={this.state.listOrder}
-          renderItem={({item})=>
-            <this.RenderList
-            CreatedDate={item.CreatedDate}
-            ShipAddress={item.ShipAddress}
-            ShipName={item.ShipName}
-            ShipMoblie={item.ShipMoblie}
-            ToTalPrice={item.ToTalPrice}
-            id={item.id}
-            key={item.id}
-        /> 
-        }
-      />
-    </View>
-    );
-  }
+renderNull = () =>{
+  return(
+    <View style={{flex:1, justifyContent:'center', alignItems:"center"}}>
+    <Text style={{fontSize:20, color:"#1ba8ff"}}>Không tìm thấy đơn hàng</Text>
+  </View>
+  )
 }
+render(){
+  return (
+    this.state.status == false ? 
+        <this.renderNull/>
+   : (
+    <View>
+    <FlatList
+        pagingEnabled={false}
+        data={this.state.listOrder}
+        renderItem={({item})=>
+        <this.RenderList
+        CreatedDate={item.CreatedDate}
+        ShipAddress={item.ShipAddress}
+        ShipName={item.ShipName}
+        ShipMoblie={item.ShipMoblie}
+        ToTalPrice={item.ToTalPrice}
+        id={item.id}
+        key={item.id}
+      /> 
+      }
+    />
+  </View> )
+  );
+}
+}
+
 
 
 const styles = StyleSheet.create({

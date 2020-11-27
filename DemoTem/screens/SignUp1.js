@@ -16,11 +16,13 @@ import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import { useTheme } from 'react-native-paper';
-// import { AuthContext } from '../components/context';
+import { AuthContext } from '../components/context';
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 
 const {height,width}=Dimensions.get("screen");
+
+
 
 const SignUp1 = (navigation) => {
 
@@ -39,6 +41,7 @@ const SignUp1 = (navigation) => {
     secureTextEntry: true,
     confirm_secureTextEntry: true,
 });
+const { signIn } = React.useContext(AuthContext);
 
 const GetCurrentDate =()=>{
     var date = new Date().getDate();
@@ -137,7 +140,7 @@ const registerHandle = (userName, password, fullname , phone ) => {
             'Thông báo',
             'Đăng kí thành công ' + data.username,
             [
-                {text: 'OK', onPress:() =>{navigation.navigate("App")}}
+                {text: 'OK', onPress:() =>{signIn()}}
             ],
             {cancelable: false}
         )

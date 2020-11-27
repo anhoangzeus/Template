@@ -1,5 +1,5 @@
 import React, {useState, useEffect, Component} from 'react';
-import {StyleSheet, View, Text, StatusBar, ScrollView,FlatList} from 'react-native';
+import {StyleSheet, View, Text, StatusBar, ScrollView,FlatList,Alert} from 'react-native';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -17,6 +17,7 @@ export default class AddressScreen extends Component {
         super(props);
         this.state = { 
          listAddress:[],
+         ref:true,
         }; 
       }
     RenderList = ({NumberAddress,Xa, City, Huyen,ShipName,ShipMoblie,id,Main}) =>(
@@ -44,13 +45,9 @@ export default class AddressScreen extends Component {
                     />
                   }
                   
-              </View>
-              
-            </View>
-           
-            
+              </View>             
+            </View>                   
           </View >
-
       </View>
     );
     
@@ -58,15 +55,33 @@ export default class AddressScreen extends Component {
        this.ListenForListAddress();
     }   
     DeleteAddress=(id,Main)=>{
-      if(Main == false){
-        fbApp.database().ref('ListAddress').child(fbApp.auth().currentUser.uid).child(id).remove();
-      }
-      this.ListenForListAddress();
+      Alert.alert(
+        'Bạn có chắc chắc muốn xoá',
+        '',
+        [
+          { text: 'OK', onPress: () => {
+            if(Main == false){
+              fbApp.database().ref('ListAddress').child(fbApp.auth().currentUser.uid).child(id).remove();
+            }
+            this.ListenForListAddress();
+          }}
+          ,{},
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel'
+          }
+        
+        ],
+        { cancelable: false }
+      );
+   
     }
     ListenForListAddress = () =>{           
         fbApp.database().ref('ListAddress').child(fbApp.auth().currentUser.uid)
         .once('value').then((snapshot) => {
           var items=[];
+          var items1=[];
             snapshot.forEach(function(childSnapshot){ 
               var Address= {
                   ShipName:"",
@@ -77,7 +92,27 @@ export default class AddressScreen extends Component {
                   City:"",
                   ListID:"",
                   Main: false,
-              } 
+              }
+              var Address1= {
+                  ShipName:"",
+                  ShipPhone:"",
+                  NumberAddress:"",
+                  Xa:"",
+                  Huyen:"",
+                  City:"",
+                  ListID:"",
+                  Main: true,
+            } 
+            if(childSnapshot.val().Main==true){
+              Address1.ShipName= childSnapshot.val().ShipName;
+              Address1.ShipPhone= childSnapshot.val().ShipPhone;
+              Address1.NumberAddress= childSnapshot.val().NumberAddress;
+              Address1.Xa= childSnapshot.val().Xa;
+              Address1.Huyen= childSnapshot.val().Huyen;
+              Address1.City= childSnapshot.val().City;
+              Address1.ListID= childSnapshot.val().ListID;
+              items1.push(Address1);
+            }else{
               Address.ShipName= childSnapshot.val().ShipName;
               Address.ShipPhone= childSnapshot.val().ShipPhone;
               Address.NumberAddress= childSnapshot.val().NumberAddress;
@@ -85,11 +120,12 @@ export default class AddressScreen extends Component {
               Address.Huyen= childSnapshot.val().Huyen;
               Address.City= childSnapshot.val().City;
               Address.ListID= childSnapshot.val().ListID;
-              Address.Main= childSnapshot.val().Main;
               items.push(Address);
+            }          
             }) 
+            var list = items1.concat(items);
             this.setState({
-              listAddress:items
+              listAddress:list
             }) 
         });   
     } 
@@ -111,6 +147,7 @@ export default class AddressScreen extends Component {
                 <View style={styles.bodyContainer}>
                 <ScrollView>
                 <FlatList
+                        extraData={this.state.refesh}
                         pagingEnabled={false}
                         data={this.state.listAddress}
                         renderItem={({item})=>

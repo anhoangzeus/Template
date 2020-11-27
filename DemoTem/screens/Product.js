@@ -72,6 +72,7 @@ export default class Product extends Component {
 
     return (
         <View  style={{flex:1,backgroundColor:"silver"}}>
+              <StatusBar barStyle="light-content" />
              <View style={styles.headerFont} >
              <TouchableOpacity onPress={()=> navigation.goBack()}> 
                     <FontAwesome name="angle-left" size={30} color="#1e88e5" style={{marginLeft: width/25}} />
@@ -88,13 +89,15 @@ export default class Product extends Component {
               </View>
               <ScrollView showsVerticalScrollIndicator={false}>
               <View backgroundColor="white">
-                  <ScrollView horizontal = {true}
+                  <ScrollView 
+                    horizontal = {true}
                     pagingEnabled={true}
                     >
                         <Image
                           source={{uri : this.state.Image}}
                           style={styles.profileContainer}
                           imageStyle={styles.profileImage}>
+                            
                     </Image>
                 </ScrollView>
                 </View>
@@ -149,6 +152,7 @@ const styles = StyleSheet.create({
  profileImage: {
   width: width*0.95 ,
   height: height*0.6,
+
 },
 profileContainer: {
   paddingTop:5,
@@ -175,7 +179,8 @@ thumb: {
   marginVertical: 4,
   alignSelf: 'center',
   width: thumbMeasure,
-  height: thumbMeasure
+  height: thumbMeasure,
+  resizeMode: 'contain'
 },
 btnSubmit:{
   width:width*0.7,

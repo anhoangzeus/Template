@@ -37,7 +37,7 @@ export default class Order_DaHuy extends Component{
   </View>
   );
   componentDidMount(){
-    this.ListenForOrder();
+    this.ListenForOrder(); 
   }
   ListenForOrder = () =>{    
     fbApp.database().ref('Orders').once('value').then((snapshot) => {
@@ -66,19 +66,25 @@ export default class Order_DaHuy extends Component{
     this.setState({
       listOrder:items
     })
+    if(items[0].id==''){
+      this.setState({status:false})
+    }else{
+      this.setState({status:true})
+    }
+
+  
   })
 }
 renderNull = () =>{
   return(
-    <View>
-    <Text>Thêm có đơn hàng</Text>
+    <View style={{flex:1, justifyContent:'center', alignItems:"center"}}>
+    <Text style={{fontSize:20, color:"#1ba8ff"}}>Không tìm thấy đơn hàng</Text>
   </View>
   )
-
 }
  render(){
     return (
-      this.state.status == true ? 
+      this.state.status == false ? 
           <this.renderNull/>
      : (
       <View>
