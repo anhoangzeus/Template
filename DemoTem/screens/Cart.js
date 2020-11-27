@@ -64,8 +64,6 @@ export default class Cart extends Component{
             })
         }
       }
-          this.ListenCart();
-    }
 
       ListenCart = () => {
         console.log("vao gio hang");
