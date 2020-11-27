@@ -20,17 +20,50 @@ export default class Cart extends Component{
         this.itemRef = fbApp.database();
         this.state = { 
          CartItem:[],
+         Address:{},
          refesh:true,
          amount:0,
+
         }; 
       }
     componentDidMount(){
-          this.ListenCart();
-         
+          this.ListenCart();       
+          this.GetAddress();
     }
     
 
-    
+      GetAddress =() =>{
+        if(fbApp.auth().currentUser)
+        {
+            this.itemRef.ref('ListAddress').child(fbApp.auth().currentUser.uid).once('value')
+            .then((snapshot)=>{
+              var item;
+              snapshot.forEach(function(childSnapshot){
+                var Address={
+                  ShipName:'',
+                  ShipPhone:'',
+                  NumberAddress:'',
+                  Xa:'',
+                  Huyen:'',
+                  City:'',
+                }
+                if(childSnapshot.val().Main==true){
+                  Address.ShipName= childSnapshot.val().ShipName;
+                  Address.ShipPhone= childSnapshot.val().ShipPhone;
+                  Address.NumberAddress= childSnapshot.val().NumberAddress;
+                  Address.Xa= childSnapshot.val().Xa;
+                  Address.Huyen= childSnapshot.val().Huyen;
+                  Address.City= childSnapshot.val().City;
+                  item=Address;
+                }
+              });
+              console.log(item);
+              this.setState({
+                Address:item,
+              }) 
+            })
+        }
+      }
 
       ListenCart = () => {
         console.log("vao gio hang");
@@ -83,7 +116,24 @@ export default class Cart extends Component{
           <Text style={styles.headerText}>Giỏ hàng</Text>  
         </View>
         <ScrollView style={{height:height}}>
-
+        
+        <View style={styles.listItem}>
+          <View style={{flex:1, margin: 10}}>   
+            <View style={{flexDirection:'row',justifyContent:'space-between' }}>
+            <Text style={styles.addresstitle}>Địa chỉ nhận hàng</Text>
+            <TouchableOpacity
+              onPress={()=> {this.props.navigation.navigate("AddressScreen")}}
+              >
+              <Text style={{color:'green', marginRight:5, fontSize:17}}>Thay đổi</Text>
+            </TouchableOpacity>
+            </View>
+           
+            <Text style={styles.address}>{this.state.Address.NumberAddress}, {this.state.Address.Xa}, {this.state.Address.Huyen}, {this.state.Address.City}</Text>
+            <Text style={styles.address}>{this.state.Address.ShipName} - {this.state.Address.ShipPhone}</Text>
+            <View style={{justifyContent:'space-between', flexDirection:'row',marginTop:10}}>
+              </View>             
+            </View>                   
+      </View>
 
         <FlatList 
           data={this.state.CartItem}
@@ -221,6 +271,13 @@ const styles = StyleSheet.create({
       borderRadius: 2,
       
     },
+    listItem:{
+      backgroundColor:"#fff",
+      flex:1,
+      alignSelf:"center",
+      flexDirection:"row",
+      borderRadius:5,
+    },
     inputText: {
       color: '#969696',
       fontSize: 14,
@@ -244,6 +301,7 @@ const styles = StyleSheet.create({
     itemImage: {
       width: width/4,
      height:height/6,
+     resizeMode:'contain'
     },
     itemInfo: {
       flexDirection: 'row',
@@ -269,6 +327,15 @@ const styles = StyleSheet.create({
     btnSubmit:{
       width:width*0.9,
       marginLeft:width*0.05,
+    },
+    address:{
+      marginTop:5,
+      fontSize:17
+    },
+    addresstitle:{
+      fontWeight:'bold',
+      fontSize:17
+
     }
     
   });

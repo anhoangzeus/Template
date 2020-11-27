@@ -50,14 +50,14 @@
       }; 
     }
     BrandItem = ({image,id}) => (
-      <TouchableOpacity onPress={()=> this.ChangBrand({id})} style={{marginHorizontal:5, borderBottomColor:'gold',
-      borderWidth:2,borderRadius:50, borderEndColor:'white',borderTopColor:'gold'}}>
+      <TouchableOpacity onPress={()=> this.ChangBrand({id})} style={{marginHorizontal:5,borderStyle:"solid",
+      borderWidth:2,borderRadius:70, borderColor:'gold'}}>
             <Image source={{uri:image}} style={styles.cateImage} />
       </TouchableOpacity>
     );
     CategoryItem = ({name,id,icon}) => (
         <TouchableOpacity  onPress={()=> this.ChangCate({id})}>
-          <Icons name={icon} color="gold" size={50} 
+          <Icons name={icon} color="gold" size={width/8} 
           style={{backgroundColor:'#3eafff', marginHorizontal:14, borderRadius:30,marginVertical:5,}}/>
           <Text style={styles.itemName1}>{name}</Text>
         </TouchableOpacity>
@@ -309,12 +309,10 @@
     itemContainer: {
       alignItems:'center',
       width: width/2,
-      height:height/4,
-      margin: -0.5,
+      height:height/4.2,
+      margin: 0.1,
       borderColor:'#3eafff',
-      borderWidth: 1,
-
-      
+      borderWidth: 1,     
     },
     listItemContainer: {
       flexDirection: 'row',
@@ -336,9 +334,9 @@
     },
     cateImage:{
       marginVertical:5,
-      width:width/6.15,
-      height:height/15,
-      resizeMode:"stretch",
+      width:width/6.5,
+      height:height/20,
+      resizeMode:"center",
     },
     cate:{
       margin:5,
@@ -366,7 +364,8 @@
       height: 130,
       borderRadius: 4,
       marginHorizontal:10,
-      resizeMode: 'contain'
+      resizeMode: 'contain',
+      marginTop:5
     },
     textnum:{
       fontSize:15,
