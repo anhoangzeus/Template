@@ -14,16 +14,13 @@ import ProductScreen from '../screens/Product';
 import Login1 from '../screens/Login1';
 import Signup1 from '../screens/SignUp1';
 import Cart from '../screens/Cart';
-import Profile_User from '../screens/Profile_User';
 // import NotificationScreen from '../screens/NotificationScreen';
 
-import CustomDrawerContent from './Menu';
+
 import { Icon, Header } from '../components';
 import { Images, materialTheme } from "../constants/";
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const { width } = Dimensions.get("screen");
-
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const TabTop = createMaterialTopTabNavigator();
@@ -46,11 +43,8 @@ export function TopStackLogin(props){
         />
         <Tab.Screen name="Đăng kí" component={Signup1}/>
   </TabTop.Navigator></View>
-
   );
 }
-
-
 export function AppStack(props) {
   return (
     <Tab.Navigator
@@ -60,7 +54,6 @@ export function AppStack(props) {
       <Tab.Screen
         name="Trang chủ"
         component={HomeScreen}
-
         options={{
           tabBarIcon: ({ focused }) => (
             <Icon
@@ -74,9 +67,23 @@ export function AppStack(props) {
           )
         }}
       >
+        <Tab.Screen
+        name="Tìm kiếm"
+        component={SettingsScreen}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Icon
+              size={24}
+              name="search"
+              family="font-awesome"
+              color={focused ? "blue" : materialTheme.COLORS.MUTED}
+              color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
+              style={{ marginRight: -3 }}
+            />
+          )
+        }}
+      />
       </Tab.Screen>
-
-     
       <Tab.Screen
         name="Danh mục"
         component={ProScreen}
@@ -107,26 +114,10 @@ export function AppStack(props) {
           )
         }}
       />
-      <Tab.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Icon
-              size={24}
-              name="gears"
-              family="font-awesome"
-              color={focused ? "blue" : materialTheme.COLORS.MUTED}
-              color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
-              style={{ marginRight: -3 }}
-            />
-          )
-        }}
-      />
+      
     </Tab.Navigator>
   );
 }
-
 export default function OnboardingStack(props) {
   return (
     <Stack.Navigator mode="card" headerMode="none">
@@ -144,7 +135,6 @@ export default function OnboardingStack(props) {
     </Stack.Navigator>
   );
 }
-
 const styles = StyleSheet.create({
   containner: {
     flex: 1,

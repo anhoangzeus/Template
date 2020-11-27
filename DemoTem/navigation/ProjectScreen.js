@@ -112,7 +112,22 @@ export function AppStack(props) {
         }}
       >
       </Tab.Screen>
-
+      <Tab.Screen
+        name="Tìm kiếm"
+        component={SettingsScreen}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Icon
+              size={24}
+              name="search"
+              family="font-awesome"
+              color={focused ? "blue" : materialTheme.COLORS.MUTED}
+              color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
+              style={{ marginRight: -3 }}
+            />
+          )
+        }}
+      />
      
       <Tab.Screen
         name="Danh mục"
@@ -144,22 +159,7 @@ export function AppStack(props) {
           )
         }}
       />
-      <Tab.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Icon
-              size={24}
-              name="gears"
-              family="font-awesome"
-              color={focused ? "blue" : materialTheme.COLORS.MUTED}
-              color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
-              style={{ marginRight: -3 }}
-            />
-          )
-        }}
-      />
+      
     </Tab.Navigator>
   );
 }
