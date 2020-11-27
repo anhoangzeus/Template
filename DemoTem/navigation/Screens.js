@@ -14,7 +14,7 @@ import ProductScreen from '../screens/Product';
 import Login1 from '../screens/Login1';
 import Signup1 from '../screens/SignUp1';
 import Cart from '../screens/Cart';
-// import NotificationScreen from '../screens/NotificationScreen';
+import NotificationScreen from '../screens/NotificationScreen ';
 
 
 import { Icon, Header } from '../components';
@@ -118,6 +118,22 @@ export function AppStack(props) {
           )
         }}
       />
+  <Tab.Screen
+        name="Thông báo"
+        component={NotificationScreen}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Icon
+              size={24}
+              name="bells"
+              family="antdesign"
+              color={focused ? "blue" : materialTheme.COLORS.MUTED}
+              color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
+              style={{ marginRight: -3 }}
+            />
+          )
+        }}
+      />
       
     </Tab.Navigator>
   );
@@ -132,7 +148,7 @@ export default function OnboardingStack(props) {
       <Stack.Screen name="Pro" component={ProScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="Setting" component={SettingsScreen} />
-      {/* <Stack.Screen name="NotificationItem" component={NotificationScreen}/> */}
+      <Stack.Screen name="NotificationItem" component={NotificationScreen}/>
       <Stack.Screen name="Components" component={ComponentsScreen} />
       <Stack.Screen name="Cart" component={Cart}/>
       <Stack.Screen name="Product" component={ProductScreen}/>

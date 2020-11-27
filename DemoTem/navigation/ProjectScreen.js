@@ -32,7 +32,7 @@ import { Images, materialTheme } from "../constants/";
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Profile_User from '../screens/Profile_User';
 import ProfileScreen from '../screens/Profile';
-// import NotificationScreen from '../screens/NotificationScreen';
+import NotificationScreen from '../screens/NotificationScreen ';
 
 const { width } = Dimensions.get("screen");
 
@@ -137,7 +137,7 @@ export function AppStack(props) {
           )
         }}
       />
-     
+
      
       <Tab.Screen
         name="Cá nhân"
@@ -150,6 +150,23 @@ export function AppStack(props) {
               family="antdesign"
               color={focused ? "blue" : materialTheme.COLORS.MUTED}
               color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
+            />
+          )
+        }}
+      />
+
+       <Tab.Screen
+        name="Thông báo"
+        component={NotificationScreen}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Icon
+              size={24}
+              name="bells"
+              family="antdesign"
+              color={focused ? "blue" : materialTheme.COLORS.MUTED}
+              color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
+              style={{ marginRight: -3 }}
             />
           )
         }}
@@ -176,8 +193,7 @@ export default function ProjectStack(props) {
       <Stack.Screen name='InfoUser' component={InfoUser}/>
       <Stack.Screen name="AddressScreen" component={AddressScreen}/>
       <Stack.Screen name="DetailAddressScreen" component={Route_AddressDetail}/>
-
-      {/* <Stack.Screen name="NotificationScreen" component={NotificationScreen}/> */}
+      <Stack.Screen name="NotificationScreen" component={NotificationScreen}/>
     </Stack.Navigator>
   );
 }
