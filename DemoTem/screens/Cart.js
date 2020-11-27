@@ -25,13 +25,8 @@ export default class Cart extends Component{
         }; 
       }
     componentDidMount(){
-          this.ListenCart();
-         
+          this.ListenCart();6 
     }
-    
-
-    
-
       ListenCart = () => {
         console.log("vao gio hang");
         if(fbApp.auth().currentUser){
@@ -63,15 +58,12 @@ export default class Cart extends Component{
         }
     render(){
       const { navigation } = this.props;
-      console.log("bat dau tinh tong tien" +this.state.CartItem);
+      console.log(this.state.CartItem);
       this.state.amount=0;
-      this.state.CartItem.forEach(element =>{
-        
-        const a = Number(element.Price);
-        console.log("gia san pham la: "+a);
+      this.state.CartItem.forEach(element =>{      
+        const a = Number(element.Price);        
         this.state.amount+=(Number(element.Price) * element.Quantity);
-      })
-      console.log(this.state.amount);
+      })  
         return(      
      <View style={styles.screenContainer}>
         <StatusBar barStyle="light-content" />
@@ -83,8 +75,6 @@ export default class Cart extends Component{
           <Text style={styles.headerText}>Giỏ hàng</Text>  
         </View>
         <ScrollView style={{height:height}}>
-
-
         <FlatList 
           data={this.state.CartItem}
           extraData={this.state.re}
@@ -145,17 +135,17 @@ export default class Cart extends Component{
             <View style={{marginLeft:width/8}}>
               <TouchableOpacity onPress={() =>{
                 this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid+'/'+item.key).set({
-
                 })
                 var dem=0;
+                
                 this.state.CartItem.forEach(element => {
                   if(element.Id == item.Id){return;}
                   else{
                     dem++;
-                  }
-                  
+                  }       
                 });
-                this.state.CartItem.splice(dem,1);
+                console.log(dem);
+                this.state.CartItem.splice(dem-1,1);
                 this.setState({ 
                   refresh: !this.state.refresh
               });
@@ -168,15 +158,11 @@ export default class Cart extends Component{
         </View>
           }
         />
-
-        
-
         </ScrollView>
         <View style={{backgroundColor:"#fff",marginBottom:5}}>
           <View flexDirection="row">
               <Text style={{marginLeft:10, fontSize:16}}>Thành tiền: </Text>
               <View style={{marginLeft:width*0.4}}><Text color="red" style={{fontSize:20}}>{this.state.amount} đ</Text></View>
-              
           </View>
           <Button style={styles.btnSubmit} >Tiến hành đặt hàng</Button>
         </View>

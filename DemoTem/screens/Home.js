@@ -1,19 +1,14 @@
 import React,{useState} from 'react';
-import { StyleSheet, Dimensions, ScrollView, View,Image ,SafeAreaView,ActivityIndicator ,LogBox,StatusBar} from 'react-native';
+import { StyleSheet, Dimensions, ScrollView, View,Image ,SafeAreaView,ActivityIndicator,TextInput ,LogBox,StatusBar} from 'react-native';
 import {  Text } from 'galio-framework';
-
-
-
-const section_banner = require('../assets/section_banner.png');
-const { width } = Dimensions.get('screen');
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
-
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 
 
+const section_banner = require('../assets/section_banner.png');
+const { width,height } = Dimensions.get('screen');
 
 const ProductItem = ({image, name, price}) => (
   <View style={styles.itemContainer}>
@@ -25,9 +20,6 @@ const ProductItem = ({image, name, price}) => (
   </View>
 );
 
-
-
-
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
@@ -36,10 +28,9 @@ export default class Home extends React.Component {
     this.state = { 
      listpro:[],
      listphone:[],
+     searchText:"",
     }; 
-  }
-
-  
+  } 
 componentDidMount(){
   this.ListenForItemsLaptop();
   this.ListenForItemsPhone();
@@ -74,8 +65,6 @@ ListenForItemsPhone = () => {
       console.log(items); 
     })
   }
-
-
 ListenForItemsLaptop = () =>{
     
     this.itemRef.ref('/Products').once('value').then((snapshot) => {
@@ -103,6 +92,35 @@ ListenForItemsLaptop = () =>{
     console.log(items); 
   })
 }
+searchDictionary=()=>{
+  var st = this.state.searchText;
+ 
+  this.itemRef.ref('/Products').once('value').then((snapshot) => {
+    var items=[];
+    snapshot.forEach( function(childSnapshot){       
+      var product={
+        title:'',
+        price:'',
+        metades:'',
+        image:'',
+        id: '',
+      }
+      var rs = childSnapshot.val().Name;   
+      console.log(rs.indexOf(st));
+      if (rs.indexOf(st) != -1){        
+        product.title = childSnapshot.val().Name;
+        product.price=childSnapshot.val().Price;
+        product.metades=childSnapshot.val().MetaDescription;
+        product.image=childSnapshot.val().Image;
+        product.id=childSnapshot.val().ProductID;
+        items.push(product);     
+      }              
+  });
+  this.setState({
+    listpro:items,
+  })
+})
+}
 
   render() {
     const { navigation } = this.props;
@@ -113,22 +131,23 @@ ListenForItemsLaptop = () =>{
         </View>
       )
     }
-    
-    
     return (
      
     <View style={styles.screenContainer}>
     <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
     {/*  */}
     <View style={styles.headerContainer}>
-      
-      <View style={styles.inputContainer}>
-        <FontAwesome name="search" size={24} color="#969696" />
-        <Text style={styles.inputText}>Bạn tìm gì hôm nay?</Text>
+    <TouchableOpacity  onPress={()=> navigation.navigate("Setting")}>
+    <View style={styles.inputContainer}>
+     
+          <FontAwesome name="search" size={24} color="#969696" />
+          <Text style={styles.inputText}>Bạn tìm gì hôm nay?</Text>
+     
       </View>
+      </TouchableOpacity>
       {/*  */}
       <View style={styles.cartContainer}>
-      <TouchableOpacity onPress={() => navigation.push("Cart")}>
+          <TouchableOpacity onPress={() => navigation.push("Cart")}>
              <FontAwesome name="shopping-cart" size={24} color="#fff" /> 
           </TouchableOpacity> 
       </View>
@@ -280,10 +299,11 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: height/50,
     paddingHorizontal: 12,
     borderRadius: 2,
-    
+    height:height/10,
+    width:width*0.8,
   },
   inputText: {
     color: '#969696',

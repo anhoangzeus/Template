@@ -1,44 +1,30 @@
 import React,{Component} from 'react';
-import { StyleSheet, Dimensions, ScrollView, Image, TouchableOpacity, Platform,View,Button,Text } from 'react-native';
-
+import { StyleSheet, Dimensions, ScrollView, Image, TouchableOpacity, Alert,View,Button,Text } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
-
-
-
-
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
-
 
 const { width, height } = Dimensions.get('screen');
 const thumbMeasure = (width - 48 - 32) / 3;
 
-
 export default class Product extends Component {
-
   constructor(props) {
     super(props);
-
     this.itemRef = fbApp.database();
     this.state = {
-      
       Decription: "",
       Image: "",
       Name: "",
       Price: "",
-      Waranty:"",
-     
+      Waranty:"",  
     };
   }
-
   addCart =()=>{
     console.log("da vao:"+this.props.content);
     const Id_Item = this.props.content;
     var temp =0;
     if(fbApp.auth().currentUser != null){
       console.log('Cart/'+fbApp.auth().currentUser.uid);
-     
       this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid).once('value').then((snapshot) => {
       console.log("snapshot: "+snapshot.val());
       snapshot.forEach(function (childSnapshot){   
@@ -46,12 +32,8 @@ export default class Product extends Component {
         if(childSnapshot.val().Id == Id_Item){
           return 0;
         }
-
       }) 
-    })
-    
-  }
-  console.log(temp);
+    })  
     if(temp == 0){
       console.log("khac khong");
       this.itemRef.ref('/Cart/'+fbApp.auth().currentUser.uid).push({
@@ -62,10 +44,14 @@ export default class Product extends Component {
         Quantity:1, 
       })
     } 
+    Alert.alert("thêm thành công");
+  }
+  else{
+    const {navigation}= this.props;
+    navigation.navigate("Top");
+  }
 }
-  
   getData =()=>{
-    
     this.itemRef.ref('/Products/').child(this.props.content)
     .on('value', snapshot => {
       this.setState({
@@ -81,20 +67,24 @@ export default class Product extends Component {
   componentDidMount(){
     this.getData()
   }
-
   render() {
     const { navigation } = this.props;
-    
+
     return (
         <View  style={{flex:1,backgroundColor:"silver"}}>
              <View style={styles.headerFont} >
              <TouchableOpacity onPress={()=> navigation.goBack()}> 
                     <FontAwesome name="angle-left" size={30} color="#1e88e5" style={{marginLeft: width/25}} />
                 </TouchableOpacity>
-         
-                <FontAwesome name="search" size={24} color="#1e88e5" style={{marginLeft:width*0.6}}/>
-                <FontAwesome name="home" size={30} color="#1e88e5" style={{marginLeft:width*0.05}}/>
-                <FontAwesome name="shopping-cart" size={30} color="#1e88e5" style={{marginLeft:width*0.05}}/>
+         <TouchableOpacity>
+         <FontAwesome name="search" size={24} color="#1e88e5" style={{marginLeft:width*0.6}}/>
+         </TouchableOpacity>
+               <TouchableOpacity onPress={() => navigation.navigate("App")}>
+               <FontAwesome name="home" size={30} color="#1e88e5" style={{marginLeft:width*0.05}}/>
+               </TouchableOpacity>
+               <TouchableOpacity>
+               <FontAwesome name="shopping-cart" size={30} color="#1e88e5" style={{marginLeft:width*0.05}}/>
+               </TouchableOpacity>      
               </View>
               <ScrollView showsVerticalScrollIndicator={false}>
               <View backgroundColor="white">
@@ -108,63 +98,49 @@ export default class Product extends Component {
                     </Image>
                 </ScrollView>
                 </View>
-
           <View  style={styles.options}>
-          
-         
           <View >
               <View >
               <Text color="Black"  style={{ paddingBottom: 8 ,fontSize:18,marginLeft:width/40}}>{this.state.Name}</Text>
               <Image source={require("../assets/images/star.jpg")} style={{width:width/2,height:height/20,marginLeft:width/40}}/>
               <Text color="Black"  style={{ paddingBottom: 0,fontSize:24,marginLeft:width/40 }}>{this.state.Price} đ</Text>
               </View>
-              
             </View>
-            <View  >
-              
+            <View  >   
             <Text muted size={12} style={{marginLeft:width/40}}>Bảo hành</Text>
               <View >
               <Text  style={{marginBottom: 8,fontSize:12,fontWeight:"bold",marginLeft:width/40}}>{this.state.Waranty} tháng</Text>
-                
               </View>
             </View>
             <View  style={{ paddingVertical: 16, alignItems: 'baseline',marginLeft:width/40 }}>
-              <Text size={16}>Ảnh sản phẩm</Text>
-              
+              <Text size={16}>Ảnh sản phẩm</Text>   
             </View>
             <View >
               <View  style={{ flexWrap: 'wrap' }} >
-                
                   <Image
                     source={{uri: this.state.Image}}
-                   
                     style={{width:300,height:200}}
                     style={styles.thumb}
                   ></Image>
-               
               </View>
             </View>
           <View>  
           <Text bold size={12} style={{marginBottom: 8,marginLeft:width/40}}>Mô tả</Text>
               <Text muted size={12} style={{marginLeft:width/40}}>{this.state.Decription}</Text>
-          </View>
-         
+          </View>    
         </View>
-
         </ScrollView>
         <View style={{backgroundColor:"#fff",flexDirection:"row",height:height/20}}>
           <FontAwesome name="comments" size={24} color="#1e88e5" style={{marginLeft:width*0.1}}/>
           <View style={{marginLeft:width*0.1,marginBottom:height*0.01,width:width*0.7}}>
               <Button style={styles.btnSubmit} color="red" title="thêm vào giỏ hàng" onPress={this.addCart}/>
           </View>
-         
         </View>
         </View>
       
     );
   }
 }
-
 const styles = StyleSheet.create({
  headerFont:{
    flexDirection:"row",
@@ -179,6 +155,7 @@ profileContainer: {
   paddingLeft:10,
   width: width,
   height: height*0.5,
+  resizeMode:"contain",
 },
 options: {
   position: 'relative',
