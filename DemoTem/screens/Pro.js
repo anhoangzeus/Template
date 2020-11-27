@@ -44,7 +44,7 @@
         listbrand:[],
         listcategory:[],
         BrandID:"",
-        CatogoryID:"",
+        CatogoryID:"AIzaSyDSWIekvpvwQbRiGh4WF88H91tqFzL6OWI",
         Price:0,
         Date:"",
       }; 

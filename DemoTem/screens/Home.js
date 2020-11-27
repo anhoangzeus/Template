@@ -332,6 +332,7 @@ const styles = StyleSheet.create({
   itemImage: {
     width: 100,
     height: 120,
+    resizeMode:'contain'
   },
   itemName: {
     fontSize: 14,

@@ -9,7 +9,17 @@ import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import { HeaderBackButton } from '@react-navigation/stack';
-
+import NumberFormat from 'react-number-format';
+function ReactNativeNumberFormat({ value }) {
+  return (
+    <NumberFormat
+      value={value}
+      displayType={'text'}
+      thousandSeparator={true}
+      renderText={formattedValue => <Text>{formattedValue} đ</Text>} 
+    />
+  );
+}
 
 const { width, height } = Dimensions.get('screen');
 
@@ -46,23 +56,27 @@ export class Detail_Order extends Component{
         fbApp.database().ref('Orders').child(this.props.content)
         .on('value',snapshot => {
           if(snapshot.val().Status=="1"){
-            this.setState({Status:"Chờ thanh toán"})
+            this.setState({Status:"Chờ xác nhận"})
           } else if(snapshot.val().Status=="2"){
-            this.setState({Status:"Đang xử lí"})
-          } else if(snapshot.val().Status=="3"){
             this.setState({Status:"Đang vận chuyển"})
-          } else if(snapshot.val().Status=="4"){
+          } else if(snapshot.val().Status=="3"){
             this.setState({Status:"Đã giao"})
-          } else if(snapshot.val().Status=="5"){
+          } else if(snapshot.val().Status=="4"){
             this.setState({Status:"Đã huỷ"})
-          }
+          } else if(snapshot.val().Status=="5"){
+            this.setState({Status:"Trả hàng"})
+          }       
+          if(snapshot.val().Payment =="01"){
+            this.setState({Payment:"Thanh toán khi nhận hàng"})
+          } else if(snapshot.val().Payment=="02"){
+            this.setState({Payment:"Thanh toán bằng thẻ tín dụng"})
+          } 
           this.setState({
             OrderID:snapshot.val().OrderID,
             CreatedDate:snapshot.val().CreatedDate,
             ShipName:snapshot.val().ShipName,
             ShipMoblie:snapshot.val().ShipMoblie,
             ShipAddress:snapshot.val().ShipAddress,
-            Payment:snapshot.val().Payment,
           }) 
           fbApp.database().ref('OrderDetails').once('value').then((snapshot_detail)=>{
             var list_Details=[];
@@ -75,6 +89,7 @@ export class Detail_Order extends Component{
                 Quantity:'',
                 Price: '',
                 id:'',
+                cate_Name:'',
               } 
               if(snapshot_detail.val().OrderID == snapshot.val().OrderID){
                 ToTalPrice += parseInt(snapshot_detail.val().Price) * parseInt(snapshot_detail.val().Quantity)  
@@ -91,6 +106,10 @@ export class Detail_Order extends Component{
                   .on('value',snapshot_brand =>{
                     product.Brand_Product = snapshot_brand.val().Name;       
                   })
+                  fbApp.database().ref('Catogorys').child(snapshot_product.val().CategoryID)
+                  .on('value',snapshot_cate =>{
+                    product.cate_Name = snapshot_cate.val().Name;       
+                  })
                 })
                 product.id=snapshot_detail.val().OrderDetailID;
                 list_Details.push(product); 
@@ -101,22 +120,23 @@ export class Detail_Order extends Component{
           })      
         })   
       }
+      huy_Order =()=>{
+          fbApp.database().ref('')
+      }
       componentDidMount(){
         this.getListOrder();
-      }       
-      
-
-      RenderList = ({ProductName, BrandName, ProductImage, Quantity, Price}) =>(
+      }            
+      RenderList = ({ProductName, BrandName, ProductImage, Quantity, Price,cate_Name}) =>(
         <View style={styles.userContainer}>
         <View>
             <Image source={{uri: ProductImage}} style={styles.sectionImage}/>              
         </View>
-        <View style={{marginHorizontal: 10}}>
-          
+        <View style={{marginHorizontal: 10}}>      
             <Text style={styles.titletext}>{ProductName}</Text>
-             <Text style={styles.welcomeText}>Cung cấp bởi: {BrandName}</Text>
-            <Text style={styles.welcomeText}>Số lượng: {Quantity}</Text>
-            <Text style={{color:'red', fontWeight:'bold', fontSize:20, marginTop:10}}>{Price} đ</Text>
+            <Text style={styles.welcomeText}>Sản phẩm: {cate_Name}</Text>
+            <Text style={styles.welcomeText}>Nhà cung cấp: {BrandName}</Text>
+            <Text style={{color:'#1e88e5', fontWeight:'bold', fontSize:20, marginTop:10}}><ReactNativeNumberFormat value={Price} /> 
+            <Text style={{fontSize:15, color:"black"}}>  x {Quantity}</Text></Text>          
         </View>
       </View>
       );
@@ -137,8 +157,8 @@ export class Detail_Order extends Component{
                     <ScrollView >
                     <View style={styles.bodyContainer}>
                     <View style={styles.userContainer}>
-                        <View style={styles.textContainer}>
-                            <Text style={styles.titletext}>Mã đơn hàng: {this.state.OrderID}</Text>
+                        <View style={styles.textContainer}>                  
+                            <Text style={styles.titletext}>Mã đơn hàng: {this.state.OrderID}</Text>                                       
                             <Text style={styles.welcomeText}>Ngày đặt hàng: {this.state.CreatedDate}</Text>
                             <Text style={styles.welcomeText}>Trạng thái: {this.state.Status}</Text>
                         </View>
@@ -146,7 +166,17 @@ export class Detail_Order extends Component{
                     <View style={styles.divider} />
                     <View style={styles.userContainer}>
                         <View style={styles.textContainer}>
+                          <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                             <Text style={styles.titletext}>Địa chỉ người nhận</Text>
+                            {this.state.Status == "Chờ xác nhận" ? 
+                              <TouchableOpacity
+                                onPress={()=> {this.props.navigation.navigate("AddressScreen")}}
+                              >
+                                  <Text style={{color:'green', fontSize:20}}>Sửa</Text>
+                              </TouchableOpacity>
+                              : null
+                            }
+                            </View>  
                             <Text style={styles.welcomeText}>Họ tên: {this.state.ShipName}</Text>
                             <Text style={styles.welcomeText}>Số điện thoại: {this.state.ShipMoblie}</Text>
                             <Text style={styles.welcomeText}>Địa chỉ: {this.state.ShipAddress}</Text>
@@ -158,21 +188,13 @@ export class Detail_Order extends Component{
                             <Text style={styles.titletext}>Hình thức thanh toán</Text>
                             <Text style={styles.welcomeText}>{this.state.Payment}</Text>
                         </View>
-                    </View>
-                    <View style={styles.divider} />
-                    <View style={styles.userContainer}>
-                        <View style={styles.textContainer}>
-                            <Text style={styles.titletext}>Hình thức giao hàng</Text>
-                            <Text style={styles.welcomeText}>Giao hàng tiêu chuẩn</Text>
-                        </View>
-                    </View>
-                    
+                    </View>                   
                     <View style={styles.divider} />
                     <View style={{backgroundColor:'#fff',paddingVertical:5, paddingHorizontal:15,flexDirection:'row',justifyContent:'space-between'}}>
                         <Text style={styles.textorder}>Thông tin đơn hàng</Text>
                        <Text style={styles.textorder}>{this.state.ListProduct.length} Loại</Text>
                     </View>
-                    <View style={{height: 2, backgroundColor:'#FF3030', marginHorizontal:10}}/>
+                    <View style={{height: 2, backgroundColor:'#1e88e5', marginHorizontal:10}}/>
                     {/*  */}
                   <FlatList
                     pagingEnabled={false}
@@ -184,21 +206,27 @@ export class Detail_Order extends Component{
                         ProductImage={item.ProductImage}
                         Price={item.Price}
                         Quantity={item.Quantity}
-                      />}
-                      
-                />    
-                </View>
+                        cate_Name={item.cate_Name}
+                      />}               
+                  />    
+                  </View>
+                  <View style={styles.divider} />
+                    <View style={{backgroundColor:'#fff',paddingTop:5,paddingBottom:10, paddingHorizontal:10,}}>            
+                      <Text style={styles.textorder}>Thông tin thanh toán</Text>
+                      <View style={{height: 2, backgroundColor:'#1e88e5',marginTop:2}}/>
+                        <Text style={{margin:10,fontSize:20}}>Phí vận chuyển: 0 đ</Text>
+                        <Text style={{marginHorizontal:10,fontSize:20}}>Tổng tiền: <ReactNativeNumberFormat value={this.state.Total} /></Text>        
+                  </View>                          
+                    {this.state.Status == "Chờ xác nhận" ? 
+                  <TouchableOpacity
+                    style={styles.totalContainer}
+                    onPress={()=> {}}
+                  >
+                    <Text style={styles.titletext2}>Huỷ đơn hàng</Text>
+                  </TouchableOpacity>
+                  : null
+                }
                 </ScrollView>
-                <View style={{height:1}} />
-                    <View style={styles.totalContainer}>
-                      <Text style={styles.titletext1}>Tổng tiền</Text>
-                      <Text style={styles.titletext1}>{this.state.Total} đ</Text>
-                    </View>
-                    <View style={{height:1}} />
-                <View style={styles.totalContainer}>
-                      <Text style={styles.titletext1}>Phí vận chuyển</Text>
-                      <Text style={styles.titletext1}>0 đ</Text>
-                </View>
             </View>
         );
     }
@@ -218,11 +246,13 @@ const styles = StyleSheet.create({
       paddingVertical: 15,
     },
     totalContainer:{
-      backgroundColor: '#FF3030',
-      flexDirection: 'row',
-      paddingHorizontal: 15,
-      paddingVertical: 15,
-      justifyContent:'space-between', 
+      paddingHorizontal: 10,
+      paddingVertical: 10,
+      margin:5,
+      borderRadius:4,
+      marginBottom:2,
+      borderColor:'#1e88e5',
+      borderWidth:2
     },
     textContainer: {
       flex: 1,
@@ -265,12 +295,18 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize:20,
         paddingLeft: 10 ,
-        color:"#FF3030",
+        color:'#1e88e5'
       },
       sectionImage: {
         width:  width / 4,
-        height: height / 6.5,
+        height: height / 8,
         borderRadius: 4,
+        resizeMode:'contain'
       },
+      titletext2:{
+        fontSize:20,
+        alignSelf:'center',
+        color:'#1e88e5'
+      }
   });
   

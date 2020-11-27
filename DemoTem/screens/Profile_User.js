@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, StatusBar, ScrollView} from 'react-native';
-
+import {StyleSheet, View, Text, StatusBar, ScrollView, Image} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -18,7 +17,7 @@ const ProfileUser =(props)=> {
   const [FullName, setFullName] = useState("username");
   const [Email, setEmail] = useState("name@gmail.com");
   const [CreatedDate, setCreatedDate] = useState("dd/mm/yy hh:mm AM");
-  const [Avatar, setAvatar] = useState("");
+  const [Avatar, setAvatar] = useState("https://i.ibb.co/HDzz1rC/avartarnone.png");
 
   const { signOut } = React.useContext(AuthContext);
 
@@ -67,7 +66,7 @@ const ProfileUser =(props)=> {
         <TouchableOpacity onPress={()=> {props.navigation.navigate("InfoUser")}}>
           <View style={styles.userContainer}>
             <View style={styles.avatarContainer}>
-              <MaterialIcons name="person" size={26} color="#fff" />
+            <Image source={{uri: Avatar,}} size={80} style={styles.avatarContainer}/>
             </View>
             <View style={styles.textContainer}>
                 <Text style={styles.welcomeText}>{FullName}</Text>
@@ -84,18 +83,10 @@ const ProfileUser =(props)=> {
           <View style={styles.divider} />
           <TouchableOpacity onPress={()=> {props.navigation.navigate("TopOrder")}}>
           <ProfileItem icon="form-select" name="Quản lí đơn hàng" />
-          </TouchableOpacity>
-          <View style={styles.divider1} />
-          <TouchableOpacity onPress={()=> {props.navigation.navigate("TopOrder",{screen: "Order"})}}>
-          <ProfileItem name="Tian đã tiếp nhận" />
-          </TouchableOpacity>
-          <View style={styles.divider1} />
-          <TouchableOpacity onPress={()=> {props.navigation.navigate("TopOrder",{screen: "Order_Payment"})}}>
-          <ProfileItem  name="Đơn hàng chờ thanh toán lại" />
-          </TouchableOpacity>
+          </TouchableOpacity>         
           <View style={styles.divider1} />
           <TouchableOpacity onPress={()=> {props.navigation.navigate("TopOrder",{screen: "OrderXuli"})}}>
-          <ProfileItem name="Tian đã tiếp nhận" />
+          <ProfileItem name="Đơn hàng đang chờ xác nhận" />
           </TouchableOpacity>
           <View style={styles.divider1} />
           <TouchableOpacity onPress={()=> {props.navigation.navigate("TopOrder",{screen: "Order_DangVanChuyen"})}}>
@@ -109,26 +100,46 @@ const ProfileUser =(props)=> {
           <TouchableOpacity onPress={()=> {props.navigation.navigate("TopOrder",{screen: "Order_DaHuy"})}}>
           <ProfileItem  name="Đơn hàng đã huỷ" />
           </TouchableOpacity>
+          <View style={styles.divider1} />
+          <TouchableOpacity onPress={()=> {props.navigation.navigate("TopOrder",{screen: "Order_Payment"})}}>
+          <ProfileItem  name="Đơn hàng trả lại" />
+          </TouchableOpacity>
           <View style={styles.divider} />
           <TouchableOpacity onPress={()=> {props.navigation.navigate("AddressScreen")}}>
           <ProfileItem1 icon="location-outline" name="Số địa chỉ" />
           </TouchableOpacity>  
           <View style={styles.divider1} />
+          <TouchableOpacity>
           <ProfileItem icon="credit-card-settings-outline" name="Thông tin thanh toán" />
+          </TouchableOpacity>
           <View style={styles.divider} />
+          <TouchableOpacity>
           <ProfileItem icon="cart-outline" name="Sản phẩm đã mua" />
+          </TouchableOpacity>
           <View style={styles.divider1} />
+          <TouchableOpacity>
           <ProfileItem icon="eye-outline" name="Sản phẩm đã xem" />
+          </TouchableOpacity>
           <View style={styles.divider1} />
+          <TouchableOpacity>
           <ProfileItem icon="heart-outline" name="Sản phẩm yêu thích" />
+          </TouchableOpacity>
           <View style={styles.divider1} />
+          <TouchableOpacity>
           <ProfileItem icon="clock-outline" name="Sản phẩm mua sau" />
+          </TouchableOpacity>
           <View style={styles.divider} />
+          <TouchableOpacity>
           <ProfileItem  name="Ưu đãi cho chủ thẻ ngân hàng" />
+          </TouchableOpacity>
           <View style={styles.divider1} />
+          <TouchableOpacity>
           <ProfileItem name="Cài đặt" />
+          </TouchableOpacity>
           <View style={styles.divider} />
+          <TouchableOpacity>
           <ProfileItem icon="headphones" name="Hỗ trợ" />
+          </TouchableOpacity>
           <View style={styles.divider} />
           <View style={styles.divider} />
         
@@ -176,7 +187,6 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#1e88e5',
   },
   textContainer: {
     flex: 1,
@@ -227,5 +237,5 @@ signIn: {
 textSign: {
     fontSize: 18,
     fontWeight: 'bold'
-}
+},
 });

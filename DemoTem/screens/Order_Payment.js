@@ -1,10 +1,20 @@
 import React,{Component, useEffect, useState} from 'react';
-import { View, Text, Button, StyleSheet,FlatList, TouchableOpacity, ActivityIndicator} from 'react-native';
+import { View, Text, Button, StyleSheet,FlatList, TouchableOpacity, ActivityIndicator,Image} from 'react-native';
 import { fbApp } from '../firebaseconfig';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import NumberFormat from 'react-number-format';
+function ReactNativeNumberFormat({ value }) {
+  return (
+    <NumberFormat
+      value={value}
+      displayType={'text'}
+      thousandSeparator={true}
+      renderText={formattedValue => <Text>{formattedValue} đ</Text>} 
+    />
+  );
+}
 
-
-
+const noOder = require('../assets/process3.jpg');
 
 export default class Order_Payment extends Component{
   constructor(props) {
@@ -15,7 +25,7 @@ export default class Order_Payment extends Component{
     }; 
   }
   RenderList = ({CreatedDate,ShipAddress,ShipName,ShipMoblie,ToTalPrice,id}) =>(
-    <View style={styles.listItem}>
+    <TouchableOpacity style={styles.listItem} onPress={()=> {this.props.navigation.navigate('View_OrderDetail', {id: id})}}>
       <View style={{flex:1, margin: 10}}>
          <Text style={{fontSize: 20, fontWeight:'bold',textAlign:'center'}}>{ShipName}</Text>
          <View style={{height:1,backgroundColor:'silver',marginTop:5}}/>
@@ -31,12 +41,10 @@ export default class Order_Payment extends Component{
             <MaterialIcons name='location-on' size={20} color="#1e88e5"/>
             <Text numberOfLines={1} style={styles.address}>{ShipAddress}</Text>
          </View>
-          <Text style={{fontSize:20, color:"#FF00FF", fontWeight:'bold'}}>Giá: {ToTalPrice} đ </Text>
-      </View >
-          <TouchableOpacity style={styles.buttonXem} onPress={()=> {this.props.navigation.navigate('View_OrderDetail', {id: id})}}>
-              <Text style={{color:"white", textAlign:'center'}}>Xem</Text>
-            </TouchableOpacity>
-  </View>
+         <Text style={{fontSize:20, color:"#1e88e5", fontWeight:'bold'}}>Tổng tiền: <ReactNativeNumberFormat value={ToTalPrice} /></Text>
+      </View >  
+      <Text style={{color:"white", textAlign:'center'}}>Xem</Text>
+  </TouchableOpacity>
   );
   componentDidMount(){
     this.ListenForOrder();
@@ -55,7 +63,7 @@ export default class Order_Payment extends Component{
             id: '',
             ToTalPrice:0,
           }        
-          if(childSnapshot.val().Status =="1"){
+          if(childSnapshot.val().Status =="5"){
             order.CreatedDate = childSnapshot.val().CreatedDate;
             order.ShipAddress=childSnapshot.val().ShipAddress;
             order.ShipName=childSnapshot.val().ShipName;
@@ -78,8 +86,9 @@ export default class Order_Payment extends Component{
 }
 renderNull = () =>{
   return(
-    <View style={{flex:1, justifyContent:'center', alignItems:"center"}}>
-    <Text style={{fontSize:20, color:"#1ba8ff"}}>Không tìm thấy đơn hàng</Text>
+    <View style={{flex:1, justifyContent:'center', alignItems:"center", backgroundColor:'white'}}>
+    <Image source={noOder} style={{width:50, height:50, }}/>
+    <Text style={{fontSize:20, color:"#1ba8ff"}}>Chưa có đơn hàng</Text>
   </View>
   )
 }

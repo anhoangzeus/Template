@@ -45,6 +45,7 @@ export function TopStackLogin(props){
   </TabTop.Navigator></View>
   );
 }
+
 export function AppStack(props) {
   return (
     <Tab.Navigator
@@ -54,6 +55,7 @@ export function AppStack(props) {
       <Tab.Screen
         name="Trang chủ"
         component={HomeScreen}
+
         options={{
           tabBarIcon: ({ focused }) => (
             <Icon
@@ -67,22 +69,6 @@ export function AppStack(props) {
           )
         }}
       >
-        <Tab.Screen
-        name="Tìm kiếm"
-        component={SettingsScreen}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Icon
-              size={24}
-              name="search"
-              family="font-awesome"
-              color={focused ? "blue" : materialTheme.COLORS.MUTED}
-              color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
-              style={{ marginRight: -3 }}
-            />
-          )
-        }}
-      />
       </Tab.Screen>
       <Tab.Screen
         name="Danh mục"
@@ -100,7 +86,25 @@ export function AppStack(props) {
         }}
       />
       <Tab.Screen
-        name="Profile"
+        name="Tìm kiếm"
+        component={SettingsScreen}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Icon
+              size={24}
+              name="search"
+              family="font-awesome"
+              color={focused ? "blue" : materialTheme.COLORS.MUTED}
+              color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
+              style={{ marginRight: -3 }}
+            />
+          )
+        }}
+      />
+     
+      
+      <Tab.Screen
+        name="Cá nhân"
         component={ProfileScreen}
         options={{
           tabBarIcon: ({ focused }) => (
@@ -118,6 +122,7 @@ export function AppStack(props) {
     </Tab.Navigator>
   );
 }
+
 export default function OnboardingStack(props) {
   return (
     <Stack.Navigator mode="card" headerMode="none">

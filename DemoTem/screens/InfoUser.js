@@ -192,7 +192,16 @@ const saveChangesHandle = () => {
         CMND:data.CMND,
         ModifiedBy:"User",
         ModifiedDate:date
-      }).then().catch()
+      }).then(
+        Alert.alert(
+          'Thay đổi thành công',
+          '',
+          [
+            { text: 'OK', onPress: () => {navigation.navigate('App')}}
+          ],
+          { cancelable: false }
+        )
+      ).catch()
     }else{
       Alert.alert('Lỗi!', 'Xin quý khách kiểm tra lại mạng', [
         {text: 'Okay'}
@@ -222,7 +231,16 @@ const saveChangesHandle = () => {
               ModifiedBy:"User",
               ModifiedDate:date,
               Password:data.password
-          }).catch()
+          }).then(
+            Alert.alert(
+              'Thay đổi thành công',
+              '',
+              [
+                { text: 'OK', onPress: () => {navigation.navigate('App')}}
+              ],
+              { cancelable: false }
+            )
+          ).catch()
           LogOut();
         }         
       } 

@@ -16,7 +16,6 @@ import ProductScreen from '../screens/Product';
 import Login1 from '../screens/Login1';
 import Signup1 from '../screens/SignUp1';
 import InfoUser from '../screens/InfoUser';
-import Order from '../screens/Order';
 import OrderXuli from '../screens/OrderXuli';
 import Order_Payment from '../screens/Order_Payment';
 import Order_DaGiao from '../screens/Order_DaGiao';
@@ -57,17 +56,9 @@ export function TopOrder(props){
           scrollEnabled: true,
         }}      
       >
-      <Tab.Screen name="Order" component={Order} 
-      options={{
-        title :"Tất cả đơn",
-      }}/>
-      <Tab.Screen name="Order_Payment" component={Order_Payment}
-       options={{
-        title :"Chờ thanh toán",
-      }}/>
       <Tab.Screen name="OrderXuli" component={OrderXuli}
        options={{
-        title :"Đang xử lí",
+        title :"Chờ xác nhận",
       }}/>
       <Tab.Screen name="Order_DangVanChuyen" component={Order_DangVanChuyen}
        options={{
@@ -81,7 +72,10 @@ export function TopOrder(props){
        options={{
         title :"Đã huỷ",
       }}/>
-
+     <Tab.Screen name="Order_Payment" component={Order_Payment}
+       options={{
+        title :"Trả hàng",
+      }}/>
       </TopStackOrder.Navigator>
       </View>
   );
@@ -95,7 +89,7 @@ export function AppStack(props) {
       initialRouteName="Home"
     >
       <Tab.Screen
-        name="Home"
+        name="Trang chủ"
         component={HomeScreen}
 
         options={{
@@ -113,6 +107,21 @@ export function AppStack(props) {
       >
       </Tab.Screen>
       <Tab.Screen
+        name="Danh mục"
+        component={ProScreen}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Icon
+              size={24}
+              name="appstore1"
+              family="antdesign"
+              color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
+             
+            />
+          )
+        }}
+      />
+      <Tab.Screen
         name="Tìm kiếm"
         component={SettingsScreen}
         options={{
@@ -129,23 +138,9 @@ export function AppStack(props) {
         }}
       />
      
+     
       <Tab.Screen
-        name="Danh mục"
-        component={ProScreen}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Icon
-              size={24}
-              name="appstore1"
-              family="antdesign"
-              color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
-             
-            />
-          )
-        }}
-      />
-      <Tab.Screen
-        name="Profile"
+        name="Cá nhân"
         component={Profile_User}
         options={{
           tabBarIcon: ({ focused }) => (
