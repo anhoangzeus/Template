@@ -23,6 +23,7 @@ import Order_DangVanChuyen from '../screens/Order_DangVanChuyen';
 import Order_DaHuy from '../screens/Order_DaHuy';
 import AddressScreen from '../screens/AddressScreen';
 import Route_OrderDetail from '../screens/Detail_Order';
+import PaymentScreen from '../screens/Payment';
 import Route_AddressDetail from '../screens/DetailAddressScreen';
 import Cart from '../screens/Cart';
 
@@ -191,6 +192,7 @@ export default function ProjectStack(props) {
       <Stack.Screen name="Cart" component={Cart}/>
       <Stack.Screen name='View_OrderDetail' component={Route_OrderDetail}/>
       <Stack.Screen name='InfoUser' component={InfoUser}/>
+      <Stack.Screen name='Payment' component={PaymentScreen}/>
       <Stack.Screen name="AddressScreen" component={AddressScreen}/>
       <Stack.Screen name="DetailAddressScreen" component={Route_AddressDetail}/>
       <Stack.Screen name="NotificationScreen" component={NotificationScreen}/>

@@ -258,6 +258,8 @@
                   />     
                </View>   
           </View>
+        </View>
+        <View style={{height:height/5}}>
         </View>     
         </ScrollView>  
         </View>
@@ -309,7 +311,7 @@
     itemContainer: {
       alignItems:'center',
       width: width/2,
-      height:height/4.2,
+      height:height/4,
       margin: 0.1,
       borderColor:'#3eafff',
       borderWidth: 1,     

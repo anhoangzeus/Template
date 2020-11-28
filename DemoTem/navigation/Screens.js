@@ -14,6 +14,7 @@ import ProductScreen from '../screens/Product';
 import Login1 from '../screens/Login1';
 import Signup1 from '../screens/SignUp1';
 import Cart from '../screens/Cart';
+import PaymentScreen from '../screens/Payment';
 import NotificationScreen from '../screens/NotificationScreen ';
 
 
@@ -151,6 +152,7 @@ export default function OnboardingStack(props) {
       <Stack.Screen name="NotificationItem" component={NotificationScreen}/>
       <Stack.Screen name="Components" component={ComponentsScreen} />
       <Stack.Screen name="Cart" component={Cart}/>
+      <Stack.Screen name='Payment' component={PaymentScreen}/>
       <Stack.Screen name="Product" component={ProductScreen}/>
       <Stack.Screen name="Items" component={ItemsScreen}/>
     </Stack.Navigator>

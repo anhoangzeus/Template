@@ -31,9 +31,6 @@ export default class Cart extends Component{
           this.GetAddress();
     }
     
-      DatHang =()=>{
-
-      }
 
       GetAddress =() =>{
         if(fbApp.auth().currentUser)
@@ -67,9 +64,7 @@ export default class Cart extends Component{
             })
         }
       }
-
       ListenCart = () => {
-        console.log("vao gio hang");
         if(fbApp.auth().currentUser){
           this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid).once('value').then((snapshot) => {
             var items =[];
@@ -113,7 +108,7 @@ export default class Cart extends Component{
           <FontAwesome name="times" size={24} color="#fff" style={{marginLeft:width/40}}/>
           </TouchableOpacity>
         
-          <Text style={styles.headerText}>Giỏ hàng</Text>  
+          <Text style={styles.headerText}>Thanh Toán</Text>  
         </View>
         <ScrollView style={{height:height}}>     
         <View style={styles.listItem}>
@@ -134,96 +129,14 @@ export default class Cart extends Component{
             </View>                   
       </View>
 
-        <FlatList 
-          data={this.state.CartItem}
-          extraData={this.state.refesh}
-          renderItem={ ({item})=>
-          <View style={styles.itemcard}>
-          <View style={{paddingLeft:10,paddingTop:5,flexDirection:"row"}}>
-            <Text style={styles.itemName}>{item.Name} </Text>
-          <View style={{marginTop:0}}>
-          <FontAwesome name="angle-right" size={30} />
-          </View>
-          </View>
-          <View style={{flexDirection:"row"}}>
-          <FontAwesome name="gift" color="green" size={24} style={styles.itemGift} ></FontAwesome>
-          <Text style={{marginLeft:5, color:"green", fontSize:18}}>nhận một phần quà may mắn</Text>
-          </View>
-          <View style={styles.itemInfo}>
-            <Image style={styles.itemImage} source={{uri:item.Picture }}></Image>
-            <View style={styles.itemDec}>
-              <Text style={{marginVertical:4,fontSize:16}} numberOfLines={2}> </Text>
-              <Text style={{marginVertical:4,fontSize:19, color:"red"}}>{item.Price} đ</Text>
-              <View style={{flexDirection:"row"}}>
-                <Button style={styles.buttonUpDown}  onPress={()=>{
-                  if(item.Quantity>1){
-                    console.log("vào sub");
-                    this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid+"/"+item.key).set({
-                      Id:item.Id,
-                      Name:item.Name,
-                      Picture:item.Picture,
-                      Price:item.Price,
-                      Quantity:item.Quantity-1,
-                     });
-                    this.state.CartItem.forEach(element => {if(element.Id == item.Id){element.Quantity=item.Quantity-1}});
-                    this.setState({ 
-                      refresh: !this.state.refresh
-                  });
-                  console.log(this.state.refesh);
-                  }
-                }}>-</Button>
-                <View style={{marginTop:10}}><Text fontSize={18} >{item.Quantity}</Text></View>
-                <Button style={styles.buttonUpDown} onPress={
-                  ()=>{
-                    console.log("vào add");
-                    this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid+"/"+item.key).set({
-                      Id:item.Id,
-                      Name:item.Name,
-                      Picture:item.Picture,
-                      Price:item.Price,
-                      Quantity:item.Quantity+1,
-                     })
-                     this.state.CartItem.forEach(element => {if(element.Id == item.Id){element.Quantity=item.Quantity+1}});
-                     this.setState({ 
-                      refresh: !this.state.refresh
-                  });
-                  }
-                }>+</Button>
-              </View>
-            </View>
-            <View style={{marginLeft:width/8}}>
-              <TouchableOpacity onPress={() =>{
-                this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid+'/'+item.key).set({
-                })
-                var dem=0;
-                
-                this.state.CartItem.forEach(element => {
-                  if(element.Id == item.Id){return;}
-                  else{
-                    dem++;
-                  }       
-                });
-                console.log(dem);
-                this.state.CartItem.splice(dem-1,1);
-                this.setState({ 
-                  refresh: !this.state.refresh
-              });
-              }}>
-                       <FontAwesome  name="times" size={18} color="silver" />
-              </TouchableOpacity>
-            
-            </View>
-          </View>
-        </View>
-          }
-        />
+       
         </ScrollView>
         <View style={{backgroundColor:"#fff",marginBottom:5}}>
           <View flexDirection="row">
               <Text style={{marginLeft:10, fontSize:16}}>Thành tiền: </Text>
               <View style={{marginLeft:width*0.4}}><Text color="red" style={{fontSize:20}}>{this.state.amount} đ</Text></View>
           </View>
-          <Button style={styles.btnSubmit} onPress={() => navigation.navigate("Payment")} >Tiến hành đặt hàng</Button>
+          <Button style={styles.btnSubmit} >Tiến hành đặt hàng</Button>
         </View>
       <View style={styles.bodyContainer}></View>
     </View>
