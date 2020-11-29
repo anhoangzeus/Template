@@ -11,32 +11,32 @@ export default class NotificationScreen extends Component{
      listpro:[],
     }; 
   } 
-  // NotificationItem = ({item}) => (
-  //   <View style={styles.itemContainer}>
-  //     <View style={styles.itemTopContainer}>
-  //       <View
-  //         style={[
-  //           styles.itemTypeContainer,
-  //           {
-  //             backgroundColor: item.type === 1 ? '#fc820a' : '#dc3988',
-  //           },
-  //         ]}>
-  //         <MaterialCommunityIcons
-  //           name={item.type === 1 ? 'sale' : 'backup-restore'}
-  //           color="#fff"
-  //           size={22}
-  //         />
-  //       </View>
-  //       <View style={styles.itemTopTextContainer}>
-  //         <Text style={styles.itemName}>{item.name}</Text>
-  //         <Text style={styles.itemDate}>{item.date}</Text>
-  //       </View>
-  //     </View>
-  //     <View>
-  //       <Text style={styles.itemDetail}>{item.detail}</Text>
-  //     </View>
-  //   </View>
-  // );
+  NotificationItem = ({item}) => (
+    <View style={styles.itemContainer}>
+      <View style={styles.itemTopContainer}>
+        <View
+          style={[
+            styles.itemTypeContainer,
+            {
+              backgroundColor: item.type === 1 ? '#fc820a' : '#dc3988',
+            },
+          ]}>
+          <MaterialCommunityIcons
+            name={item.type === 1 ? 'sale' : 'backup-restore'}
+            color="#fff"
+            size={22}
+          />
+        </View>
+        <View style={styles.itemTopTextContainer}>
+          <Text style={styles.itemName}>{item.name}</Text>
+          <Text style={styles.itemDate}>{item.date}</Text>
+        </View>
+      </View>
+      <View>
+        <Text style={styles.itemDetail}>{item.detail}</Text>
+      </View>
+    </View>
+  );
   render(){
     return (
       <View style={styles.screenContainer}>
@@ -65,7 +65,7 @@ export default class NotificationScreen extends Component{
             </View>
           </View>
           <View style={styles.listContainer}>
-            {/* <FlatList
+            <FlatList
               data={[
                 {
                   id: 1,
@@ -118,7 +118,7 @@ export default class NotificationScreen extends Component{
               ]}
               keyExtractor={(item) => item.id.toString()}
               renderItem={({item}) => <this.NotificationItem item={item} />}
-            /> */}
+            />
           </View>
         </View>
       </View>

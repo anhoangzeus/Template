@@ -60,7 +60,17 @@ const ProfileUser =(props)=> {
     return (
       <View style={styles.screenContainer}>
         <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
-        <Header title="Cá nhân" />
+            <View style={styles.headerContainer}>
+        <View style={styles.cartContainer}>
+          <View style={styles.cartIcon} />
+        </View>
+        <Text style={styles.headerText}>Cá nhân</Text>
+        <View style={styles.cartContainer}>
+        <TouchableOpacity onPress={() => props.navigation.push("Cart")}>
+          <FontAwesome name="shopping-cart" size={24} color="#fff" />
+          </TouchableOpacity>
+        </View>
+      </View>
         <ScrollView>
         <View style={styles.bodyContainer}>
         <TouchableOpacity onPress={()=> {props.navigation.navigate("InfoUser")}}>
@@ -77,9 +87,13 @@ const ProfileUser =(props)=> {
           </View>
           </TouchableOpacity>
           <View style={styles.divider} />
+          <TouchableOpacity>
           <ProfileItem icon="facebook" name="Kết nối mạng xã hội" />
+          </TouchableOpacity>
           <View style={styles.divider} />
+          <TouchableOpacity>
           <ProfileItem icon="trophy-outline" name="Săn thưởng" />
+          </TouchableOpacity>
           <View style={styles.divider} />
           <TouchableOpacity onPress={()=> {props.navigation.navigate("TopOrder")}}>
           <ProfileItem icon="form-select" name="Quản lí đơn hàng" />
@@ -237,5 +251,25 @@ signIn: {
 textSign: {
     fontSize: 18,
     fontWeight: 'bold'
+},
+headerContainer: {
+  flexDirection: 'row',
+  paddingTop: 15,
+  backgroundColor: '#1e88e5',
+  justifyContent: 'space-between',
+  paddingBottom: 12,
+},
+cartContainer: {
+  paddingHorizontal: 20,
+  alignItems: 'center',
+  justifyContent: 'center',
+},
+cartIcon: {
+  width: 24,
+},
+headerText: {
+  color: '#fff',
+  fontSize: 20,
+  fontWeight: '500',
 },
 });

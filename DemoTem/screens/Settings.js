@@ -36,7 +36,7 @@ export default class Setting extends React.Component {
     }; 
   }
   searchDictionary=()=>{
-    var st = this.state.searchText;
+    var st = this.state.searchText.toLowerCase();
    
     this.itemRef.ref('/Products').once('value').then((snapshot) => {
       var items=[];
@@ -48,7 +48,7 @@ export default class Setting extends React.Component {
           image:'',
           id: '',
         }
-        var rs = childSnapshot.val().Name;   
+        var rs = childSnapshot.val().Name.toLowerCase();
         console.log(rs.indexOf(st));
         if (rs.indexOf(st) != -1){        
           product.title = childSnapshot.val().Name;
@@ -70,33 +70,24 @@ export default class Setting extends React.Component {
     return (
     <View style={styles.screenContainer}>
     <StatusBar barStyle="light-content" />
-    {/*  */}
-    <View style={styles.headerContainer}>
-      
+    <View style={styles.headerContainer}>    
       <View style={styles.inputContainer}>
         <FontAwesome name="search" size={24} color="#969696" />
-        <TextInput style={styles.inputText} placeholder="bạn tìm gì hôm nay" 
+        <TextInput style={styles.inputText} placeholder="Bạn tìm gì hôm nay" 
         autoFocus={true}
         onChangeText={(text) => this.setState({searchText:text})}
         onSubmitEditing={() => this.searchDictionary()}
         />
       </View>
-      {/*  */}
       <View style={styles.cartContainer}>
         <TouchableOpacity onPress={() => navigation.push("Cart")}>
            <FontAwesome name="shopping-cart" size={24} color="#fff" /> 
         </TouchableOpacity> 
       </View>
     </View>
-    {/*  */}
-    <View style={styles.bodyContainer}>
-    
-    
-    <View style={styles.sectionContainer}>
-      {/*  */}
-     
+    <View style={styles.bodyContainer}>     
+    <View style={styles.sectionContainer}>    
     <Text style={styles.sectionTitle}>Kết quả tìm kiếm</Text>
-      {/*  */}
       <SafeAreaView>
       <ScrollView>
       <View style={styles.listItemContainer}>
@@ -113,12 +104,8 @@ export default class Setting extends React.Component {
       />
         </TouchableOpacity>    
         }
-        ></FlatList>    
-        
-      </View>
-
-      
-     
+        ></FlatList>           
+      </View>    
       </ScrollView>
       </SafeAreaView>
       </View>
@@ -183,6 +170,7 @@ const styles = StyleSheet.create({
   itemImage: {
     width: 100,
     height: 120,
+    resizeMode:'contain'
   },
   itemName: {
     fontSize: 14,

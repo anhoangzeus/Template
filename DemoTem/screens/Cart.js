@@ -11,7 +11,17 @@ import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 import { element } from 'prop-types';
-
+import NumberFormat from 'react-number-format';
+function ReactNativeNumberFormat({ value }) {
+  return (
+    <NumberFormat
+      value={value}
+      displayType={'text'}
+      thousandSeparator={true}
+      renderText={formattedValue => <Text>{formattedValue} đ</Text>} 
+    />
+  );
+}
 
 export default class Cart extends Component{
     constructor(props) {
@@ -30,8 +40,6 @@ export default class Cart extends Component{
           this.ListenCart();       
           this.GetAddress();
     }
-    
-
       GetAddress =() =>{
         if(fbApp.auth().currentUser)
         {
@@ -107,7 +115,7 @@ export default class Cart extends Component{
         <StatusBar barStyle="light-content" />
         <View style={styles.headerContainer}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-          <FontAwesome name="times" size={24} color="#fff" style={{marginLeft:width/40}}/>
+          <FontAwesome name="chevron-left" size={24} color="#fff" style={{marginLeft:width/40}}/>
           </TouchableOpacity>
         
           <Text style={styles.headerText}>Giỏ hàng</Text>  
@@ -150,7 +158,7 @@ export default class Cart extends Component{
             <Image style={styles.itemImage} source={{uri:item.Picture }}></Image>
             <View style={styles.itemDec}>
               <Text style={{marginVertical:4,fontSize:16}} numberOfLines={2}> </Text>
-              <Text style={{marginVertical:4,fontSize:19, color:"red"}}>{item.Price} đ</Text>
+              <Text style={{marginVertical:4,fontSize:19, color:"red"}}><ReactNativeNumberFormat value={item.Price}/></Text>
               <View style={{flexDirection:"row"}}>
                 <Button style={styles.buttonUpDown}  onPress={()=>{
                   if(item.Quantity>1){
@@ -206,7 +214,7 @@ export default class Cart extends Component{
                   refresh: !this.state.refresh
               });
               }}>
-                       <FontAwesome  name="times" size={18} color="silver" />
+                       <FontAwesome  name="remove" size={25} color="red" />
               </TouchableOpacity>
             
             </View>
@@ -218,7 +226,7 @@ export default class Cart extends Component{
         <View style={{backgroundColor:"#fff",marginBottom:5}}>
           <View flexDirection="row">
               <Text style={{marginLeft:10, fontSize:16}}>Thành tiền: </Text>
-              <View style={{marginLeft:width*0.4}}><Text color="red" style={{fontSize:20}}>{this.state.amount} đ</Text></View>
+              <View style={{marginLeft:width*0.4}}><Text color="red" style={{fontSize:20}}><ReactNativeNumberFormat value={this.state.amount} /></Text></View>
           </View>
           <Button style={styles.btnSubmit} >Tiến hành đặt hàng</Button>
         </View>

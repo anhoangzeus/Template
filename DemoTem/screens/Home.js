@@ -197,6 +197,7 @@ searchDictionary=()=>{
         pagingEnabled={false}
         numberOfLines={2}
         data={this.state.listphone}
+        key={this.state.listpro.id}
         renderItem={({item})=>
         <TouchableOpacity onPress={() => navigation.push('Items', {id: item.id})}>
             <ProductItem
