@@ -17,7 +17,7 @@ export default class AddressScreen extends Component {
         super(props);
         this.state = { 
          listAddress:[],
-         ref:true,
+         status:false,
         }; 
       }
     RenderList = ({NumberAddress,Xa, City, Huyen,ShipName,ShipMoblie,id,Main}) =>(
@@ -127,8 +127,28 @@ export default class AddressScreen extends Component {
             this.setState({
               listAddress:list
             }) 
+            if(items1[0].ListID==''){
+              this.setState({status:false})
+            }else{
+              this.setState({status:true})
+            }
         });   
-    } 
+    }
+    renderNull = () =>{
+      return(
+        <View style={{flex:1, justifyContent:'center', alignItems:"center", backgroundColor:'white'}}>
+        {/* <Image source={noOder} style={{width:50, height:50, }}/> */}
+        <Text style={{fontSize:20, color:"#1ba8ff"}}>Thêm địa chỉ nhận hàng ngay nào!</Text>
+        <TouchableOpacity 
+                      onPress={()=> {this.props.navigation.navigate('DetailAddressScreen', {id: ""})}}
+                      style={styles.userContainer}>
+                        <View style={styles.textContainer}>      
+                            <Text style={{color:'white',fontSize:25,textAlign:'center'}}>Thêm địa chỉ mới</Text>                                
+                        </View>
+        </TouchableOpacity>
+      </View>
+      )
+    }
     render(){
         return(
             <View style={styles.screenContainer}>
@@ -143,11 +163,12 @@ export default class AddressScreen extends Component {
                     </View>
                     <Text style={styles.headerText}>Thông tin địa chỉ</Text>   
                 </View>
-                         
+               {this.state.status ==false? 
+                <this.renderNull/>            
+                :
                 <View style={styles.bodyContainer}>
                 <ScrollView>
                 <FlatList
-                        extraData={this.state.refesh}
                         pagingEnabled={false}
                         data={this.state.listAddress}
                         renderItem={({item})=>
@@ -169,7 +190,7 @@ export default class AddressScreen extends Component {
                   <TouchableOpacity 
                       onPress={()=> {this.props.navigation.navigate('DetailAddressScreen', {id: ""})}}
                       style={styles.userContainer}>
-                        <View style={styles.textContainer}>      
+                        <View style={{}}>      
                             <View style={{flexDirection:'row'}}>
                             <Ionicons name='add-circle-outline' color='green' size={28}/>
                             <Text style={styles.titletext}>Thêm địa chỉ mới</Text>            
@@ -177,8 +198,8 @@ export default class AddressScreen extends Component {
                         </View>
                   </TouchableOpacity>
                  
-              </View>
-           
+              </View>                           
+               }                             
             </View>
         );
     }
@@ -238,5 +259,11 @@ const styles = StyleSheet.create({
         justifyContent:"center",
         alignItems:"center", 
         backgroundColor:'#FF00FF'
+      },
+      textContainer:{
+        backgroundColor:'green',
+        width:250,
+        borderRadius:5
+
       }
   });

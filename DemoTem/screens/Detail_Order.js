@@ -121,7 +121,7 @@ export class Detail_Order extends Component{
         })   
       }
       huy_Order =()=>{
-          fbApp.database().ref('')
+          // fbApp.database().ref('OrderDetails').child()
       }
       componentDidMount(){
         this.getListOrder();
@@ -224,7 +224,15 @@ export class Detail_Order extends Component{
                   >
                     <Text style={styles.titletext2}>Huỷ đơn hàng</Text>
                   </TouchableOpacity>
-                  : null
+                  :
+                  this.state.Status == "Đang vận chuyển" ? 
+                  <View
+                    style={styles.totalContainer}
+                    onPress={()=> {huy_Order()}}
+                  >
+                    <Text style={styles.titletext2}>Đang vận chuyển</Text>
+                  </View>
+                  :null
                 }
                 </ScrollView>
             </View>

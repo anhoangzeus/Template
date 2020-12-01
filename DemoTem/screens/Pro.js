@@ -178,7 +178,7 @@
             <Text style={styles.inputText}>Bạn tìm gì hôm nay?</Text>
           </View>
         <View style={styles.cartContainer}>
-          <TouchableOpacity onPress={() => navigation.push("Cart")}>
+          <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
              <FontAwesome name="shopping-cart" size={24} color="#fff" /> 
           </TouchableOpacity> 
         </View>
@@ -246,7 +246,7 @@
                          numColumns={2}
                          data={this.state.listcate}
                          renderItem={({item})=>
-                         <TouchableOpacity onPress={() => navigation.push('Items', {id: item.id})}>
+                         <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id})}>
                              <ProductItem
                              name={item.title}
                              image={item.image}

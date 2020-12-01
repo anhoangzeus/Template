@@ -29,6 +29,7 @@ export default class Home extends React.Component {
      listpro:[],
      listphone:[],
      searchText:"",
+     numcart:1,
     }; 
   } 
 componentDidMount(){
@@ -62,7 +63,7 @@ ListenForItemsPhone = () => {
       this.setState({
         listphone:items,
       })
-      console.log(items); 
+      
     })
   }
 ListenForItemsLaptop = () =>{
@@ -89,7 +90,7 @@ ListenForItemsLaptop = () =>{
     this.setState({
       listpro:items,
     })
-    console.log(items); 
+   
   })
 }
 searchDictionary=()=>{
@@ -121,6 +122,32 @@ searchDictionary=()=>{
   })
 })
 }
+renderNofiCart = () =>{
+  if(fbApp.auth().currentUser){ 
+    this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid).once('value').then((snapshot) => {
+      var dem =0;
+      snapshot.forEach(function(childSnapshot){
+       dem +=1;
+      });
+      this.setState({
+       numcart:dem,
+      })  
+    })  
+  }
+ 
+  if(this.state.numcart == 0){
+    return null;
+  }
+  else{
+    return(
+      <View style={{position:"absolute", borderRadius:15,backgroundColor:"red",
+            height:15,width:15,alignItems:"center",justifyContent:"center",
+            marginLeft:width/40}}>
+              <Text color="white">{this.state.numcart}</Text>
+            </View>
+    )
+  }
+}
 
   render() {
     const { navigation } = this.props;
@@ -131,8 +158,9 @@ searchDictionary=()=>{
         </View>
       )
     }
-    return (
-     
+    
+   
+    return (  
     <View style={styles.screenContainer}>
     <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
     {/*  */}
@@ -147,10 +175,14 @@ searchDictionary=()=>{
       </TouchableOpacity>
       {/*  */}
       <View style={styles.cartContainer}>
-          <TouchableOpacity onPress={() => navigation.push("Cart")}>
+          <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
+            
              <FontAwesome name="shopping-cart" size={24} color="#fff" /> 
+             {this.renderNofiCart()}
           </TouchableOpacity> 
+         
       </View>
+     
     </View>
     {/*  */}
     <View style={styles.bodyContainer}>
@@ -197,8 +229,9 @@ searchDictionary=()=>{
         pagingEnabled={false}
         numberOfLines={2}
         data={this.state.listphone}
+        key={this.state.listpro.id}
         renderItem={({item})=>
-        <TouchableOpacity onPress={() => navigation.push('Items', {id: item.id})}>
+        <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id})}>
             <ProductItem
                     name={item.title}
                     image={item.image}
@@ -259,7 +292,7 @@ searchDictionary=()=>{
         pagingEnabled={false}
         data={this.state.listpro}
         renderItem={({item})=>
-        <TouchableOpacity onPress={() => navigation.push('Items', {id: item.id})}>
+        <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id})}>
              <ProductItem
             name={item.title}
             image={item.image}
@@ -313,8 +346,9 @@ const styles = StyleSheet.create({
   },
   cartContainer: {
     paddingHorizontal: 20,
-    alignItems: 'center',
+   
     justifyContent: 'center',
+    width:75
   },
   bodyContainer: {
     flex: 1,

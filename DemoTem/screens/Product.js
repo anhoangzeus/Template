@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import { StyleSheet, Dimensions, ScrollView, Image, TouchableOpacity, Alert,View,Button,Text } from 'react-native';
+import { StyleSheet, Dimensions, ScrollView, Image, TouchableOpacity, Alert,View,Button,Text,StatusBar } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
@@ -72,7 +72,7 @@ export default class Product extends Component {
 
     return (
         <View  style={{flex:1,backgroundColor:"silver"}}>
-              <StatusBar barStyle="light-content" />
+              <StatusBar barStyle="light-content" backgroundColor="white"/>
              <View style={styles.headerFont} >
              <TouchableOpacity onPress={()=> navigation.goBack()}> 
                     <FontAwesome name="angle-left" size={30} color="#1e88e5" style={{marginLeft: width/25}} />
@@ -157,7 +157,8 @@ const styles = StyleSheet.create({
 profileContainer: {
   paddingTop:5,
   paddingLeft:10,
-  width: width,
+  marginLeft:10,
+  width: width-20,
   height: height*0.5,
   resizeMode:"contain",
 },
@@ -180,7 +181,8 @@ thumb: {
   alignSelf: 'center',
   width: thumbMeasure,
   height: thumbMeasure,
-  resizeMode: 'contain'
+  resizeMode: 'contain',
+  marginLeft:10
 },
 btnSubmit:{
   width:width*0.7,

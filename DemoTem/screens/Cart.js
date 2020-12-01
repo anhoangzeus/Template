@@ -11,7 +11,17 @@ import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 import { element } from 'prop-types';
-
+import NumberFormat from 'react-number-format';
+function ReactNativeNumberFormat({ value }) {
+  return (
+    <NumberFormat
+      value={value}
+      displayType={'text'}
+      thousandSeparator={true}
+      renderText={formattedValue => <Text>{formattedValue} đ</Text>} 
+    />
+  );
+}
 
 export default class Cart extends Component{
     constructor(props) {
@@ -31,9 +41,7 @@ export default class Cart extends Component{
           this.GetAddress();
     }
     
-      DatHang =()=>{
-
-      }
+     
 
       GetAddress =() =>{
         if(fbApp.auth().currentUser)
@@ -97,6 +105,17 @@ export default class Cart extends Component{
           })  
         }
         }
+
+       
+       GetCurrentDate =()=>{
+        var date = new Date().getDate();
+        var month = new Date().getMonth() + 1; 
+        var year = new Date().getFullYear();
+        var gio = new Date().getHours();
+        var phut = new Date().getMinutes();
+        var giay = new Date().getSeconds();
+          return date + '/' +month+ "/" +year + " " + gio+":"+ phut+":"+giay;
+      }
     render(){
       const { navigation } = this.props;
       console.log(this.state.CartItem);
@@ -110,7 +129,7 @@ export default class Cart extends Component{
         <StatusBar barStyle="light-content" />
         <View style={styles.headerContainer}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-          <FontAwesome name="times" size={24} color="#fff" style={{marginLeft:width/40}}/>
+          <FontAwesome name="chevron-left" size={24} color="#fff" style={{marginLeft:width/40}}/>
           </TouchableOpacity>
         
           <Text style={styles.headerText}>Giỏ hàng</Text>  
@@ -153,25 +172,41 @@ export default class Cart extends Component{
             <Image style={styles.itemImage} source={{uri:item.Picture }}></Image>
             <View style={styles.itemDec}>
               <Text style={{marginVertical:4,fontSize:16}} numberOfLines={2}> </Text>
-              <Text style={{marginVertical:4,fontSize:19, color:"red"}}>{item.Price} đ</Text>
-              <View style={{flexDirection:"row"}}>
-                <Button style={styles.buttonUpDown}  onPress={()=>{
-                  if(item.Quantity>1){
-                    console.log("vào sub");
-                    this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid+"/"+item.key).set({
-                      Id:item.Id,
-                      Name:item.Name,
-                      Picture:item.Picture,
-                      Price:item.Price,
-                      Quantity:item.Quantity-1,
-                     });
-                    this.state.CartItem.forEach(element => {if(element.Id == item.Id){element.Quantity=item.Quantity-1}});
-                    this.setState({ 
-                      refresh: !this.state.refresh
-                  });
-                  console.log(this.state.refesh);
-                  }
-                }}>-</Button>
+              <Text style={{marginVertical:4,fontSize:19, color:"red"}}><ReactNativeNumberFormat value={item.Price}/></Text>
+              <View style={{flexDirection:"row"}}>            
+                  <Button style={styles.buttonUpDown}  onPress={()=>{
+                    if(item.Quantity>1){
+                      console.log("vào sub");
+                      this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid+"/"+item.key).set({
+                        Id:item.Id,
+                        Name:item.Name,
+                        Picture:item.Picture,
+                        Price:item.Price,
+                        Quantity:item.Quantity-1,
+                       });
+                      this.state.CartItem.forEach(element => {if(element.Id == item.Id){element.Quantity=item.Quantity-1}});
+                      this.setState({ 
+                        refresh: !this.state.refresh
+                    });
+                    console.log(this.state.refesh);
+                    }else{
+                      this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid+'/'+item.key).set({
+                      })
+                      var dem=0;
+                      
+                      this.state.CartItem.forEach(element => {
+                        if(element.Id == item.Id){return;}
+                        else{
+                          dem++;
+                        }       
+                      });
+                      console.log(dem);
+                      this.state.CartItem.splice(dem-1,1);
+                      this.setState({ 
+                        refresh: !this.state.refresh
+                    });
+                    }
+                  }}>-</Button>
                 <View style={{marginTop:10}}><Text fontSize={18} >{item.Quantity}</Text></View>
                 <Button style={styles.buttonUpDown} onPress={
                   ()=>{
@@ -209,7 +244,7 @@ export default class Cart extends Component{
                   refresh: !this.state.refresh
               });
               }}>
-                       <FontAwesome  name="times" size={18} color="silver" />
+                       <FontAwesome  name="remove" size={25} color="red" />
               </TouchableOpacity>
             
             </View>
@@ -221,9 +256,39 @@ export default class Cart extends Component{
         <View style={{backgroundColor:"#fff",marginBottom:5}}>
           <View flexDirection="row">
               <Text style={{marginLeft:10, fontSize:16}}>Thành tiền: </Text>
-              <View style={{marginLeft:width*0.4}}><Text color="red" style={{fontSize:20}}>{this.state.amount} đ</Text></View>
+              <View style={{marginLeft:width*0.4}}><Text color="red" style={{fontSize:20}}><ReactNativeNumberFormat value={this.state.amount} /></Text></View>
           </View>
-          <Button style={styles.btnSubmit} onPress={() => navigation.navigate("Payment")} >Tiến hành đặt hàng</Button>
+          <Button style={styles.btnSubmit} onPress={() =>{
+             var key = fbApp.database().ref().child('Orders/').push().key;
+             var phone = this.state.Address.ShipPhone;
+             var name = this.state.Address.ShipName;
+             console.log(phone);
+             console.log(name);
+             var diachi = this.state.Address.NumberAddress+", "+this.state.Address.Xa+", "+this.state.Address.Huyen+", "+ this.state.Address.City;
+             
+               this.itemRef.ref('/Orders/'+key).set({
+                 Status:1,
+                 CreatedDate:this.GetCurrentDate(),
+                 ShipAddress:diachi,
+                 ShipName:name,
+                 ShipMoblie:phone,
+                 OrderID: key,
+                 Payment:"01",
+                 Total:this.state.amount,
+                 CustomerID:fbApp.auth().currentUser.uid,
+                 
+               })
+               this.state.CartItem.forEach(element =>{
+                var keyDetail = fbApp.database().ref().child('OrderDetails/').push().key;
+                 this.itemRef.ref('/OrderDetails/'+keyDetail).set({
+                  OrderDetailID:keyDetail,
+                  OrderID:key,
+                  Price:element.Price,
+                  ProductID: element.Id,
+                  Quantity:element.Quantity
+                 })
+               })
+              }} >Tiến hành đặt hàng</Button>
         </View>
       <View style={styles.bodyContainer}></View>
     </View>
