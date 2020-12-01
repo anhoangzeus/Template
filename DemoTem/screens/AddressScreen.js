@@ -154,13 +154,13 @@ export default class AddressScreen extends Component {
             <View style={styles.screenContainer}>
             <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
                 <View style={styles.headerContainer}>
-                    <View style={styles.cartContainer}>
+                    <TouchableOpacity style={styles.cartContainer} onPress={() =>{this.props.navigation.goBack()}}>
                         <Ionicons 
                             name='arrow-back-outline' 
                             color='white'  
                             size={25}
-                            onPress={() =>{this.props.navigation.goBack()}}/>
-                    </View>
+                            />
+                    </TouchableOpacity>
                     <Text style={styles.headerText}>Thông tin địa chỉ</Text>   
                 </View>
                {this.state.status ==false? 
@@ -231,6 +231,8 @@ const styles = StyleSheet.create({
       },
       cartContainer: {
         paddingHorizontal: 20,
+        width:72,
+        borderRadius:15
       },
       headerText: {
         color: '#fff',

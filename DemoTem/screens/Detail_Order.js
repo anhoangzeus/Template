@@ -145,13 +145,13 @@ export class Detail_Order extends Component{
             <View style={styles.screenContainer}>
                 <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
                 <View style={styles.headerContainer}>
-                        <View style={styles.cartContainer}>
+                        <TouchableOpacity style={styles.cartContainer} onPress={()=>this.props.navigation.goBack()}>
                           <Ionicons 
                             name='arrow-back-outline' 
                             color='white' 
                             size={25}
-                            onPress={()=>this.props.navigation.goBack()}/>
-                        </View>
+                          />
+                        </TouchableOpacity>
                         <Text style={styles.headerText}>Chi tiết đơn hàng</Text>
                     </View>
                     <ScrollView >
@@ -282,7 +282,8 @@ const styles = StyleSheet.create({
         paddingBottom: 12,
       },
       cartContainer: {
-        paddingHorizontal: 20
+        paddingHorizontal: 20,
+        width:70
       },
       headerText: {
         color: '#fff',

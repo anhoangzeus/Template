@@ -46,7 +46,9 @@ export function TopOrder(props){
   return(
     <View style={styles.containner}>
       <View style={styles.headconteiner}>
-      <Ionicons name="arrow-back-outline" color={'white'}  size={30} onPress={() =>props.navigation.navigate("App")}/>
+        <TouchableOpacity style={{width:60, borderRadius:10}} onPress={() =>props.navigation.navigate("App")}>
+        <Ionicons name="arrow-back-outline" color={'white'}  size={30} />
+        </TouchableOpacity> 
       <Text style={styles.texthead}>ĐƠN HÀNG CỦA TÔI</Text>
       <Ionicons name="arrow-undo" color={'#1e88e5'} size={26} />
       </View>

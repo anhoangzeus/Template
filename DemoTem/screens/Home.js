@@ -48,6 +48,8 @@ ListenForItemsPhone = () => {
           metades:'',
           image:'',
           id: '',
+          BrandID:'',
+          CategoryID:''
         } 
         if(childSnapshot.val().CategoryID=="AIzaSyDSWIekvpvwQbRiGh4WF88H91tqFzL6OWI")
         {
@@ -56,6 +58,8 @@ ListenForItemsPhone = () => {
           product.metades=childSnapshot.val().MetaDescription;
           product.image=childSnapshot.val().Image;
           product.id=childSnapshot.val().ProductID;
+          product.BrandID=childSnapshot.val().BrandID;
+          product.CategoryID=childSnapshot.val().CategoryID;
           items.push(product);     
         }
       });
@@ -76,6 +80,8 @@ ListenForItemsLaptop = () =>{
           metades:'',
           image:'',
           id: '',
+          BrandID:'',
+          CategoryID:''
         }
         if (childSnapshot.val().CategoryID === "-MJaC7kTLJOYZjt9G4zs" ){        
           product.title = childSnapshot.val().Name;
@@ -83,6 +89,8 @@ ListenForItemsLaptop = () =>{
           product.metades=childSnapshot.val().MetaDescription;
           product.image=childSnapshot.val().Image;
           product.id=childSnapshot.val().ProductID;
+          product.BrandID=childSnapshot.val().BrandID;
+          product.CategoryID=childSnapshot.val().CategoryID;
           items.push(product);     
         }              
     });
@@ -104,6 +112,8 @@ searchDictionary=()=>{
         metades:'',
         image:'',
         id: '',
+        BrandID:'',
+        CategoryID:''
       }
       var rs = childSnapshot.val().Name;   
       console.log(rs.indexOf(st));
@@ -113,6 +123,8 @@ searchDictionary=()=>{
         product.metades=childSnapshot.val().MetaDescription;
         product.image=childSnapshot.val().Image;
         product.id=childSnapshot.val().ProductID;
+        product.BrandID=childSnapshot.val().BrandID;
+        product.CategoryID=childSnapshot.val().CategoryID;
         items.push(product);     
       }              
   });
@@ -146,11 +158,9 @@ searchDictionary=()=>{
       </View>
       </TouchableOpacity>
       {/*  */}
-      <View style={styles.cartContainer}>
-          <TouchableOpacity onPress={() => navigation.push("Cart")}>
-             <FontAwesome name="shopping-cart" size={24} color="#fff" /> 
-          </TouchableOpacity> 
-      </View>
+        <TouchableOpacity style={styles.cartContainer} onPress={() => navigation.navigate("Cart")}>
+          <FontAwesome name="shopping-cart" size={24} color="#fff" /> 
+        </TouchableOpacity> 
     </View>
     {/*  */}
     <View style={styles.bodyContainer}>
@@ -199,7 +209,7 @@ searchDictionary=()=>{
         data={this.state.listphone}
         key={this.state.listpro.id}
         renderItem={({item})=>
-        <TouchableOpacity onPress={() => navigation.push('Items', {id: item.id})}>
+        <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id, CategoryID: item.CategoryID, BrandID: item.BrandID})}>
             <ProductItem
                     name={item.title}
                     image={item.image}
@@ -260,7 +270,7 @@ searchDictionary=()=>{
         pagingEnabled={false}
         data={this.state.listpro}
         renderItem={({item})=>
-        <TouchableOpacity onPress={() => navigation.push('Items', {id: item.id})}>
+        <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id, CategoryID: item.CategoryID, BrandID: item.BrandID})}>
              <ProductItem
             name={item.title}
             image={item.image}
@@ -314,8 +324,9 @@ const styles = StyleSheet.create({
   },
   cartContainer: {
     paddingHorizontal: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
+    borderRadius:15,
+    width:70,
+    paddingTop:5,
   },
   bodyContainer: {
     flex: 1,
