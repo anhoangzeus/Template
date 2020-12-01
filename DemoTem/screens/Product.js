@@ -1,13 +1,24 @@
 import React,{Component} from 'react';
-import { StyleSheet, Dimensions, ScrollView, Image, TouchableOpacity, Alert,View,Button,Text,StatusBar } from 'react-native';
+import { StyleSheet, Dimensions, ScrollView, Image, TouchableOpacity, Alert,View,Button,Text,StatusBar ,FlatList} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
+import NumberFormat from 'react-number-format';
 
 const { width, height } = Dimensions.get('screen');
 const thumbMeasure = (width - 48 - 32) / 3;
 
-export default class Product extends Component {
+function ReactNativeNumberFormat({ value }) {
+  return (
+    <NumberFormat
+      value={value}
+      displayType={'text'}
+      thousandSeparator={true}
+      renderText={formattedValue => <Text>{formattedValue} đ</Text>} 
+    />
+  );
+}
+class Product extends Component {
   constructor(props) {
     super(props);
     this.itemRef = fbApp.database();
@@ -16,9 +27,12 @@ export default class Product extends Component {
       Image: "",
       Name: "",
       Price: "",
-      Waranty:"",  
+      Waranty:"",
+      List_Productlienquan:[],
+      idsanpham:this.props.content
     };
   }
+ 
   addCart =()=>{
     console.log("da vao:"+this.props.content);
     const Id_Item = this.props.content;
@@ -51,8 +65,43 @@ export default class Product extends Component {
     navigation.navigate("Top");
   }
 }
+  getItemRespon=()=>{
+
+    var CategoryID = this.props.CategoryID;
+    var BrandID = this.props.BrandID;
+    var ProductID = this.state.idsanpham;
+
+    console.log(CategoryID, BrandID);
+    this.itemRef.ref('Products').once('value').then((snapshot)=>{
+      var items= [];
+      snapshot.forEach(function(snapshot){
+        var product={
+          image:'https://i.ibb.co/dj6fBrX/empty.jpg',
+          Name:'',
+          Price:'',
+          proid:''
+        }
+        if(snapshot.val().ProductID!= ProductID){
+          if(snapshot.val().CategoryID == CategoryID){
+            if(snapshot.val().BrandID==BrandID){
+              product.image=snapshot.val().Image;
+              product.Name=snapshot.val().Name;
+              product.Price=snapshot.val().Price;
+              product.proid=snapshot.val().ProductID;
+              console.log(product);
+              items.push(product);    
+            }                      
+          }
+        }
+      })
+      console.log(items);
+      this.setState({
+        List_Productlienquan:items
+      })
+    })
+  }
   getData =()=>{
-    this.itemRef.ref('/Products/').child(this.props.content)
+    this.itemRef.ref('/Products/').child(this.state.idsanpham)
     .on('value', snapshot => {
       this.setState({
         Decription:snapshot.val().Description,
@@ -60,99 +109,123 @@ export default class Product extends Component {
         Name:snapshot.val().Name,
         Price:snapshot.val().Price,
         Waranty:snapshot.val().Warranty,
-      })
-      
+      })  
     });
   }
+  ProductItem = ({image, Name, Price}) => (
+    <View style={styles.itemContainer}>
+      <Image source={{uri: image}} style={styles.itemImage1}/>
+      <Text style={styles.itemName} numberOfLines={2}>
+        {Name}
+      </Text>
+      <ReactNativeNumberFormat value={Price} />
+    </View>
+  );
   componentDidMount(){
-    this.getData()
+    this.getData();
+    this.getItemRespon();
+  }
+  componentDidUpdate(prevProps, prevState){
+    if(this.state.idsanpham != prevState.idsanpham){
+      this.getData();
+      this.getItemRespon();
+    }
   }
   render() {
     const { navigation } = this.props;
-
     return (
-        <View  style={{flex:1,backgroundColor:"silver"}}>
-              <StatusBar barStyle="light-content" backgroundColor="white"/>
+        <View  style={{flex:1,backgroundColor:"#ededed"}}>
+              <StatusBar barStyle="dark-content" backgroundColor="#fff"/>
              <View style={styles.headerFont} >
-             <TouchableOpacity onPress={()=> navigation.goBack()}> 
-                    <FontAwesome name="angle-left" size={30} color="#1e88e5" style={{marginLeft: width/25}} />
+             <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,alignItems:'center',marginLeft:5,justifyContent:'center'}} onPress={()=> navigation.goBack()}> 
+                    <FontAwesome name="chevron-left" size={25} color="white"/>
                 </TouchableOpacity>
-         <TouchableOpacity>
-         <FontAwesome name="search" size={24} color="#1e88e5" style={{marginLeft:width*0.6}}/>
-         </TouchableOpacity>
-               <TouchableOpacity onPress={() => navigation.navigate("App")}>
-               <FontAwesome name="home" size={30} color="#1e88e5" style={{marginLeft:width*0.05}}/>
+                <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,marginLeft:width*0.45,alignItems:'center',justifyContent:'center'}} onPress={()=> {}}> 
+                    <FontAwesome name="search" size={25} color="white"/>
+            </TouchableOpacity>
+               <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,marginLeft:width*0.01,alignItems:'center',justifyContent:'center'}} onPress={() => navigation.navigate("App")}>
+               <FontAwesome name="home" size={30} color="white" />
                </TouchableOpacity>
-               <TouchableOpacity>
-               <FontAwesome name="shopping-cart" size={30} color="#1e88e5" style={{marginLeft:width*0.05}}/>
+               <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,marginLeft:width*0.01,alignItems:'center',justifyContent:'center'}} onPress={() => navigation.navigate("Cart")} >
+               <FontAwesome name="shopping-cart" size={30} color="white" />
                </TouchableOpacity>      
               </View>
               <ScrollView showsVerticalScrollIndicator={false}>
               <View backgroundColor="white">
-                  <ScrollView 
-                    horizontal = {true}
-                    pagingEnabled={true}
-                    >
-                        <Image
-                          source={{uri : this.state.Image}}
-                          style={styles.profileContainer}
-                          imageStyle={styles.profileImage}>
-                            
-                    </Image>
-                </ScrollView>
+              <Image source={{uri : this.state.Image}}
+                      style={styles.profileContainer}
+                      imageStyle={styles.profileImage}/>
                 </View>
           <View  style={styles.options}>
-          <View >
+          <View>
               <View >
               <Text color="Black"  style={{ paddingBottom: 8 ,fontSize:18,marginLeft:width/40}}>{this.state.Name}</Text>
-              <Image source={require("../assets/images/star.jpg")} style={{width:width/2,height:height/20,marginLeft:width/40}}/>
-              <Text color="Black"  style={{ paddingBottom: 0,fontSize:24,marginLeft:width/40 }}>{this.state.Price} đ</Text>
+              <View style={{flexDirection:'row'}}>
+                <Image source={require("../assets/images/star.jpg")} style={{width:width/4,height:height/40,marginLeft:width/40}}/>
+                <TouchableOpacity style={{marginLeft:10,}}><Text style={{ color:'green'}}>(Xem 518 đánh giá)</Text></TouchableOpacity>
+              </View>
+              <View style={{flexDirection:'row', alignItems:'center', marginVertical:10}}>
+                <Text color="Black"  style={{ fontSize:24,marginLeft:width/40, color:'black', fontWeight:'bold' }}><ReactNativeNumberFormat value={this.state.Price}/> </Text>
+                <Text style={{textDecorationLine:"line-through", fontSize:15, marginLeft:15, color:"#696969"}}>3000000 đ</Text>
+                <Text style={{marginLeft:5, color:'red'}}>-20%</Text>
+              </View>   
+                <View>  
+                    <Text  style={{marginBottom: 10,fontSize:15,fontWeight:"bold",marginLeft:width/40}}>{this.state.Waranty} tháng bảo hành</Text>
+              </View>      
               </View>
             </View>
-            <View  >   
-            <Text muted size={12} style={{marginLeft:width/40}}>Bảo hành</Text>
-              <View >
-              <Text  style={{marginBottom: 8,fontSize:12,fontWeight:"bold",marginLeft:width/40}}>{this.state.Waranty} tháng</Text>
-              </View>
-            </View>
-            <View  style={{ paddingVertical: 16, alignItems: 'baseline',marginLeft:width/40 }}>
-              <Text size={16}>Ảnh sản phẩm</Text>   
-            </View>
-            <View >
-              <View  style={{ flexWrap: 'wrap' }} >
-                  <Image
-                    source={{uri: this.state.Image}}
-                    style={{width:300,height:200}}
-                    style={styles.thumb}
-                  ></Image>
-              </View>
-            </View>
-          <View>  
-          <Text bold size={12} style={{marginBottom: 8,marginLeft:width/40}}>Mô tả</Text>
-              <Text muted size={12} style={{marginLeft:width/40}}>{this.state.Decription}</Text>
-          </View>    
+          <View> 
+        </View>      
         </View>
-        </ScrollView>
-        <View style={{backgroundColor:"#fff",flexDirection:"row",height:height/20}}>
-          <FontAwesome name="comments" size={24} color="#1e88e5" style={{marginLeft:width*0.1}}/>
-          <View style={{marginLeft:width*0.1,marginBottom:height*0.01,width:width*0.7}}>
-              <Button style={styles.btnSubmit} color="red" title="thêm vào giỏ hàng" onPress={this.addCart}/>
+        <View style={{height:5}}/>
+        <View style={{backgroundColor:'#fff',height:height/3.5}}>
+          <Text bold size={12} style={{marginVertical: 10,marginLeft:width/40, fontWeight:'bold'}}>Sản phẩm tương tự</Text>
+          <FlatList
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{marginHorizontal:10}}
+              data={this.state.List_Productlienquan}
+                  renderItem={({item})=>
+                  <TouchableOpacity  onPress={() => this.setState({idsanpham:item.proid})}>
+                      <this.ProductItem           
+                      image={item.image}
+                      Name={item.Name}
+                      Price={item.Price}
+                  />
+                  </TouchableOpacity>                    
+              }
+              keyExtractor={item => item.proid}                
+          />        
+        </View>   
+          <View style={{height:5}}/>
+          <View style={{backgroundColor:'#fff'}}>
+          <Text bold size={12} style={{marginVertical: 10,marginLeft:width/40,fontWeight:'bold'}}>Mô tả sản phẩm</Text>
+          <Text muted size={12} style={{marginHorizontal:width/40}}>  {this.state.Decription}</Text>         
+          <View style={{height:25}}/>
           </View>
+        </ScrollView>
+        <View style={styles.devide} />
+        <View style={{backgroundColor:"#fff",flexDirection:"row",height:height/16, justifyContent:'center'}}>
+          <TouchableOpacity style={{width:width/1.1, backgroundColor:"#FF3333", justifyContent:'center',borderRadius:5, marginVertical:5,alignItems:'center' }} onPress={this.addCart}>
+            <Text style={{color:'#fff', fontSize:15}}>Chọn mua</Text>
+          </TouchableOpacity>
         </View>
-        </View>
-      
+      </View> 
     );
   }
 }
+export default Product;
 const styles = StyleSheet.create({
  headerFont:{
    flexDirection:"row",
    backgroundColor:"#fff"
  },
+ devide:{
+   height:2
+ },
  profileImage: {
   width: width*0.95 ,
   height: height*0.6,
-
 },
 profileContainer: {
   paddingTop:5,
@@ -165,9 +238,6 @@ profileContainer: {
 options: {
   position: 'relative',
   paddingTop: -5,
-  marginTop: 5 ,
-  borderTopLeftRadius: 13,
-  borderTopRightRadius: 13,
   backgroundColor: "#fff",
   shadowColor: 'black',
   shadowOffset: { width: 0, height: 0 },
@@ -184,9 +254,14 @@ thumb: {
   resizeMode: 'contain',
   marginLeft:10
 },
-btnSubmit:{
-  width:width*0.7,
-  marginLeft:width*0.3,
-  
-}
+itemContainer: {
+  width: width/3.5,
+  marginRight: 12,
+  marginTop: 10,
+},
+itemImage1: {
+  width: 100,
+  height: 120,
+  resizeMode:'contain'
+},
 });

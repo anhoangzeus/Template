@@ -277,13 +277,13 @@ const saveChangesHandle = () => {
       <View style={styles.screenContainer}>
       <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
       <View style={styles.headerContainer}>
-              <View style={styles.cartContainer}>
+              <TouchableOpacity style={styles.cartContainer} onPress={() =>{navigation.goBack()}}>
                 <Ionicons 
                   name='arrow-back-outline' 
                   color='white'  
                   size={25}
-                  onPress={() =>{navigation.goBack()}}/>
-              </View>
+              />
+              </TouchableOpacity>
               <Text style={styles.headerText}>Thông tin tài khoản</Text>
           </View>
           <View style={styles.divider} />
@@ -341,7 +341,10 @@ const saveChangesHandle = () => {
                         onChangeText={(val) => textInputPhone(val)}
                         style={styles.welcomeText}
                         >{data.Phone}</TextInput>
+                        <TouchableOpacity style={{width:width/3,height:60}}>
                         <Text style={{fontSize:15, color:'blue', marginEnd: 10}}>Gửi mã xác nhận</Text>
+                        </TouchableOpacity>
+                     
               </View>
               </View>
           </View>

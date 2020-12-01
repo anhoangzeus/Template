@@ -65,11 +65,9 @@ const ProfileUser =(props)=> {
           <View style={styles.cartIcon} />
         </View>
         <Text style={styles.headerText}>Cá nhân</Text>
-        <View style={styles.cartContainer}>
-        <TouchableOpacity onPress={() => props.navigation.push("Cart")}>
+        <TouchableOpacity style={styles.cartContainer} onPress={() => props.navigation.navigate("Cart")}>
           <FontAwesome name="shopping-cart" size={24} color="#fff" />
           </TouchableOpacity>
-        </View>
       </View>
         <ScrollView>
         <View style={styles.bodyContainer}>
@@ -263,6 +261,7 @@ cartContainer: {
   paddingHorizontal: 20,
   alignItems: 'center',
   justifyContent: 'center',
+  width:75
 },
 cartIcon: {
   width: 24,

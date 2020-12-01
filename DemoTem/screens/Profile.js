@@ -22,9 +22,17 @@ const ProfileItem = ({icon, name}) => (
 export default class Profile extends Component {
   render(){
     return (
-      <View style={styles.screenContainer}>
+           <View style={styles.screenContainer}>
         <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
-        <Header title="Cá nhân" />
+            <View style={styles.headerContainer}>
+        <View style={styles.cartContainer}>
+          <View style={styles.cartIcon} />
+        </View>
+        <Text style={styles.headerText}>Cá nhân</Text>
+        <TouchableOpacity style={styles.cartContainer} onPress={() => this.props.navigation.navigate("Cart")}>
+          <FontAwesome name="shopping-cart" size={24} color="#fff" />
+          </TouchableOpacity>
+      </View>
             <View style={styles.bodyContainer}>
             <View style={styles.userContainer}>
               <View style={styles.avatarContainer}>
@@ -116,5 +124,26 @@ const styles = StyleSheet.create({
   //
   divider: {
     height: 10,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    paddingTop: 15,
+    backgroundColor: '#1e88e5',
+    justifyContent: 'space-between',
+    paddingBottom: 12,
+  },
+  cartContainer: {
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width:75
+  },
+  cartIcon: {
+    width: 24,
+  },
+  headerText: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: '500',
   },
 });

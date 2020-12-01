@@ -50,15 +50,16 @@
       }; 
     }
     BrandItem = ({image,id}) => (
-      <TouchableOpacity onPress={()=> this.ChangBrand({id})} style={{marginHorizontal:5,borderStyle:"solid",
-      borderWidth:2,borderRadius:70, borderColor:'gold'}}>
+      <TouchableOpacity onPress={()=> this.ChangBrand({id})} style={{marginHorizontal:5,borderStyle:"solid",width:width/4.5,height:height/13,
+      justifyContent:"center",alignItems:'center',
+      borderWidth:2,borderRadius:70, borderColor:'#3eafff'}}>
             <Image source={{uri:image}} style={styles.cateImage} />
       </TouchableOpacity>
     );
     CategoryItem = ({name,id,icon}) => (
         <TouchableOpacity  onPress={()=> this.ChangCate({id})}>
           <Icons name={icon} color="gold" size={width/8} 
-          style={{backgroundColor:'#3eafff', marginHorizontal:14, borderRadius:30,marginVertical:5,}}/>
+            style={{backgroundColor:'#3eafff', marginHorizontal:14, borderRadius:30,marginVertical:5,}}/>
           <Text style={styles.itemName1}>{name}</Text>
         </TouchableOpacity>
     );
@@ -124,6 +125,8 @@
                     metades:childSnapshot.val().MetaDescription,
                     image:childSnapshot.val().Image,
                     id: childSnapshot.val().ProductID,
+                    BrandID:childSnapshot.val().BrandID,
+                    CategoryID:childSnapshot.val().CategoryID,
                   })    
                 }else{
                   if(childSnapshot.val().CategoryID == cateid){
@@ -133,6 +136,8 @@
                       metades:childSnapshot.val().MetaDescription,
                       image:childSnapshot.val().Image,
                       id: childSnapshot.val().ProductID,
+                      BrandID:childSnapshot.val().BrandID,
+                      CategoryID:childSnapshot.val().CategoryID,
                   })                
                 }  
               }                    
@@ -147,6 +152,8 @@
                         metades:childSnapshot.val().MetaDescription,
                         image:childSnapshot.val().Image,
                         id: childSnapshot.val().ProductID,
+                        BrandID:childSnapshot.val().BrandID,
+                        CategoryID:childSnapshot.val().CategoryID,
                     })                
                   }  
                 }else{
@@ -157,6 +164,8 @@
                       metades:childSnapshot.val().MetaDescription,
                       image:childSnapshot.val().Image,
                       id: childSnapshot.val().ProductID,
+                      BrandID:childSnapshot.val().BrandID,
+                      CategoryID:childSnapshot.val().CategoryID,
                   })                
                 }  
               }                
@@ -177,11 +186,9 @@
             <FontAwesome name="search" size={24} color="#969696" />
             <Text style={styles.inputText}>Bạn tìm gì hôm nay?</Text>
           </View>
-        <View style={styles.cartContainer}>
-          <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
+          <TouchableOpacity style={styles.cartContainer} onPress={() => navigation.navigate("Cart")}>
              <FontAwesome name="shopping-cart" size={24} color="#fff" /> 
           </TouchableOpacity> 
-        </View>
       </View>
       
       <View style={styles.bodyContainer}> 
@@ -246,7 +253,7 @@
                          numColumns={2}
                          data={this.state.listcate}
                          renderItem={({item})=>
-                         <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id})}>
+                         <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id, CategoryID: item.CategoryID, BrandID: item.BrandID})}>
                              <ProductItem
                              name={item.title}
                              image={item.image}
@@ -297,8 +304,9 @@
     },
     cartContainer: {
       paddingHorizontal: 20,
-      alignItems: 'center',
-      justifyContent: 'center',
+      paddingTop:5,
+      borderRadius:15,
+      width:70
     },
     bodyContainer: {
       flex: 1,
@@ -311,8 +319,8 @@
     itemContainer: {
       alignItems:'center',
       width: width/2,
-      height:height/4,
-      margin: 0.1,
+      height:height/4.2,
+      margin: -0.2,
       borderColor:'#3eafff',
       borderWidth: 1,     
     },
@@ -338,7 +346,7 @@
       marginVertical:5,
       width:width/6.5,
       height:height/20,
-      resizeMode:"center",
+      resizeMode:"contain",
     },
     cate:{
       margin:5,
@@ -372,7 +380,12 @@
     textnum:{
       fontSize:15,
       color:'#1ba8ff'
-    }
+    },
+    itemImage1: {
+      width: 100,
+      height: 120,
+      resizeMode:'contain'
+    },
   });
   
    

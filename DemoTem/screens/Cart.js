@@ -128,7 +128,7 @@ export default class Cart extends Component{
      <View style={styles.screenContainer}>
         <StatusBar barStyle="light-content" />
         <View style={styles.headerContainer}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={{width:75}} onPress={() => navigation.goBack()}>
           <FontAwesome name="chevron-left" size={24} color="#fff" style={{marginLeft:width/40}}/>
           </TouchableOpacity>
         
@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
     headerText:{
       color:"white",
       textAlignVertical: 'center',
-      marginLeft:width*0.35,
+      marginLeft:width*0.23,
       fontSize:20,
     },
     itemcard:{

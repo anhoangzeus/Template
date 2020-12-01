@@ -266,13 +266,13 @@ const saveChangesHandle = async() => {
       <View style={styles.screenContainer}>
       <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
       <View style={styles.headerContainer}>
-              <View style={styles.cartContainer}>
+              <TouchableOpacity style={styles.cartContainer} onPress={() =>{navigation.goBack()}}>
                 <Ionicons 
                   name='arrow-back-outline' 
                   color='white'  
                   size={25}
-                  onPress={() =>{navigation.goBack()}}/>
-              </View>
+                  />
+              </TouchableOpacity>
               <Text style={styles.headerText}>Cập nhật địa chỉ</Text>
           </View>
           <View style={styles.divider} />
@@ -555,6 +555,7 @@ const styles = StyleSheet.create({
       },
       cartContainer: {
         paddingHorizontal: 20,
+        width:75
       },
       headerText: {
         color: '#fff',

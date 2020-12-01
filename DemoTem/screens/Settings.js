@@ -73,17 +73,15 @@ export default class Setting extends React.Component {
     <View style={styles.headerContainer}>    
       <View style={styles.inputContainer}>
         <FontAwesome name="search" size={24} color="#969696" />
-        <TextInput style={styles.inputText} placeholder="Bạn tìm gì hôm nay" 
+        <TextInput style={styles.inputText} placeholder="Bạn tìm gì hôm nay?" 
         autoFocus={true}
         onChangeText={(text) => this.setState({searchText:text})}
         onSubmitEditing={() => this.searchDictionary()}
         />
       </View>
-      <View style={styles.cartContainer}>
-        <TouchableOpacity onPress={() => navigation.push("Cart")}>
+        <TouchableOpacity style={styles.cartContainer} onPress={() => navigation.navigate("Cart")}>
            <FontAwesome name="shopping-cart" size={24} color="#fff" /> 
         </TouchableOpacity> 
-      </View>
     </View>
     <View style={styles.bodyContainer}>     
     <View style={styles.sectionContainer}>    
@@ -96,7 +94,7 @@ export default class Setting extends React.Component {
         numColumns={3}
         data={this.state.listcate}
         renderItem={({item})=>
-        <TouchableOpacity onPress={() => navigation.push('Items', {id: item.id})}>
+        <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id})}>
              <ProductItem
             name={item.title}
             image={item.image}
@@ -147,8 +145,9 @@ const styles = StyleSheet.create({
   },
   cartContainer: {
     paddingHorizontal: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
+    borderRadius:15,
+    width:70,
+    paddingTop:10,
   },
   //
   bodyContainer: {
