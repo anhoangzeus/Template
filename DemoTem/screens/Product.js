@@ -69,6 +69,8 @@ class Product extends Component {
 
     var CategoryID = this.props.CategoryID;
     var BrandID = this.props.BrandID;
+    var ProductID = this.state.idsanpham;
+
     console.log(CategoryID, BrandID);
     this.itemRef.ref('Products').once('value').then((snapshot)=>{
       var items= [];
@@ -79,15 +81,17 @@ class Product extends Component {
           Price:'',
           proid:''
         }
-        if(snapshot.val().CategoryID == CategoryID){
-          if(snapshot.val().BrandID==BrandID){
-            product.image=snapshot.val().Image;
-            product.Name=snapshot.val().Name;
-            product.Price=snapshot.val().Price;
-            product.proid=snapshot.val().ProductID;
-            console.log(product);
-            items.push(product);    
-          }                      
+        if(snapshot.val().ProductID!= ProductID){
+          if(snapshot.val().CategoryID == CategoryID){
+            if(snapshot.val().BrandID==BrandID){
+              product.image=snapshot.val().Image;
+              product.Name=snapshot.val().Name;
+              product.Price=snapshot.val().Price;
+              product.proid=snapshot.val().ProductID;
+              console.log(product);
+              items.push(product);    
+            }                      
+          }
         }
       })
       console.log(items);
@@ -124,6 +128,7 @@ class Product extends Component {
   componentDidUpdate(prevProps, prevState){
     if(this.state.idsanpham != prevState.idsanpham){
       this.getData();
+      this.getItemRespon();
     }
   }
   render() {
@@ -162,7 +167,7 @@ class Product extends Component {
               <View style={{flexDirection:'row', alignItems:'center', marginVertical:10}}>
                 <Text color="Black"  style={{ fontSize:24,marginLeft:width/40, color:'black', fontWeight:'bold' }}><ReactNativeNumberFormat value={this.state.Price}/> </Text>
                 <Text style={{textDecorationLine:"line-through", fontSize:15, marginLeft:15, color:"#696969"}}>3000000 đ</Text>
-                <Text style={{marginLeft:10, color:'red'}}>-20%</Text>
+                <Text style={{marginLeft:5, color:'red'}}>-20%</Text>
               </View>   
                 <View>  
                     <Text  style={{marginBottom: 10,fontSize:15,fontWeight:"bold",marginLeft:width/40}}>{this.state.Waranty} tháng bảo hành</Text>
@@ -205,7 +210,7 @@ class Product extends Component {
             <Text style={{color:'#fff', fontSize:15}}>Chọn mua</Text>
           </TouchableOpacity>
         </View>
-        </View> 
+      </View> 
     );
   }
 }

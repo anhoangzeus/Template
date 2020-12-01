@@ -34,7 +34,6 @@ export default class Home extends React.Component {
 componentDidMount(){
   this.ListenForItemsLaptop();
   this.ListenForItemsPhone();
-  
 }
 
 ListenForItemsPhone = () => {
@@ -280,9 +279,7 @@ searchDictionary=()=>{
         }
         ></FlatList>    
       </View>
-
         <View style={{height:200}}></View>
-
       </ScrollView>
       </SafeAreaView>
       </View>
