@@ -29,6 +29,7 @@ class Product extends Component {
       Price: "",
       Waranty:"",
       List_Productlienquan:[],
+      idsanpham:this.props.content
     };
   }
  
@@ -96,7 +97,7 @@ class Product extends Component {
     })
   }
   getData =()=>{
-    this.itemRef.ref('/Products/').child(this.props.content)
+    this.itemRef.ref('/Products/').child(this.state.idsanpham)
     .on('value', snapshot => {
       this.setState({
         Decription:snapshot.val().Description,
@@ -120,11 +121,16 @@ class Product extends Component {
     this.getData();
     this.getItemRespon();
   }
+  componentDidUpdate(prevProps, prevState){
+    if(this.state.idsanpham != prevState.idsanpham){
+      this.getData();
+    }
+  }
   render() {
     const { navigation } = this.props;
     return (
         <View  style={{flex:1,backgroundColor:"#ededed"}}>
-              <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+              <StatusBar barStyle="dark-content" backgroundColor="#fff"/>
              <View style={styles.headerFont} >
              <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,alignItems:'center',marginLeft:5,justifyContent:'center'}} onPress={()=> navigation.goBack()}> 
                     <FontAwesome name="chevron-left" size={25} color="white"/>
@@ -175,8 +181,7 @@ class Product extends Component {
               style={{marginHorizontal:10}}
               data={this.state.List_Productlienquan}
                   renderItem={({item})=>
-                  <TouchableOpacity onPress={() => 
-                      navigation.push('Items', {id: item.proid, CategoryID: this.props.CategoryID, BrandID: this.props.BrandID})}>
+                  <TouchableOpacity  onPress={() => this.setState({idsanpham:item.proid})}>
                       <this.ProductItem           
                       image={item.image}
                       Name={item.Name}
@@ -190,7 +195,7 @@ class Product extends Component {
           <View style={{height:5}}/>
           <View style={{backgroundColor:'#fff'}}>
           <Text bold size={12} style={{marginVertical: 10,marginLeft:width/40,fontWeight:'bold'}}>Mô tả sản phẩm</Text>
-              <Text muted size={12} style={{marginLeft:width/40}}>  {this.state.Decription}</Text>         
+          <Text muted size={12} style={{marginHorizontal:width/40}}>  {this.state.Decription}</Text>         
           <View style={{height:25}}/>
           </View>
         </ScrollView>
@@ -200,8 +205,7 @@ class Product extends Component {
             <Text style={{color:'#fff', fontSize:15}}>Chọn mua</Text>
           </TouchableOpacity>
         </View>
-        </View>
-      
+        </View> 
     );
   }
 }
