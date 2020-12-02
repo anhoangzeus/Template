@@ -29,7 +29,7 @@ export default class Home extends React.Component {
      listpro:[],
      listphone:[],
      searchText:"",
-     numcart:1,
+     numcart:0,
     }; 
   } 
 componentDidMount(){
@@ -138,14 +138,13 @@ renderNofiCart = () =>{
     this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid).once('value').then((snapshot) => {
       var dem =0;
       snapshot.forEach(function(childSnapshot){
-       dem +=1;
+       dem += childSnapshot.val().Quantity;
       });
       this.setState({
        numcart:dem,
       })  
     })  
   }
- 
   if(this.state.numcart == 0){
     return null;
   }
@@ -179,12 +178,11 @@ renderNofiCart = () =>{
     <TouchableOpacity  onPress={()=> navigation.navigate("Setting")}>
     <View style={styles.inputContainer}>
      
-          <FontAwesome name="search" size={24} color="#969696" />
+          <FontAwesome name="search" size={24} co lor="#969696" />
           <Text style={styles.inputText}>Bạn tìm gì hôm nay?</Text>
      
       </View>
       </TouchableOpacity>
-      {/*  */}
       <View style={styles.cartContainer}>
           <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
             
@@ -195,7 +193,7 @@ renderNofiCart = () =>{
       </View>
      
     </View>
-    {/*  */}
+
     <View style={styles.bodyContainer}>
     
     
@@ -242,7 +240,6 @@ renderNofiCart = () =>{
         data={this.state.listphone}
         key={this.state.listpro.id}
         renderItem={({item})=>
-
         <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id, CategoryID: item.CategoryID, BrandID: item.BrandID})}>
             <ProductItem
                     name={item.title}
@@ -304,7 +301,6 @@ renderNofiCart = () =>{
         pagingEnabled={false}
         data={this.state.listpro}
         renderItem={({item})=>
-
         <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id, CategoryID: item.CategoryID, BrandID: item.BrandID})}>
              <ProductItem
             name={item.title}
@@ -361,7 +357,6 @@ const styles = StyleSheet.create({
     width:75,
     borderRadius:15,
     paddingTop:5,
-
   },
   bodyContainer: {
     flex: 1,
