@@ -4,6 +4,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 import NumberFormat from 'react-number-format';
+import { set } from 'react-native-reanimated';
 
 const { width, height } = Dimensions.get('screen');
 const thumbMeasure = (width - 48 - 32) / 3;
@@ -23,33 +24,48 @@ class Product extends Component {
     super(props);
     this.itemRef = fbApp.database();
     this.state = {
+      numcart:0,
       Decription: "",
       Image: "",
       Name: "",
       Price: "",
       Waranty:"",
       List_Productlienquan:[],
-      idsanpham:this.props.content
+      idsanpham:this.props.content,
+      listcart:[],
     };
   }
  
   addCart =()=>{
-    console.log("da vao:"+this.props.content);
-    const Id_Item = this.props.content;
+    const Id_Item = this.state.idsanpham;
+    console.log("id sản phẩm: "+Id_Item);
+    console.log(this.state.listcart);
+    var key;
+    var product={
+      image:'https://i.ibb.co/dj6fBrX/empty.jpg',
+      Name:'',
+      Price:'',
+      ProductID:'',
+      Quantity:0,
+    }
     var temp =0;
-    if(fbApp.auth().currentUser != null){
-      console.log('Cart/'+fbApp.auth().currentUser.uid);
-      this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid).once('value').then((snapshot) => {
-      console.log("snapshot: "+snapshot.val());
-      snapshot.forEach(function (childSnapshot){   
-        console.log(Id_Item +" và "+childSnapshot.val().Id);
-        if(childSnapshot.val().Id == Id_Item){
-          return 0;
-        }
-      }) 
-    })  
+    this.state.listcart.forEach(function(element){
+      console.log("id san pham trong gio hang:"+ element.Id);
+      if(element.Id == Id_Item){
+        console.log("đã trùng");
+        element.Quantity+=1;
+        temp +=1;
+        product.image=element.Picture;
+        product.Name=element.Name;
+        key=element.key;
+        product.Price=element.Price;
+        product.ProductID=element.Id;
+        product.Quantity=element.Quantity;
+      }
+    })
+    console.log("product:"+product.image);
+    if(fbApp.auth().currentUser != null){ 
     if(temp == 0){
-      console.log("khac khong");
       this.itemRef.ref('/Cart/'+fbApp.auth().currentUser.uid).push({
         Id :this.props.content,
         Name:this.state.Name,
@@ -57,7 +73,17 @@ class Product extends Component {
         Price: this.state.Price,
         Quantity:1, 
       })
-    } 
+    }
+    else {
+      this.itemRef.ref('/Cart/'+fbApp.auth().currentUser.uid+"/"+key).set({
+        Id:product.ProductID,
+        Name:product.Name,
+        Picture:product.image,
+        Price:product.Price,
+        Quantity:product.Quantity,
+      })
+    }
+    this.GetCartData();
     Alert.alert("thêm thành công");
   }
   else{
@@ -66,11 +92,9 @@ class Product extends Component {
   }
 }
   getItemRespon=()=>{
-
     var CategoryID = this.props.CategoryID;
     var BrandID = this.props.BrandID;
     var ProductID = this.state.idsanpham;
-
     console.log(CategoryID, BrandID);
     this.itemRef.ref('Products').once('value').then((snapshot)=>{
       var items= [];
@@ -112,6 +136,34 @@ class Product extends Component {
       })  
     });
   }
+  GetCartData = ()=>{
+    if(fbApp.auth().currentUser){
+      this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid).once('value').then((snapshot) => {
+        var items =[];
+        snapshot.forEach(function(childSnapshot){
+          var product={
+          key:'',
+          Id:'',
+          Name:'',
+          Picture:'',
+          Price:'',
+          Quantity:0,
+          }
+          product.key=childSnapshot.key;
+          product.Id=childSnapshot.val().Id;
+          product.Name=childSnapshot.val().Name;
+          product.Picture=childSnapshot.val().Picture;
+          product.Price=childSnapshot.val().Price;
+          product.Quantity=childSnapshot.val().Quantity;
+          items.push(product);
+        });
+        this.setState({
+          listcart:items,
+        })  
+        
+      })  
+    }
+  }
   ProductItem = ({image, Name, Price}) => (
     <View style={styles.itemContainer}>
       <Image source={{uri: image}} style={styles.itemImage1}/>
@@ -121,9 +173,36 @@ class Product extends Component {
       <ReactNativeNumberFormat value={Price} />
     </View>
   );
+  renderNofiCart = () =>{
+    if(fbApp.auth().currentUser){ 
+      this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid).once('value').then((snapshot) => {
+        var dem =0;
+        snapshot.forEach(function(childSnapshot){
+          
+         dem += childSnapshot.val().Quantity ;
+        });
+        this.setState({
+         numcart:dem,
+        })  
+      })  
+    }
+    if(this.state.numcart == 0){
+      return null;
+    }
+    else{
+      return(
+        <View style={{position:"absolute", borderRadius:15,backgroundColor:"red",
+              height:15,width:15,alignItems:"center",justifyContent:"center",
+              marginLeft:width/10}}>
+                <Text style={{color:"white"}}>{this.state.numcart}</Text>
+              </View>
+      )
+    }
+  }
   componentDidMount(){
     this.getData();
     this.getItemRespon();
+    this.GetCartData();
   }
   componentDidUpdate(prevProps, prevState){
     if(this.state.idsanpham != prevState.idsanpham){
@@ -137,18 +216,21 @@ class Product extends Component {
         <View  style={{flex:1,backgroundColor:"#ededed"}}>
               <StatusBar barStyle="dark-content" backgroundColor="#fff"/>
              <View style={styles.headerFont} >
-             <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,alignItems:'center',marginLeft:5,justifyContent:'center'}} onPress={()=> navigation.goBack()}> 
+              <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,alignItems:'center',marginLeft:5,justifyContent:'center'}} onPress={()=> navigation.goBack()}> 
                     <FontAwesome name="chevron-left" size={25} color="white"/>
-                </TouchableOpacity>
-                <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,marginLeft:width*0.45,alignItems:'center',justifyContent:'center'}} onPress={()=> {}}> 
+              </TouchableOpacity>
+              <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,marginLeft:width*0.45,alignItems:'center',justifyContent:'center'}} onPress={()=> {}}> 
                     <FontAwesome name="search" size={25} color="white"/>
-            </TouchableOpacity>
+              </TouchableOpacity>
                <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,marginLeft:width*0.01,alignItems:'center',justifyContent:'center'}} onPress={() => navigation.navigate("App")}>
                <FontAwesome name="home" size={30} color="white" />
                </TouchableOpacity>
+               <View>
                <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,marginLeft:width*0.01,alignItems:'center',justifyContent:'center'}} onPress={() => navigation.navigate("Cart")} >
                <FontAwesome name="shopping-cart" size={30} color="white" />
-               </TouchableOpacity>      
+               </TouchableOpacity>  
+               {this.renderNofiCart()}    
+               </View>
               </View>
               <ScrollView showsVerticalScrollIndicator={false}>
               <View backgroundColor="white">

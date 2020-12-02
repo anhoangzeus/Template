@@ -29,7 +29,7 @@ export default class Home extends React.Component {
      listpro:[],
      listphone:[],
      searchText:"",
-     numcart:1,
+     numcart:0,
     }; 
   } 
 componentDidMount(){
@@ -138,14 +138,13 @@ renderNofiCart = () =>{
     this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid).once('value').then((snapshot) => {
       var dem =0;
       snapshot.forEach(function(childSnapshot){
-       dem +=1;
+       dem += childSnapshot.val().Quantity;
       });
       this.setState({
        numcart:dem,
       })  
     })  
   }
- 
   if(this.state.numcart == 0){
     return null;
   }
@@ -179,13 +178,12 @@ renderNofiCart = () =>{
     <TouchableOpacity  onPress={()=> navigation.navigate("Setting")}>
     <View style={styles.inputContainer}>
      
-          <FontAwesome name="search" size={24} color="#969696" />
+          <FontAwesome name="search" size={24} co lor="#969696" />
           <Text style={styles.inputText}>Bạn tìm gì hôm nay?</Text>
      
       </View>
       </TouchableOpacity>
-      {/*  */}
-<<<<<<< HEAD
+
       <View style={styles.cartContainer}>
           <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
             
@@ -195,13 +193,8 @@ renderNofiCart = () =>{
          
       </View>
      
-=======
-        <TouchableOpacity style={styles.cartContainer} onPress={() => navigation.navigate("Cart")}>
-          <FontAwesome name="shopping-cart" size={24} color="#fff" /> 
-        </TouchableOpacity> 
->>>>>>> aa69b8097fe880364f058b6015136456a0883eb7
     </View>
-    {/*  */}
+
     <View style={styles.bodyContainer}>
     
     
@@ -248,11 +241,7 @@ renderNofiCart = () =>{
         data={this.state.listphone}
         key={this.state.listpro.id}
         renderItem={({item})=>
-<<<<<<< HEAD
-        <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id})}>
-=======
         <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id, CategoryID: item.CategoryID, BrandID: item.BrandID})}>
->>>>>>> aa69b8097fe880364f058b6015136456a0883eb7
             <ProductItem
                     name={item.title}
                     image={item.image}
@@ -313,11 +302,7 @@ renderNofiCart = () =>{
         pagingEnabled={false}
         data={this.state.listpro}
         renderItem={({item})=>
-<<<<<<< HEAD
-        <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id})}>
-=======
         <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id, CategoryID: item.CategoryID, BrandID: item.BrandID})}>
->>>>>>> aa69b8097fe880364f058b6015136456a0883eb7
              <ProductItem
             name={item.title}
             image={item.image}
@@ -369,15 +354,9 @@ const styles = StyleSheet.create({
   },
   cartContainer: {
     paddingHorizontal: 20,
-<<<<<<< HEAD
    
     justifyContent: 'center',
     width:75
-=======
-    borderRadius:15,
-    width:70,
-    paddingTop:5,
->>>>>>> aa69b8097fe880364f058b6015136456a0883eb7
   },
   bodyContainer: {
     flex: 1,
