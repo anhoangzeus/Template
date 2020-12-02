@@ -266,7 +266,7 @@
                </View>   
           </View>
         </View>
-        <View style={{height:height/5}}>
+        <View style={{height:height/7}}>
         </View>     
         </ScrollView>  
         </View>

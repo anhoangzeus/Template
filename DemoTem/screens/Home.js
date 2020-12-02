@@ -185,7 +185,6 @@ renderNofiCart = () =>{
       </View>
       </TouchableOpacity>
       {/*  */}
-<<<<<<< HEAD
       <View style={styles.cartContainer}>
           <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
             
@@ -195,11 +194,6 @@ renderNofiCart = () =>{
          
       </View>
      
-=======
-        <TouchableOpacity style={styles.cartContainer} onPress={() => navigation.navigate("Cart")}>
-          <FontAwesome name="shopping-cart" size={24} color="#fff" /> 
-        </TouchableOpacity> 
->>>>>>> aa69b8097fe880364f058b6015136456a0883eb7
     </View>
     {/*  */}
     <View style={styles.bodyContainer}>
@@ -248,11 +242,8 @@ renderNofiCart = () =>{
         data={this.state.listphone}
         key={this.state.listpro.id}
         renderItem={({item})=>
-<<<<<<< HEAD
-        <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id})}>
-=======
+
         <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id, CategoryID: item.CategoryID, BrandID: item.BrandID})}>
->>>>>>> aa69b8097fe880364f058b6015136456a0883eb7
             <ProductItem
                     name={item.title}
                     image={item.image}
@@ -313,11 +304,8 @@ renderNofiCart = () =>{
         pagingEnabled={false}
         data={this.state.listpro}
         renderItem={({item})=>
-<<<<<<< HEAD
-        <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id})}>
-=======
+
         <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id, CategoryID: item.CategoryID, BrandID: item.BrandID})}>
->>>>>>> aa69b8097fe880364f058b6015136456a0883eb7
              <ProductItem
             name={item.title}
             image={item.image}
@@ -368,16 +356,12 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   cartContainer: {
-    paddingHorizontal: 20,
-<<<<<<< HEAD
-   
+    paddingHorizontal: 20, 
     justifyContent: 'center',
-    width:75
-=======
+    width:75,
     borderRadius:15,
-    width:70,
     paddingTop:5,
->>>>>>> aa69b8097fe880364f058b6015136456a0883eb7
+
   },
   bodyContainer: {
     flex: 1,
