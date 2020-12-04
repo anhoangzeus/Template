@@ -27,6 +27,7 @@ export default function Route_OrderDetail({ route, navigation}) {
     var searchContent = "";    
     if (route.params != null) {
         const { content } = route.params.id;
+        console.log(content);
         searchContent = route.params.id;
     }
     return (

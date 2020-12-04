@@ -26,6 +26,7 @@ import Route_OrderDetail from '../screens/Detail_Order';
 import PaymentScreen from '../screens/Payment';
 import Route_AddressDetail from '../screens/DetailAddressScreen';
 import Cart from '../screens/Cart';
+import PaySuccess from '../screens/Payment/PaySuccess'
 
 import CustomDrawerContent from './Menu';
 import { Icon, Header } from '../components';
@@ -198,6 +199,7 @@ export default function ProjectStack(props) {
       <Stack.Screen name="AddressScreen" component={AddressScreen}/>
       <Stack.Screen name="DetailAddressScreen" component={Route_AddressDetail}/>
       <Stack.Screen name="NotificationScreen" component={NotificationScreen}/>
+      <Stack.Screen name="PaySuccess" component={PaySuccess}/>
     </Stack.Navigator>
   );
 }

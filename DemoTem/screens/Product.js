@@ -38,8 +38,7 @@ class Product extends Component {
  
   addCart =()=>{
     const Id_Item = this.state.idsanpham;
-    console.log("id sản phẩm: "+Id_Item);
-    console.log(this.state.listcart);
+
     var key;
     var product={
       image:'https://i.ibb.co/dj6fBrX/empty.jpg',

@@ -11,27 +11,55 @@ import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 import { element } from 'prop-types';
+import NumberFormat from 'react-number-format';
+import { RadioButton } from 'react-native-paper';
 
-
-export default class Cart extends Component{
+function ReactNativeNumberFormat({ value }) {
+  return (
+    <NumberFormat
+      value={value}
+      displayType={'text'}
+      thousandSeparator={true}
+      renderText={formattedValue => <Text>{formattedValue} đ</Text>} 
+    />
+  );
+};
+export default function Payment({ route, navigation}){
+  console.log(route.params);
+  if (route.params != null) {
+      para =route.params.content;
+      
+  }
+  return (
+      <Payscreen
+          amount = {para}
+          navigation = {navigation}
+      />
+  );    
+}
+export class Payscreen extends Component{
     constructor(props) {
         super(props);
         LogBox.ignoreAllLogs();
         this.itemRef = fbApp.database();
         this.state = { 
-         CartItem:[],
          Address:{},
-         refesh:true,
-         amount:0,
-
+         checked: 'first',
         }; 
       }
-    componentDidMount(){
-          this.ListenCart();       
+    componentDidMount(){  
           this.GetAddress();
     }
     
-
+    GetCurrentDate =()=>{
+      var date = new Date().getDate();
+      var month = new Date().getMonth() + 1; 
+      var year = new Date().getFullYear();
+      var gio = new Date().getHours();
+      var phut = new Date().getMinutes();
+      var giay = new Date().getSeconds();
+        return date + '/' +month+ "/" +year + " " + gio+":"+ phut+":"+giay;
+    }
       GetAddress =() =>{
         if(fbApp.auth().currentUser)
         {
@@ -64,50 +92,17 @@ export default class Cart extends Component{
             })
         }
       }
-      ListenCart = () => {
-        if(fbApp.auth().currentUser){
-          this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid).once('value').then((snapshot) => {
-            var items =[];
-            snapshot.forEach(function(childSnapshot){
-              var product={
-              key:'',
-              Id:'',
-              Name:'',
-              Picture:'',
-              Price:'',
-              Quantity:'',
-              }
-              product.key=childSnapshot.key;
-              product.Id=childSnapshot.val().Id;
-              product.Name=childSnapshot.val().Name;
-              product.Picture=childSnapshot.val().Picture;
-              product.Price=childSnapshot.val().Price;
-              product.Quantity=childSnapshot.val().Quantity;
-              items.push(product);
-            });
-            this.setState({
-              CartItem:items,
-            })  
-            console.log(this.state.amount);
-          })  
-        }
-        }
+      
     render(){
       const { navigation } = this.props;
-      console.log(this.state.CartItem);
-      this.state.amount=0;
-      this.state.CartItem.forEach(element =>{      
-        const a = Number(element.Price);        
-        this.state.amount+=(Number(element.Price) * element.Quantity);
-      })  
+      const { checked } = this.state;
         return(      
      <View style={styles.screenContainer}>
         <StatusBar barStyle="light-content" />
         <View style={styles.headerContainer}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-          <FontAwesome name="times" size={24} color="#fff" style={{marginLeft:width/40}}/>
+          <TouchableOpacity style={{width:width/5}} onPress={() => navigation.goBack()}>
+          <FontAwesome name="angle-left" size={30} color="#fff" style={{marginLeft:width/40}}/>
           </TouchableOpacity>
-        
           <Text style={styles.headerText}>Thanh Toán</Text>  
         </View>
         <ScrollView style={{height:height}}>     
@@ -120,23 +115,81 @@ export default class Cart extends Component{
               >
               <Text style={{color:'green', marginRight:5, fontSize:17}}>Thay đổi</Text>
             </TouchableOpacity>
-            </View>
-           
+            </View>  
             <Text style={styles.address}>{this.state.Address.NumberAddress}, {this.state.Address.Xa}, {this.state.Address.Huyen}, {this.state.Address.City}</Text>
             <Text style={styles.address}>{this.state.Address.ShipName} - {this.state.Address.ShipPhone}</Text>
             <View style={{justifyContent:'space-between', flexDirection:'row',marginTop:10}}>
               </View>             
             </View>                   
       </View>
-
-       
+          <View style={styles.paymentoption}>
+            <Text style={{fontSize:16}}>Chọn hình thức thanh toán</Text>
+            <View style={styles.option}>
+            <RadioButton value="first"
+            color="#3399ff"
+            status={checked === 'first' ? 'checked' : 'unchecked'}
+            onPress={() => { this.setState({ checked: 'first' }); }} />
+            <FontAwesome name="money" size={30} />
+            <Text style={{marginLeft:width/40,fontSize:16}}>Thanh toán tiền mặt</Text>
+            </View>
+            <View style={styles.option}>
+            <RadioButton />
+            <FontAwesome name="credit-card" size={30} />
+            <Text style={{marginLeft:width/40,fontSize:16}}>Thanh toán trực tuyến (hiện chưa hỗ trợ)</Text>      
+            </View>
+          </View>
+          <View style={styles.count}>
+            <View flexDirection='row'>
+              <Text style={{fontSize:17, fontWeight:'10'}} color="#666666">Tạm tính</Text>
+            <Text style={{marginLeft:width/2,fontSize:20}}><ReactNativeNumberFormat value={this.props.amount} /></Text>
+            </View>
+            <View flexDirection='row'>
+              <Text style={{fontSize:17}} color="#666666">Phí vận chuyển</Text>
+              <Text style={{marginLeft:width/2,fontSize:20}}><ReactNativeNumberFormat value={50000} /></Text>
+            </View>
+          </View>
         </ScrollView>
         <View style={{backgroundColor:"#fff",marginBottom:5}}>
-          <View flexDirection="row">
+        <View flexDirection="row">
               <Text style={{marginLeft:10, fontSize:16}}>Thành tiền: </Text>
-              <View style={{marginLeft:width*0.4}}><Text color="red" style={{fontSize:20}}>{this.state.amount} đ</Text></View>
+              <View style={{marginLeft:width*0.4}}><Text color="red" style={{fontSize:20}}><ReactNativeNumberFormat value={this.props.amount + 50000} /></Text></View>
           </View>
-          <Button style={styles.btnSubmit} >Tiến hành đặt hàng</Button>
+          <Button style={styles.btnSubmit} color="#ff3333" onPress={()=>{
+                  var key = fbApp.database().ref().child('Orders/').push().key;
+             var phone = this.state.Address.ShipPhone;
+             var name = this.state.Address.ShipName;
+             console.log(phone);
+             console.log(name);
+             var diachi = this.state.Address.NumberAddress+", "+this.state.Address.Xa+", "+this.state.Address.Huyen+", "+ this.state.Address.City;
+             
+               this.itemRef.ref('/Orders/'+key).set({
+                 Status:1,
+                 CreatedDate:this.GetCurrentDate(),
+                 ShipAddress:diachi,
+                 ShipName:name,
+                 ShipMoblie:phone,
+                 OrderID: key,
+                 Payment:"01",
+                 Total:this.props.amount + 50000,
+                 CustomerID:fbApp.auth().currentUser.uid,
+                 
+               })
+               this.itemRef.ref("Cart/"+fbApp.auth().currentUser.uid).once("value").then((snapshot)=>{
+                 
+                  snapshot.forEach(function(childSnapshot){
+                  var keyDetail = fbApp.database().ref().child('OrderDetails/').push().key;
+                  fbApp.database().ref('/OrderDetails/'+keyDetail).set({
+                   OrderDetailID:keyDetail,
+                   OrderID:key,
+                   Price:childSnapshot.val().Price,
+                   ProductID: childSnapshot.val().Id,
+                   Quantity:childSnapshot.val().Quantity
+                  })
+                })
+               } )
+               
+               this.props.navigation.navigate("TopOrder");
+          }}>Xác nhận</Button>
         </View>
       <View style={styles.bodyContainer}></View>
     </View>
@@ -148,7 +201,6 @@ const styles = StyleSheet.create({
       flex: 1,
       backgroundColor:"silver"
     },
-    
     headerContainer: {
       flexDirection: 'row',
       paddingTop: 10,
@@ -158,7 +210,7 @@ const styles = StyleSheet.create({
     headerText:{
       color:"white",
       textAlignVertical: 'center',
-      marginLeft:width*0.35,
+      marginLeft:width*0.15,
       fontSize:20,
     },
     itemcard:{
@@ -167,7 +219,6 @@ const styles = StyleSheet.create({
       height:height*0.3,
       marginTop:width/100,
     },
-    
     inputContainer: {
       backgroundColor: '#fff',
       flexDirection: 'row',
@@ -177,7 +228,6 @@ const styles = StyleSheet.create({
       paddingVertical: 8,
       paddingHorizontal: 12,
       borderRadius: 2,
-      
     },
     listItem:{
       backgroundColor:"#fff",
@@ -185,52 +235,10 @@ const styles = StyleSheet.create({
       alignSelf:"center",
       flexDirection:"row",
       borderRadius:5,
-    },
-    inputText: {
-      color: '#969696',
-      fontSize: 14,
-      marginLeft: 8,
-      fontWeight: '500',
-    },
-    cartContainer: {
-      paddingHorizontal: 20,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    
+    },   
     bodyContainer: {
       flex: 1,
       backgroundColor: 'silver',
-    },
-    itemGift:{
-      marginLeft:10,
-      flexDirection:"row"
-    },
-    itemImage: {
-      width: width/4,
-     height:height/6,
-     resizeMode:'contain'
-    },
-    itemInfo: {
-      flexDirection: 'row',
-      marginTop:height/35,
-      marginLeft:5
-    },
-    
-    itemName: {
-      fontSize: 16,
-      color: '#484848',
-      marginVertical: 4,
-      fontWeight:"bold"
-    },
-    itemDec:{
-      marginLeft: width/20,
-      marginRight:20,
-      width:width*0.45,
-    },
-    buttonUpDown:{
-     width:width/15,
-     height:height/30,
     },
     btnSubmit:{
       width:width*0.9,
@@ -243,7 +251,17 @@ const styles = StyleSheet.create({
     addresstitle:{
       fontWeight:'bold',
       fontSize:17
-
+    },  
+    paymentoption:{
+      backgroundColor:'#fff',
+      marginTop:height/100,
+    },
+    option:{
+      flexDirection:'row',
+      marginTop:height/50,
+    },
+    count:{
+      backgroundColor:'#fff',
+      marginTop:height/100,
     }
-    
   });

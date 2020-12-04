@@ -174,7 +174,7 @@ export default class Cart extends Component{
               <Text style={{marginVertical:4,fontSize:16}} numberOfLines={2}> </Text>
               <Text style={{marginVertical:4,fontSize:19, color:"red"}}><ReactNativeNumberFormat value={item.Price}/></Text>
               <View style={{flexDirection:"row"}}>            
-                  <Button style={styles.buttonUpDown}  onPress={()=>{
+                  <Button style={styles.buttonUpDown} color='#ff3333' onPress={()=>{
                     if(item.Quantity>1){
                       console.log("vào sub");
                       this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid+"/"+item.key).set({
@@ -208,7 +208,7 @@ export default class Cart extends Component{
                     }
                   }}>-</Button>
                 <View style={{marginTop:10}}><Text fontSize={18} >{item.Quantity}</Text></View>
-                <Button style={styles.buttonUpDown} onPress={
+                <Button style={styles.buttonUpDown} color='#ff3333' onPress={
                   ()=>{
                     console.log("vào add");
                     this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid+"/"+item.key).set({
@@ -258,36 +258,37 @@ export default class Cart extends Component{
               <Text style={{marginLeft:10, fontSize:16}}>Thành tiền: </Text>
               <View style={{marginLeft:width*0.4}}><Text color="red" style={{fontSize:20}}><ReactNativeNumberFormat value={this.state.amount} /></Text></View>
           </View>
-          <Button style={styles.btnSubmit} onPress={() =>{
-             var key = fbApp.database().ref().child('Orders/').push().key;
-             var phone = this.state.Address.ShipPhone;
-             var name = this.state.Address.ShipName;
-             console.log(phone);
-             console.log(name);
-             var diachi = this.state.Address.NumberAddress+", "+this.state.Address.Xa+", "+this.state.Address.Huyen+", "+ this.state.Address.City;
+          <Button style={styles.btnSubmit} color='#ff3333' onPress={() =>{
+            //  var key = fbApp.database().ref().child('Orders/').push().key;
+            //  var phone = this.state.Address.ShipPhone;
+            //  var name = this.state.Address.ShipName;
+            //  console.log(phone);
+            //  console.log(name);
+            //  var diachi = this.state.Address.NumberAddress+", "+this.state.Address.Xa+", "+this.state.Address.Huyen+", "+ this.state.Address.City;
              
-               this.itemRef.ref('/Orders/'+key).set({
-                 Status:1,
-                 CreatedDate:this.GetCurrentDate(),
-                 ShipAddress:diachi,
-                 ShipName:name,
-                 ShipMoblie:phone,
-                 OrderID: key,
-                 Payment:"01",
-                 Total:this.state.amount,
-                 CustomerID:fbApp.auth().currentUser.uid,
+            //    this.itemRef.ref('/Orders/'+key).set({
+            //      Status:1,
+            //      CreatedDate:this.GetCurrentDate(),
+            //      ShipAddress:diachi,
+            //      ShipName:name,
+            //      ShipMoblie:phone,
+            //      OrderID: key,
+            //      Payment:"01",
+            //      Total:this.state.amount,
+            //      CustomerID:fbApp.auth().currentUser.uid,
                  
-               })
-               this.state.CartItem.forEach(element =>{
-                var keyDetail = fbApp.database().ref().child('OrderDetails/').push().key;
-                 this.itemRef.ref('/OrderDetails/'+keyDetail).set({
-                  OrderDetailID:keyDetail,
-                  OrderID:key,
-                  Price:element.Price,
-                  ProductID: element.Id,
-                  Quantity:element.Quantity
-                 })
-               })
+            //    })
+            //    this.state.CartItem.forEach(element =>{
+            //     var keyDetail = fbApp.database().ref().child('OrderDetails/').push().key;
+            //      this.itemRef.ref('/OrderDetails/'+keyDetail).set({
+            //       OrderDetailID:keyDetail,
+            //       OrderID:key,
+            //       Price:element.Price,
+            //       ProductID: element.Id,
+            //       Quantity:element.Quantity
+            //      })
+            //    })
+            this.props.navigation.navigate("Payment",{content : this.state.amount})
               }} >Tiến hành đặt hàng</Button>
         </View>
       <View style={styles.bodyContainer}></View>

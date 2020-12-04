@@ -150,11 +150,10 @@ renderNofiCart = () =>{
   }
   else{
     return(
-      <View style={{position:"absolute", borderRadius:15,backgroundColor:"red",
-            height:15,width:15,alignItems:"center",justifyContent:"center",
-            marginLeft:width/40}}>
-              <Text color="white">{this.state.numcart}</Text>
-            </View>
+      <View style={{position:"absolute", borderRadius:15,backgroundColor:"red",alignItems:"center",
+            marginLeft:width/30}}>
+            <Text color="white" style={{alignSelf:'center', fontSize:10,margin:1}}numberOfLines={1}  >{this.state.numcart}</Text>
+      </View>
     )
   }
 }
@@ -353,7 +352,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   cartContainer: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
    
     justifyContent: 'center',
     width:75
