@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ImageBackground, Image, StyleSheet,ScrollView, StatusBar, Dimensions, Platform,View,LogBox } from 'react-native';
+import { ImageBackground, Image, StyleSheet,ScrollView, StatusBar, Dimensions, Platform,View,LogBox,ActivityIndicator, Alert } from 'react-native';
 import {  Button, Text } from 'galio-framework';
 
 
@@ -33,6 +33,7 @@ export default class Cart extends Component{
          Address:{},
          refesh:true,
          amount:0,
+         loading:true
 
         }; 
       }
@@ -40,9 +41,6 @@ export default class Cart extends Component{
           this.ListenCart();       
           this.GetAddress();
     }
-    
-     
-
       GetAddress =() =>{
         if(fbApp.auth().currentUser)
         {
@@ -71,6 +69,7 @@ export default class Cart extends Component{
               console.log(item);
               this.setState({
                 Address:item,
+                loading:false
               }) 
             })
         }
@@ -96,6 +95,8 @@ export default class Cart extends Component{
               product.Picture=childSnapshot.val().Picture;
               product.Price=childSnapshot.val().Price;
               product.Quantity=childSnapshot.val().Quantity;
+              product.BrandID=childSnapshot.val().BrandID;
+              product.CategoryID=childSnapshot.val().CategoryID;
               items.push(product);
             });
             this.setState({
@@ -116,7 +117,17 @@ export default class Cart extends Component{
         var giay = new Date().getSeconds();
           return date + '/' +month+ "/" +year + " " + gio+":"+ phut+":"+giay;
       }
+      _checkGioHang=()=>{
+        if(this.state.amount!=0)
+        {
+          this.props.navigation.navigate("Payment",{content : this.state.amount})
+        }else{
+          Alert.alert("Hãy mua sắm ngay thôi")
+        }
+
+      }
     render(){
+
       const { navigation } = this.props;
       console.log(this.state.CartItem);
       this.state.amount=0;
@@ -124,6 +135,13 @@ export default class Cart extends Component{
         const a = Number(element.Price);        
         this.state.amount+=(Number(element.Price) * element.Quantity);
       })  
+      if (this.state.loading) {
+        return (
+          <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
+            <ActivityIndicator size="large" color="dodgerblue" />
+          </View>
+        )
+      }
         return(      
      <View style={styles.screenContainer}>
         <StatusBar barStyle="light-content" />
@@ -159,7 +177,9 @@ export default class Cart extends Component{
           renderItem={ ({item})=>
           <View style={styles.itemcard}>
           <View style={{paddingLeft:10,paddingTop:5,flexDirection:"row"}}>
+            <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.Id, CategoryID: item.CategoryID, BrandID: item.BrandID})}>
             <Text style={styles.itemName}>{item.Name} </Text>
+            </TouchableOpacity>
           <View style={{marginTop:0}}>
           <FontAwesome name="angle-right" size={30} />
           </View>
@@ -244,7 +264,7 @@ export default class Cart extends Component{
                   refresh: !this.state.refresh
               });
               }}>
-                       <FontAwesome  name="remove" size={25} color="red" />
+              <FontAwesome  name="remove" size={25} color="red" />
               </TouchableOpacity>
             
             </View>
@@ -288,7 +308,7 @@ export default class Cart extends Component{
             //       Quantity:element.Quantity
             //      })
             //    })
-            this.props.navigation.navigate("Payment",{content : this.state.amount})
+            this._checkGioHang()
               }} >Tiến hành đặt hàng</Button>
         </View>
       <View style={styles.bodyContainer}></View>

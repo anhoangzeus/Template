@@ -1,5 +1,5 @@
 import React, {useState, useEffect, Component} from 'react';
-import {StyleSheet, View, Text, StatusBar, ScrollView,FlatList,Alert} from 'react-native';
+import {StyleSheet, View, Text, StatusBar, ScrollView,FlatList,Alert,ActivityIndicator} from 'react-native';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -18,6 +18,7 @@ export default class AddressScreen extends Component {
         this.state = { 
          listAddress:[],
          status:false,
+         loading:true
         }; 
       }
     RenderList = ({NumberAddress,Xa, City, Huyen,ShipName,ShipMoblie,id,Main}) =>(
@@ -43,8 +44,7 @@ export default class AddressScreen extends Component {
                       size={25}
                       onPress={()=> {this.DeleteAddress(id,Main)}}
                     />
-                  }
-                  
+                  }           
               </View>             
             </View>                   
           </View >
@@ -125,7 +125,8 @@ export default class AddressScreen extends Component {
             }) 
             var list = items1.concat(items);
             this.setState({
-              listAddress:list
+              listAddress:list,
+              loading:false
             }) 
             if(items1[0].ListID==''){
               this.setState({status:false})
@@ -150,6 +151,13 @@ export default class AddressScreen extends Component {
       )
     }
     render(){
+        if (this.state.loading) {
+          return (
+            <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
+              <ActivityIndicator size="large" color="dodgerblue" />
+            </View>
+          )
+        }
         return(
             <View style={styles.screenContainer}>
             <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>

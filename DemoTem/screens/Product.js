@@ -67,10 +67,12 @@ class Product extends Component {
     if(temp == 0){
       this.itemRef.ref('/Cart/'+fbApp.auth().currentUser.uid).push({
         Id :this.props.content,
+        CategoryID :this.props.CategoryID,
+        BrandID : this.props.BrandID,
         Name:this.state.Name,
         Picture:this.state.Image,
         Price: this.state.Price,
-        Quantity:1, 
+        Quantity:1,
       })
     }
     else {
@@ -213,7 +215,7 @@ class Product extends Component {
     const { navigation } = this.props;
     return (
         <View  style={{flex:1,backgroundColor:"#ededed"}}>
-              <StatusBar barStyle="dark-content" backgroundColor="#fff"/>
+              <StatusBar barStyle="dark-content" backgroundColor="#1e88e5"/>
              <View style={styles.headerFont} >
               <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,alignItems:'center',marginLeft:5,justifyContent:'center'}} onPress={()=> navigation.goBack()}> 
                     <FontAwesome name="chevron-left" size={25} color="white"/>

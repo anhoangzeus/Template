@@ -21,6 +21,7 @@ export default class Order_Xuli extends Component{
     this.state = { 
      listOrder:[],
      status:false,
+     loading:true
     }; 
   }
   RenderList = ({CreatedDate,ShipAddress,ShipName,ShipMoblie,ToTalPrice,id}) =>(
@@ -73,7 +74,8 @@ export default class Order_Xuli extends Component{
         }     
     });
     this.setState({
-      listOrder:items
+      listOrder:items,
+      loading:false
     })
     if(items[0].id==''){
       this.setState({status:false})
@@ -91,6 +93,13 @@ renderNull = () =>{
   )
 }
 render(){
+  if (this.state.loading) {
+    return (
+      <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
+        <ActivityIndicator size="large" color="dodgerblue" />
+      </View>
+    )
+  }
   return (
     this.state.status == false ? 
         <this.renderNull/>

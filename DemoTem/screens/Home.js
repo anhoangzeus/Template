@@ -71,6 +71,7 @@ export default class Home extends React.Component {
      searchText:"",
      numcart:0,
      refreshing: false,
+     loading:true
     }; 
   } 
 componentDidMount(){
@@ -80,6 +81,7 @@ componentDidMount(){
 _onRefresh = () => {
   this.setState({refreshing: true});
   this.ListenForItems();
+  this.getListBanner();
 }
 ListenForItems = () => {
   this.itemRef.ref('/Products').once('value').then((snapshot) => {
@@ -162,6 +164,7 @@ ListenForItems = () => {
       listtablet:itemstablet,
       listpro:itemslaptop,
       refreshing: false,
+      loading:false
     })
     
   })
@@ -294,7 +297,7 @@ renderNofiCart = () =>{
               )}
             </Swiper>
 
-      <View style={styles.proHotContainer1}>
+      {/* <View style={styles.proHotContainer1}>
         <Text style={{fontSize:17, color:'black',}}>
           <Icons name="fire" color="red" size={25}/>
           Hot nhất hôm nay </Text>
@@ -337,7 +340,7 @@ renderNofiCart = () =>{
             />           
           </View>    
         </View>
-      </View>  
+      </View>   */}
       <View style={styles.proHotContainer}>
         <Text style={{fontSize:17, color:'black',marginVertical:10}}>
             <Foundation name="burst-new" color="red" size={25}/>
@@ -450,7 +453,7 @@ renderNofiCart = () =>{
      
         
       </View>
-    <View style={{marginTop:10}}>
+    {/* <View style={{marginTop:10}}>
     <FlatList 
         initialNumToRende={3}
         showsVerticalScrollIndicator={false}
@@ -467,7 +470,7 @@ renderNofiCart = () =>{
         </TouchableOpacity>  
         }
         ></FlatList>    
-    </View>
+    </View> */}
       <View style={{height:10, backgroundColor:'silver'}}/>
       <View style={styles.sectionContainer}>
       </View>

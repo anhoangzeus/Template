@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ImageBackground, Image, StyleSheet,ScrollView, StatusBar, Dimensions, Platform,View,LogBox } from 'react-native';
+import { ImageBackground, Image, StyleSheet,ScrollView, StatusBar, Dimensions, Platform,View,LogBox,ActivityIndicator } from 'react-native';
 import {  Button, Text } from 'galio-framework';
 
 
@@ -45,12 +45,12 @@ export class Payscreen extends Component{
         this.state = { 
          Address:{},
          checked: 'first',
+         loading:true
         }; 
       }
     componentDidMount(){  
           this.GetAddress();
     }
-    
     GetCurrentDate =()=>{
       var date = new Date().getDate();
       var month = new Date().getMonth() + 1; 
@@ -83,25 +83,67 @@ export class Payscreen extends Component{
                   Address.Huyen= childSnapshot.val().Huyen;
                   Address.City= childSnapshot.val().City;
                   item=Address;
-                }
-              });
-              console.log(item);
-              this.setState({
+              }
+            });
+            this.setState({
                 Address:item,
-              }) 
-            })
+                loading:false
+            }) 
+          })
         }
       }
-      
+      _thanhToan=async()=>{
+        var key = fbApp.database().ref().child('Orders/').push().key;
+        var phone = this.state.Address.ShipPhone;
+        var name = this.state.Address.ShipName;
+        console.log(phone);
+        console.log(name);
+        var diachi = this.state.Address.NumberAddress+", "+this.state.Address.Xa+", "+this.state.Address.Huyen+", "+ this.state.Address.City;
+        
+          this.itemRef.ref('/Orders/'+key).set({
+            Status:1,
+            CreatedDate:this.GetCurrentDate(),
+            ShipAddress:diachi,
+            ShipName:name,
+            ShipMoblie:phone,
+            OrderID: key,
+            Payment:"01",
+            Total:this.props.amount + 50000,
+            CustomerID:fbApp.auth().currentUser.uid,               
+          })
+          await(this.itemRef.ref("Cart/"+fbApp.auth().currentUser.uid).once("value").then((snapshot)=>{                
+             snapshot.forEach(function(childSnapshot){
+             var keyDetail = fbApp.database().ref().child('OrderDetails/').push().key;
+             fbApp.database().ref('/OrderDetails/'+keyDetail).set({
+              OrderDetailID:keyDetail,
+              OrderID:key,
+              Price:childSnapshot.val().Price,
+              ProductID: childSnapshot.val().Id,
+              Quantity:childSnapshot.val().Quantity
+             })
+           })
+          }))
+          this.itemRef.ref("Cart/"+fbApp.auth().currentUser.uid).set({               
+          });            
+          this.props.navigation.navigate("App");
+      }
+
     render(){
       const { navigation } = this.props;
       const { checked } = this.state;
+      if (this.state.loading) {
+        return (
+          <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
+            <ActivityIndicator size="large" color="dodgerblue" />
+          </View>
+        )
+      }
         return(      
      <View style={styles.screenContainer}>
         <StatusBar barStyle="light-content" />
         <View style={styles.headerContainer}>
           <TouchableOpacity style={{width:width/5}} onPress={() => navigation.goBack()}>
-          <FontAwesome name="angle-left" size={30} color="#fff" style={{marginLeft:width/40}}/>
+          <FontAwesome name="angle-left" size={35} color="#fff" style={{marginLeft:width/40}}/>
           </TouchableOpacity>
           <Text style={styles.headerText}>Thanh Toán</Text>  
         </View>
@@ -154,42 +196,7 @@ export class Payscreen extends Component{
               <Text style={{marginLeft:10, fontSize:16}}>Thành tiền: </Text>
               <View style={{marginLeft:width*0.4}}><Text color="red" style={{fontSize:20}}><ReactNativeNumberFormat value={this.props.amount + 50000} /></Text></View>
           </View>
-          <Button style={styles.btnSubmit} color="#ff3333" onPress={()=>{
-                  var key = fbApp.database().ref().child('Orders/').push().key;
-             var phone = this.state.Address.ShipPhone;
-             var name = this.state.Address.ShipName;
-             console.log(phone);
-             console.log(name);
-             var diachi = this.state.Address.NumberAddress+", "+this.state.Address.Xa+", "+this.state.Address.Huyen+", "+ this.state.Address.City;
-             
-               this.itemRef.ref('/Orders/'+key).set({
-                 Status:1,
-                 CreatedDate:this.GetCurrentDate(),
-                 ShipAddress:diachi,
-                 ShipName:name,
-                 ShipMoblie:phone,
-                 OrderID: key,
-                 Payment:"01",
-                 Total:this.props.amount + 50000,
-                 CustomerID:fbApp.auth().currentUser.uid,
-                 
-               })
-               this.itemRef.ref("Cart/"+fbApp.auth().currentUser.uid).once("value").then((snapshot)=>{
-                 
-                  snapshot.forEach(function(childSnapshot){
-                  var keyDetail = fbApp.database().ref().child('OrderDetails/').push().key;
-                  fbApp.database().ref('/OrderDetails/'+keyDetail).set({
-                   OrderDetailID:keyDetail,
-                   OrderID:key,
-                   Price:childSnapshot.val().Price,
-                   ProductID: childSnapshot.val().Id,
-                   Quantity:childSnapshot.val().Quantity
-                  })
-                })
-               } )
-               
-               this.props.navigation.navigate("TopOrder");
-          }}>Xác nhận</Button>
+          <Button style={styles.btnSubmit} color="#ff3333" onPress={()=>{this._thanhToan()}}>Xác nhận</Button>
         </View>
       <View style={styles.bodyContainer}></View>
     </View>

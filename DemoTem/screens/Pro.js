@@ -1,5 +1,5 @@
   import React from 'react';
-  import { ImageBackground, Image, StyleSheet,ScrollView, StatusBar, Dimensions, Platform,View,LogBox } from 'react-native';
+  import { ImageBackground, Image, StyleSheet,ScrollView, StatusBar, Dimensions, Platform,View,LogBox,ActivityIndicator} from 'react-native';
   import { Block, Button, Text, theme } from 'galio-framework';
   import NumberFormat from 'react-number-format';
   import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -47,6 +47,9 @@
         CatogoryID:"AIzaSyDSWIekvpvwQbRiGh4WF88H91tqFzL6OWI",
         Price:0,
         Date:"",
+        loading1:true,
+        loading2:true,
+        loading3:true
       }; 
     }
     BrandItem = ({image,id}) => (
@@ -90,6 +93,7 @@
         })
         this.setState({
           listbrand:items,
+          loading2:false
       })      
     })
   }
@@ -106,6 +110,7 @@
         })
         this.setState({
           listcategory:items,
+          loading3:false
       })      
     })
   }
@@ -173,11 +178,19 @@
           })
           this.setState({
             listcate:items,
+            loading1:false
           })    
       })    
     }
     render() {
       const { navigation } = this.props;
+      if (this.state.loading1 || this.state.loading1 || this.state.loading3) {
+        return (
+          <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
+            <ActivityIndicator size="large" color="dodgerblue" />
+          </View>
+        )
+      }
       return (
       <View style={styles.screenContainer}>
         <StatusBar barStyle="light-content" />
