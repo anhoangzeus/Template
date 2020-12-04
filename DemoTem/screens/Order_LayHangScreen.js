@@ -14,14 +14,15 @@ function ReactNativeNumberFormat({ value }) {
   );
 }
 const noOder = require('../assets/process3.jpg');
-export default class Order_DaHuy extends Component{
+export default class Order_LayHangScreen extends Component{
   constructor(props) {
     super(props);
     this.state = { 
      listOrder:[],
      status:false,
-    }; 
+    };
   }
+
   RenderList = ({CreatedDate,ShipAddress,ShipName,ShipMoblie,ToTalPrice,id}) =>(
     <TouchableOpacity style={styles.listItem} onPress={()=> {this.props.navigation.navigate('View_OrderDetail', {id: id})}}>
       <View style={{flex:1, margin: 10}}>
@@ -45,8 +46,9 @@ export default class Order_DaHuy extends Component{
   </TouchableOpacity>
   );
   componentDidMount(){
-    this.ListenForOrder(); 
+    this.ListenForOrder();
   }
+
   ListenForOrder = () =>{    
     fbApp.database().ref('Orders').once('value').then((snapshot) => {
       var items=[];
@@ -60,7 +62,7 @@ export default class Order_DaHuy extends Component{
             id: '',
             ToTalPrice:0,
           }        
-          if(childSnapshot.val().Status =="5"){
+          if(childSnapshot.val().Status =="2"){
             order.CreatedDate = childSnapshot.val().CreatedDate;
             order.ShipAddress=childSnapshot.val().ShipAddress;
             order.ShipName=childSnapshot.val().ShipName;
@@ -79,8 +81,6 @@ export default class Order_DaHuy extends Component{
     }else{
       this.setState({status:true})
     }
-
-  
   })
 }
 renderNull = () =>{
@@ -91,32 +91,31 @@ renderNull = () =>{
   </View>
   )
 }
- render(){
-    return (
-      this.state.status == false ? 
-          <this.renderNull/>
-     : (
-      <View>
-      <FlatList
-          pagingEnabled={false}
-          data={this.state.listOrder}
-          renderItem={({item})=>
-          <this.RenderList
-          CreatedDate={item.CreatedDate}
-          ShipAddress={item.ShipAddress}
-          ShipName={item.ShipName}
-          ShipMoblie={item.ShipMoblie}
-          ToTalPrice={item.ToTalPrice}
-          id={item.id}
-          key={item.id}
-        /> 
-        }
-      />
-    </View> )
-    );
-  }
+render(){
+  return (
+    this.state.status == false ? 
+        <this.renderNull/>
+   : (
+    <View>
+    <FlatList
+        pagingEnabled={false}
+        data={this.state.listOrder}
+        renderItem={({item})=>
+        <this.RenderList
+        CreatedDate={item.CreatedDate}
+        ShipAddress={item.ShipAddress}
+        ShipName={item.ShipName}
+        ShipMoblie={item.ShipMoblie}
+        ToTalPrice={item.ToTalPrice}
+        id={item.id}
+        key={item.id}
+      /> 
+      }
+    />
+  </View> )
+  );
 }
-
+}
 
 const styles = StyleSheet.create({
   container: {

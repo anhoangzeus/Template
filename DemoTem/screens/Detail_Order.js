@@ -59,12 +59,14 @@ export class Detail_Order extends Component{
           if(snapshot.val().Status=="1"){
             this.setState({Status:"Chờ xác nhận"})
           } else if(snapshot.val().Status=="2"){
-            this.setState({Status:"Đang vận chuyển"})
+            this.setState({Status:"Chờ lấy hàng"})
           } else if(snapshot.val().Status=="3"){
-            this.setState({Status:"Đã giao"})
+            this.setState({Status:"Đang vận chuyển"})
           } else if(snapshot.val().Status=="4"){
-            this.setState({Status:"Đã huỷ"})
+            this.setState({Status:"Đã giao"})
           } else if(snapshot.val().Status=="5"){
+            this.setState({Status:"Đã huỷ"})
+          } else if(snapshot.val().Status=="6"){
             this.setState({Status:"Trả hàng"})
           }       
           if(snapshot.val().Payment =="01"){
@@ -294,7 +296,7 @@ const styles = StyleSheet.create({
       titletext:{
         fontWeight: 'bold',
         color:'black',
-        fontSize:20
+        fontSize:20,
       },
       titletext1:{
         fontWeight: 'bold',

@@ -62,7 +62,7 @@ export default class Order_DangVanChuyen extends Component{
             id: '',
             ToTalPrice:0,
           }        
-          if(childSnapshot.val().Status =="2"){
+          if(childSnapshot.val().Status =="3"){
             order.CreatedDate = childSnapshot.val().CreatedDate;
             order.ShipAddress=childSnapshot.val().ShipAddress;
             order.ShipName=childSnapshot.val().ShipName;
