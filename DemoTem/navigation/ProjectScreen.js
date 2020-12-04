@@ -21,6 +21,7 @@ import Order_Payment from '../screens/Order_Payment';
 import Order_DaGiao from '../screens/Order_DaGiao';
 import Order_DangVanChuyen from '../screens/Order_DangVanChuyen';
 import Order_DaHuy from '../screens/Order_DaHuy';
+import Order_LayHangScreen from '../screens/Order_LayHangScreen';
 import AddressScreen from '../screens/AddressScreen';
 import Route_OrderDetail from '../screens/Detail_Order';
 import PaymentScreen from '../screens/Payment';
@@ -62,6 +63,10 @@ export function TopOrder(props){
       <Tab.Screen name="OrderXuli" component={OrderXuli}
        options={{
         title :"Chờ xác nhận",
+      }}/>
+           <Tab.Screen name="Order_LayHangScreen" component={Order_LayHangScreen}
+       options={{
+        title :"Chờ lấy hàng",
       }}/>
       <Tab.Screen name="Order_DangVanChuyen" component={Order_DangVanChuyen}
        options={{

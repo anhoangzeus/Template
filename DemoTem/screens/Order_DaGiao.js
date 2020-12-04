@@ -61,7 +61,7 @@ export default class Order_DaGiao extends Component{
             id: '',
             ToTalPrice:0,
           }        
-          if(childSnapshot.val().Status =="3"){
+          if(childSnapshot.val().Status =="4"){
             order.CreatedDate = childSnapshot.val().CreatedDate;
             order.ShipAddress=childSnapshot.val().ShipAddress;
             order.ShipName=childSnapshot.val().ShipName;

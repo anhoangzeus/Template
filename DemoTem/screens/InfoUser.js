@@ -2,6 +2,7 @@ import React, { useState, useEffect} from 'react';
 import {StyleSheet, View, Text,Alert,
    StatusBar,Image, Dimensions, ScrollView,Button,TextInput,CheckBox} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Header from '../components/HeaderComponent';
@@ -297,12 +298,13 @@ const saveChangesHandle = () => {
                     style={data.check_textInputFullName
                     ? styles.titletext
                     : 
-                  styles.errtext}>Họ tên</Text>
+                  styles.errtext}>Họ tên   <Entypo name="new-message" size={25} style={{marginHorizontal:10}}/></Text>
                   { data.check_textInputFullName ? null : 
                     <Animatable.View animation="fadeInLeft" duration={500}>
                     <Text style={styles.errorMsg}>Vui lòng nhập Họ tên</Text>
                     </Animatable.View>
                   }
+                
                   </View>       
                   <TextInput 
                         placeholderTextColor="#666666"
@@ -310,6 +312,7 @@ const saveChangesHandle = () => {
                         onChangeText={(val) => textInputFullName(val)}
                         style={styles.welcomeText}
                         >{data.FullName}</TextInput>
+      
               </View>
           </View>
             {
@@ -327,7 +330,7 @@ const saveChangesHandle = () => {
                     style={data.check_textInputSDT
                     ? styles.titletext
                     : 
-                  styles.errtext}>Số điện thoại</Text>
+                  styles.errtext}>Số điện thoại <Entypo name="new-message" size={25} style={{marginHorizontal:10}}/></Text>
                   { data.check_textInputSDT ? null : 
                     <Animatable.View animation="fadeInLeft" duration={500}>
                     <Text style={styles.errorMsg}>Vui lòng nhập Số điện thoại</Text>
@@ -362,7 +365,7 @@ const saveChangesHandle = () => {
                     style={data.check_textInputCMND
                     ? styles.titletext
                     : 
-                  styles.errtext}>Căn cước công dân</Text>
+                  styles.errtext}>Căn cước công dân <Entypo name="new-message" size={25} style={{marginHorizontal:10}}/></Text>
                   { data.check_textInputCMND ? null : 
                     <Animatable.View animation="fadeInLeft" duration={500}>
                     <Text style={styles.errorMsg}>Thông tin không được để trống</Text>
