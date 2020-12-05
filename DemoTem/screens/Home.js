@@ -63,7 +63,7 @@ const NewProductItem = ({image, name, price}) => (
     </View>
   </View>
 );
-export default class Home extends React.Component {
+export default class Home extends React.PureComponent {
   constructor(props) {
     super(props);
     LogBox.ignoreAllLogs();
@@ -82,6 +82,9 @@ export default class Home extends React.Component {
      loading:true
     }; 
   };
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.state.numcart !== nextProps.numcart
+  } 
   componentDidMount(){
     this.ListenForItems();
     this.getListBanner();

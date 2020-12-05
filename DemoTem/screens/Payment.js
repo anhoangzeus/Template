@@ -37,7 +37,7 @@ export default function Payment({ route, navigation}){
       />
   );    
 }
-export class Payscreen extends Component{
+export class Payscreen extends React.PureComponent{
     constructor(props) {
         super(props);
         LogBox.ignoreAllLogs();
@@ -110,7 +110,7 @@ export class Payscreen extends Component{
             Payment:"01",
             Total:this.props.amount + 50000,
             CustomerID:fbApp.auth().currentUser.uid,               
-          })
+          });
           await(this.itemRef.ref("Cart/"+fbApp.auth().currentUser.uid).once("value").then((snapshot)=>{                
              snapshot.forEach(function(childSnapshot){
              var keyDetail = fbApp.database().ref().child('OrderDetails/').push().key;
@@ -122,9 +122,10 @@ export class Payscreen extends Component{
               Quantity:childSnapshot.val().Quantity
              })
            })
-          }))
-          this.itemRef.ref("Cart/"+fbApp.auth().currentUser.uid).set({               
-          });            
+          }));
+           this.itemRef.ref("Cart/"+fbApp.auth().currentUser.uid).set({               
+          });
+          console.log("thanh toan thanh cong");
           this.props.navigation.navigate("App");
       }
 
@@ -182,7 +183,7 @@ export class Payscreen extends Component{
           </View>
           <View style={styles.count}>
             <View flexDirection='row'>
-              <Text style={{fontSize:17, fontWeight:'10'}} color="#666666">Tạm tính</Text>
+              <Text style={{fontSize:17}} color="#666666">Tạm tính</Text>
             <Text style={{marginLeft:width/2,fontSize:20}}><ReactNativeNumberFormat value={this.props.amount} /></Text>
             </View>
             <View flexDirection='row'>
