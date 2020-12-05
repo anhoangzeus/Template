@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, StatusBar, ScrollView, Image} from 'react-native';
+import {StyleSheet, View, Text, StatusBar, ScrollView, Image,Dimensions} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -12,6 +12,8 @@ import{ AuthContext } from '../components/context';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
        
+
+const { width,height } = Dimensions.get('screen');
 const ProfileUser =(props)=> {
 
   const [FullName, setFullName] = useState("username");
@@ -44,7 +46,6 @@ const ProfileUser =(props)=> {
     </View>
   );
   
-
   useEffect(()=>{
     if(fbApp.auth().currentUser != null)
     {
@@ -55,20 +56,14 @@ const ProfileUser =(props)=> {
         setEmail(snapshot.val().Phone);
         setAvatar(snapshot.val().Avatar);
       });
-    }    
-})
+    };    
+  });
     return (
       <View style={styles.screenContainer}>
         <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
             <View style={styles.headerContainer}>
-        <View style={styles.cartContainer}>
-          <View style={styles.cartIcon} />
-        </View>
-        <Text style={styles.headerText}>Cá nhân</Text>
-        <TouchableOpacity style={styles.cartContainer} onPress={() => props.navigation.navigate("Cart")}>
-          <FontAwesome name="shopping-cart" size={24} color="#fff" />
-          </TouchableOpacity>
-      </View>
+          <Text style={styles.headerText}>Cá nhân</Text>
+            </View>
         <ScrollView>
         <View style={styles.bodyContainer}>
         <TouchableOpacity onPress={()=> {props.navigation.navigate("InfoUser")}}>
@@ -176,12 +171,10 @@ const ProfileUser =(props)=> {
               <View style={styles.divider} />
         </View>
         </ScrollView>
-      
       </View>
     );
   };
 export default ProfileUser;
-
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
@@ -258,14 +251,14 @@ headerContainer: {
   flexDirection: 'row',
   paddingTop: 15,
   backgroundColor: '#1e88e5',
-  justifyContent: 'space-between',
+  justifyContent: 'center',
   paddingBottom: 12,
 },
 cartContainer: {
   paddingHorizontal: 20,
   alignItems: 'center',
   justifyContent: 'center',
-  width:75
+  width:75,
 },
 cartIcon: {
   width: 24,
@@ -273,6 +266,6 @@ cartIcon: {
 headerText: {
   color: '#fff',
   fontSize: 20,
-  fontWeight: '500',
+  alignItems:'center'
 },
 });

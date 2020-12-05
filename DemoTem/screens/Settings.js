@@ -33,6 +33,7 @@ export default class Setting extends React.Component {
       brand:"Samsung",
       listcate:[],
       searchText:"",
+      numcart:0,
     }; 
   }
  
@@ -100,6 +101,29 @@ export default class Setting extends React.Component {
     })
   })
   }
+  renderNofiCart = () =>{
+    if(fbApp.auth().currentUser){ 
+      this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid).once('value').then((snapshot) => {
+        var dem = 0;
+        snapshot.forEach(function(childSnapshot){
+        dem += childSnapshot.val().Quantity;
+        });
+        this.setState({
+        numcart:dem,
+        });  
+      });  
+    }
+    if(this.state.numcart == 0){
+      return null;
+    }
+    else{
+      return(
+        <View style={{position:"absolute", borderRadius:25,backgroundColor:"red",alignItems:"center",marginLeft:width/13,width:width/20,marginTop:5 }}>
+              <Text style={{alignSelf:'center', fontSize:10,margin:1,fontWeight:'bold',color:"white" }} numberOfLines={1}>{this.state.numcart}</Text>
+        </View>
+      )
+    }
+  };
   render() {
     const { navigation } = this.props;
 
@@ -117,6 +141,7 @@ export default class Setting extends React.Component {
       </View>
         <TouchableOpacity style={styles.cartContainer} onPress={() => navigation.navigate("Cart")}>
            <FontAwesome name="shopping-cart" size={24} color="#fff" /> 
+           {this.renderNofiCart()}
         </TouchableOpacity> 
     </View>
     <View style={styles.bodyContainer}>     

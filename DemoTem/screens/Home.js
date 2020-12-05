@@ -1,18 +1,28 @@
 import React,{useState} from 'react';
-import { StyleSheet, Dimensions, ScrollView, View,Image ,SafeAreaView,ActivityIndicator,TextInput ,LogBox,StatusBar,RefreshControl } from 'react-native';
-import {  Text } from 'galio-framework';
-import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
+import { StyleSheet, 
+  Dimensions, 
+  ScrollView, 
+  View,
+  Image ,
+  SafeAreaView,
+  ActivityIndicator,
+  TextInput ,
+  LogBox,
+  StatusBar,
+  RefreshControl,
+  Text,
+  TouchableOpacity,
+  FlatList
+} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Foundation from 'react-native-vector-icons/Foundation';
 import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {fbApp} from "../firebaseconfig";
 import NumberFormat from 'react-number-format';
 import Swiper from 'react-native-swiper';
+import {fbApp} from "../firebaseconfig";
 import "firebase/auth"; 
 
-const section_banner = require('../assets/section_banner.png');
 const { width,height } = Dimensions.get('screen');
-
 function ReactNativeNumberFormat({ value }) {
   return (
     <NumberFormat
@@ -22,8 +32,7 @@ function ReactNativeNumberFormat({ value }) {
       renderText={formattedValue => <Text>{formattedValue} đ</Text>} 
     />
   );
-}
-
+};
 const ProductItem = ({image, name, price}) => (
   <View style={styles.itemContainer}>
     <Image source={{uri:image}} style={styles.itemImage} />
@@ -34,7 +43,7 @@ const ProductItem = ({image, name, price}) => (
         <Text style={{color:"red"}}>  -20%</Text>
     </Text>
     <View style={{flexDirection:'row'}}>
-      <Image source={require("../assets/images/star.jpg")} style={{width:width/4,height:height/50,marginLeft:width/60}}/>
+      <Image source={require("../assets/images/star.jpg")} style={styles.reviewimg}/>
       <Text style={{color:'green',}}>(500)</Text>
     </View>
   </View>
@@ -49,12 +58,11 @@ const NewProductItem = ({image, name, price}) => (
         <Text style={{color:"red"}}>  -20%</Text>
     </Text>
     <View style={{flexDirection:'row'}}>
-      <Image source={require("../assets/images/star.jpg")} style={{width:width/4,height:height/50,marginLeft:width/60}}/>
+      <Image source={require("../assets/images/star.jpg")} style={styles.reviewimg}/>
       <Text style={{color:'green',}}>(500)</Text>
     </View>
   </View>
 );
-
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
@@ -73,175 +81,196 @@ export default class Home extends React.Component {
      refreshing: false,
      loading:true
     }; 
-  } 
-componentDidMount(){
-  this.ListenForItems();
-  this.getListBanner();
-}
-_onRefresh = () => {
-  this.setState({refreshing: true});
-  this.ListenForItems();
-  this.getListBanner();
-}
-ListenForItems = () => {
-  this.itemRef.ref('/Products').once('value').then((snapshot) => {
-    var items=[];
-    var itemsphone=[];
-    var itemstablet=[];
-    var itemslaptop=[];
-    var itemsdongho=[];
-    var itemsphukien=[];
-    snapshot.forEach(function (childSnapshot){   
-      var product={
-        title:'',
-        price:'',
-        metades:'',
-        image:'',
-        id: '',
-        BrandID:'',
-        CategoryID:''
-      } 
-      if(childSnapshot.val().CategoryID=="AIzaSyDSWIekvpvwQbRiGh4WF88H91tqFzL6OWI")
-      {
-        product.title = childSnapshot.val().Name;
-        product.price=childSnapshot.val().Price;
-        product.metades=childSnapshot.val().MetaDescription;
-        product.image=childSnapshot.val().Image;
-        product.id=childSnapshot.val().ProductID;
-        product.BrandID=childSnapshot.val().BrandID;
-        product.CategoryID=childSnapshot.val().CategoryID;
-        itemsphone.push(product);     
-        items.push(product);
-      }else if(childSnapshot.val().CategoryID=="-MJaCDw6CYGQenBvOtGO")
-      {
-        product.title = childSnapshot.val().Name;
-        product.price=childSnapshot.val().Price;
-        product.metades=childSnapshot.val().MetaDescription;
-        product.image=childSnapshot.val().Image;
-        product.id=childSnapshot.val().ProductID;
-        product.BrandID=childSnapshot.val().BrandID;
-        product.CategoryID=childSnapshot.val().CategoryID;
-        itemsphukien.push(product); 
-        items.push(product);   
-      }else if(childSnapshot.val().CategoryID=="-MJaCJRVtI_o9Hv5XY-N")
-      {
-        product.title = childSnapshot.val().Name;
-        product.price=childSnapshot.val().Price;
-        product.metades=childSnapshot.val().MetaDescription;
-        product.image=childSnapshot.val().Image;
-        product.id=childSnapshot.val().ProductID;
-        product.BrandID=childSnapshot.val().BrandID;
-        product.CategoryID=childSnapshot.val().CategoryID;
-        itemsdongho.push(product);     
-        items.push(product);
-      }else  if (childSnapshot.val().CategoryID === "-MJaC7kTLJOYZjt9G4zs" ){        
-        product.title = childSnapshot.val().Name;
-        product.price=childSnapshot.val().Price;
-        product.metades=childSnapshot.val().MetaDescription;
-        product.image=childSnapshot.val().Image;
-        product.id=childSnapshot.val().ProductID;
-        product.BrandID=childSnapshot.val().BrandID;
-        product.CategoryID=childSnapshot.val().CategoryID;
-        itemslaptop.push(product);   
-        items.push(product);  
-      } else  if (childSnapshot.val().CategoryID === "-MJaB1_P1gTPbxmjMXSW" ){        
-        product.title = childSnapshot.val().Name;
-        product.price=childSnapshot.val().Price;
-        product.metades=childSnapshot.val().MetaDescription;
-        product.image=childSnapshot.val().Image;
-        product.id=childSnapshot.val().ProductID;
-        product.BrandID=childSnapshot.val().BrandID;
-        product.CategoryID=childSnapshot.val().CategoryID;
-        itemstablet.push(product);  
-        items.push(product);   
-      }                               
+  };
+  componentDidMount(){
+    this.ListenForItems();
+    this.getListBanner();
+    this._getListPhoneNew();
+    this._getListLaptopNew();
+    this._getListTabletNew();
+    this._getListDongHoNew();
+    this._getListPhukienNew();
+  };
+  _onRefresh = () => {
+    this.setState({refreshing: true});
+    this.ListenForItems();
+    this.getListBanner();
+    this._getListPhoneNew();
+    this._getListLaptopNew();
+    this._getListTabletNew();
+    this._getListDongHoNew();
+    this._getListPhukienNew();
+  };
+  _getListPhoneNew = () => {
+    this.itemRef.ref('/Products').once('value').then((snapshot) => {
+      var itemsphone=[];
+      snapshot.forEach(function (childSnapshot){   
+        if(childSnapshot.val().CategoryID=="AIzaSyDSWIekvpvwQbRiGh4WF88H91tqFzL6OWI")
+        {
+          itemsphone.push({ 
+            title : childSnapshot.val().Name,
+            price : childSnapshot.val().Price,
+            image : childSnapshot.val().Image,
+            metades:childSnapshot.val().MetaDescription,
+            id : childSnapshot.val().ProductID,
+            BrandID : childSnapshot.val().BrandID,
+            CategoryID : childSnapshot.val().CategoryID,
+          });
+        };                   
+      });
+      this.setState({
+        listphone:itemsphone,
+      });
     });
-    this.setState({
-      listall:items,
-      listphone:itemsphone,
-      listdongho:itemsdongho,
-      listphukien:itemsphukien,
-      listtablet:itemstablet,
-      listpro:itemslaptop,
-      refreshing: false,
-      loading:false
-    })
-    
-  })
-}
-searchDictionary=()=>{
-  var st = this.state.searchText;
- 
-  this.itemRef.ref('/Products').once('value').then((snapshot) => {
-    var items=[];
-    snapshot.forEach( function(childSnapshot){       
-      var product={
-        title:'',
-        price:'',
-        metades:'',
-        image:'',
-        id: '',
-        BrandID:'',
-        CategoryID:''
-      }
-      var rs = childSnapshot.val().Name;   
-      console.log(rs.indexOf(st));
-      if (rs.indexOf(st) != -1){        
-        product.title = childSnapshot.val().Name;
-        product.price=childSnapshot.val().Price;
-        product.metades=childSnapshot.val().MetaDescription;
-        product.image=childSnapshot.val().Image;
-        product.id=childSnapshot.val().ProductID;
-        product.BrandID=childSnapshot.val().BrandID;
-        product.CategoryID=childSnapshot.val().CategoryID;
-        items.push(product);     
-      }              
-  });
-  this.setState({
-    listpro:items,
-  })
-})
-}
-getListBanner =() =>{
-  this.itemRef.ref('Contents').once('value').then((snapshot)=>{
-    var items=[];
-    snapshot.forEach((childSnapshot) => {
-          items.push({           
+  };
+  _getListLaptopNew = () => {
+    this.itemRef.ref('/Products').once('value').then((snapshot) => {
+      var itemslap=[];
+      snapshot.forEach(function (childSnapshot){   
+        if(childSnapshot.val().CategoryID=="-MJaC7kTLJOYZjt9G4zs")
+        {
+          itemslap.push({ 
+            title : childSnapshot.val().Name,
+            price : childSnapshot.val().Price,
+            image : childSnapshot.val().Image,
+            metades:childSnapshot.val().MetaDescription,
+            id : childSnapshot.val().ProductID,
+            BrandID : childSnapshot.val().BrandID,
+            CategoryID : childSnapshot.val().CategoryID,
+          });
+        };                   
+      });
+      this.setState({
+        listpro:itemslap,
+      });
+    });
+  };
+  _getListTabletNew = () => {
+    this.itemRef.ref('/Products').once('value').then((snapshot) => {
+      var itemstab=[];
+      snapshot.forEach(function (childSnapshot){   
+        if(childSnapshot.val().CategoryID=="-MJaB1_P1gTPbxmjMXSW")
+        {
+          itemstab.push({ 
+            title : childSnapshot.val().Name,
+            price : childSnapshot.val().Price,
+            image : childSnapshot.val().Image,
+            metades:childSnapshot.val().MetaDescription,
+            id : childSnapshot.val().ProductID,
+            BrandID : childSnapshot.val().BrandID,
+            CategoryID : childSnapshot.val().CategoryID,
+          });
+        };                   
+      });
+      this.setState({
+        listtablet:itemstab,
+      });
+    });
+  };
+  _getListDongHoNew = () => {
+    this.itemRef.ref('/Products').once('value').then((snapshot) => {
+      var itemsdongho=[];
+      snapshot.forEach(function (childSnapshot){   
+        if(childSnapshot.val().CategoryID=="-MJaCJRVtI_o9Hv5XY-N")
+        {
+          itemsdongho.push({ 
+            title : childSnapshot.val().Name,
+            price : childSnapshot.val().Price,
+            image : childSnapshot.val().Image,
+            metades:childSnapshot.val().MetaDescription,
+            id : childSnapshot.val().ProductID,
+            BrandID : childSnapshot.val().BrandID,
+            CategoryID : childSnapshot.val().CategoryID,
+          });
+        };                   
+      });
+      this.setState({
+        listdongho:itemsdongho,
+      });
+    });
+  };
+  _getListPhukienNew = () => {
+    this.itemRef.ref('/Products').once('value').then((snapshot) => {
+      var itemsphukien=[];
+      snapshot.forEach(function (childSnapshot){   
+        if(childSnapshot.val().CategoryID=="-MJaCDw6CYGQenBvOtGO")
+        {
+          itemsphukien.push({ 
+            title : childSnapshot.val().Name,
+            price : childSnapshot.val().Price,
+            image : childSnapshot.val().Image,
+            metades:childSnapshot.val().MetaDescription,
+            id : childSnapshot.val().ProductID,
+            BrandID : childSnapshot.val().BrandID,
+            CategoryID : childSnapshot.val().CategoryID,
+          });
+        };                   
+      });
+      this.setState({
+        listphukien:itemsphukien,
+      });
+    });
+  };
+  ListenForItems = () => {
+    this.itemRef.ref('/Products').once('value').then((snapshot) => {
+      var items=[];
+      snapshot.forEach(function (childSnapshot){     
+          items.push({
+            title : childSnapshot.val().Name,
+            price : childSnapshot.val().Price,
+            image : childSnapshot.val().Image,
+            metades : childSnapshot.val().MetaDescription,
+            id : childSnapshot.val().ProductID,
+            BrandID : childSnapshot.val().BrandID,
+            CategoryID : childSnapshot.val().CategoryID,                          
+          });
+        }); 
+      this.setState({
+        listall:items,
+      });
+    });
+  };
+  getListBanner =() =>{
+    this.itemRef.ref('Contents').once('value').then((snapshot)=>{
+      var items=[];
+      snapshot.forEach((childSnapshot) => {
+        items.push({           
           id:childSnapshot.key,
           Detail:childSnapshot.val().Detail,
           Image:childSnapshot.val().Image,
           Name:childSnapshot.val().Name,
-          });
-    })
-    this.setState({
-      listcontents:items,
-    })
-  })
-}
-renderNofiCart = () =>{
-  if(fbApp.auth().currentUser){ 
-    this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid).once('value').then((snapshot) => {
-      var dem =0;
-      snapshot.forEach(function(childSnapshot){
-       dem += childSnapshot.val().Quantity;
+        });
       });
       this.setState({
-       numcart:dem,
-      })  
-    })  
-  }
-  if(this.state.numcart == 0){
-    return null;
-  }
-  else{
-    return(
-      <View style={{position:"absolute", borderRadius:15,backgroundColor:"red",alignItems:"center",
-            marginLeft:width/43}}>
-            <Text color="white" style={{alignSelf:'center', fontSize:10,margin:1}}  numberOfLines={1}  >{this.state.numcart}</Text>
-      </View>
-    )
-  }
-}
+        listcontents:items,
+        refreshing: false,
+        loading:false
+      });
+    });
+  };
+  renderNofiCart = () =>{
+    if(fbApp.auth().currentUser){ 
+      this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid).once('value').then((snapshot) => {
+        var dem = 0;
+        snapshot.forEach(function(childSnapshot){
+        dem += childSnapshot.val().Quantity;
+        });
+        this.setState({
+        numcart:dem,
+        });  
+      });  
+    }
+    if(this.state.numcart == 0){
+      return null;
+    }
+    else{
+      return(
+        <View style={{position:"absolute", borderRadius:25,backgroundColor:"red",alignItems:"center",marginLeft:width/30,width:width/20}}>
+              <Text style={{alignSelf:'center', fontSize:10,margin:1,fontWeight:'bold',color:'white'}} numberOfLines={1}>{this.state.numcart}</Text>
+        </View>
+      )
+    }
+  };
   render() {
     const { navigation } = this.props;
     if (this.state.loading) {
@@ -250,8 +279,7 @@ renderNofiCart = () =>{
           <ActivityIndicator size="large" color="dodgerblue" />
         </View>
       )
-    }
-      
+    }  
   return (  
     <View style={styles.screenContainer}>
     <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
@@ -280,12 +308,13 @@ renderNofiCart = () =>{
       >
         <Swiper 
             autoplay={true}
+            autoplayTimeout={2}
             loop={true}
             showsPagination={true}
             showsButtons={true}
             index={0}
             width={width}
-             height={height / 3.5}>
+            height={height / 4.2}>
               {this.state.listcontents.map((item)=>
                 <TouchableOpacity 
                 key={item.id}
@@ -297,12 +326,12 @@ renderNofiCart = () =>{
               )}
             </Swiper>
 
-      {/* <View style={styles.proHotContainer1}>
+      <View style={styles.proHotContainer1}>
         <Text style={{fontSize:17, color:'black',}}>
           <Icons name="fire" color="red" size={25}/>
           Hot nhất hôm nay </Text>
         <View style={{flexDirection:'row', marginTop:5}}>
-          <Image style={{width:width/3,height:height/3.285, borderWidth:1, borderColor:'#DDDDDD', borderRadius:5,resizeMode:'cover'}}
+          <Image style={styles.tophotimg1}
               source={require('../assets/images/iphonepromax.jpg')}
           />
           <View style={{marginLeft:5}}>
@@ -319,12 +348,13 @@ renderNofiCart = () =>{
           </View>    
         </View>
       </View>  
+      
       <View style={styles.proHotContainer1}>
         <Text style={{fontSize:17, color:'black',}}>
           <Icons name="fire" color="red" size={25}/>
           Top sản phẩm bán chạy </Text>
         <View style={{flexDirection:'row', marginTop:5}}>
-          <Image style={{width:width/3,height:height/3.285, borderWidth:1, borderColor:'#DDDDDD', borderRadius:5,resizeMode:'cover'}}
+          <Image style={styles.tophotimg1}
               source={require('../assets/images/iphonepromax.jpg')}
           />
           <View style={{marginLeft:5}}>
@@ -340,7 +370,7 @@ renderNofiCart = () =>{
             />           
           </View>    
         </View>
-      </View>   */}
+      </View>  
       <View style={styles.proHotContainer}>
         <Text style={{fontSize:17, color:'black',marginVertical:10}}>
             <Foundation name="burst-new" color="red" size={25}/>
@@ -351,7 +381,6 @@ renderNofiCart = () =>{
             numberOfLines={2}
             showsHorizontalScrollIndicator={false}
             data={this.state.listphone}
-            key={this.state.listphone.id}
             renderItem={({item})=>
             <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id, CategoryID: item.CategoryID, BrandID: item.BrandID})}>
                 <NewProductItem
@@ -373,7 +402,6 @@ renderNofiCart = () =>{
             numberOfLines={2}
             showsHorizontalScrollIndicator={false}
             data={this.state.listtablet}
-            key={this.state.listtablet.id}
             renderItem={({item})=>
             <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id, CategoryID: item.CategoryID, BrandID: item.BrandID})}>
                 <NewProductItem
@@ -395,7 +423,6 @@ renderNofiCart = () =>{
             numberOfLines={2}
             showsHorizontalScrollIndicator={false}
             data={this.state.listpro}
-            key={this.state.listpro.id}
             renderItem={({item})=>
             <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id, CategoryID: item.CategoryID, BrandID: item.BrandID})}>
                 <NewProductItem
@@ -417,7 +444,6 @@ renderNofiCart = () =>{
             numberOfLines={2}
             showsHorizontalScrollIndicator={false}
             data={this.state.listdongho}
-            key={this.state.listdongho.id}
             renderItem={({item})=>
             <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id, CategoryID: item.CategoryID, BrandID: item.BrandID})}>
                 <NewProductItem
@@ -439,7 +465,6 @@ renderNofiCart = () =>{
             numberOfLines={2}
             showsHorizontalScrollIndicator={false}
             data={this.state.listphukien}
-            key={this.state.listphukien.id}
             renderItem={({item})=>
             <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id, CategoryID: item.CategoryID, BrandID: item.BrandID})}>
                 <NewProductItem
@@ -450,16 +475,13 @@ renderNofiCart = () =>{
             </TouchableOpacity>  
             }
         />  
-     
-        
       </View>
-    {/* <View style={{marginTop:10}}>
+    <View style={{marginTop:10}}>
     <FlatList 
         initialNumToRende={3}
         showsVerticalScrollIndicator={false}
         numColumns={2}
         data={this.state.listall}
-        key={this.state.listall.id}
         renderItem={({item})=>
         <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id, CategoryID: item.CategoryID, BrandID: item.BrandID})}>
             <ProductItem
@@ -470,7 +492,7 @@ renderNofiCart = () =>{
         </TouchableOpacity>  
         }
         ></FlatList>    
-    </View> */}
+    </View>
       <View style={{height:10, backgroundColor:'silver'}}/>
       <View style={styles.sectionContainer}>
       </View>
@@ -478,9 +500,8 @@ renderNofiCart = () =>{
     </View>
   </View>
     ); 
-  }
-}
-
+  };
+};
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
@@ -524,16 +545,12 @@ const styles = StyleSheet.create({
   bodyContainer: {
     flex: 1,
     backgroundColor: '#fff',
-    
   },
   itemContainer: {
     width: width/2,
     height:height/2.8,
     borderColor:'silver',
     borderWidth:1,
-  },
-  listItemContainer: {
-    flexDirection: 'row',
   },
   itemImage: {
     width: width/2.5,
@@ -562,43 +579,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     height:height/2.3
   },
-  sectionTitle: {
-    fontWeight: '700',
-    fontSize: 16,
-    color: '#2f2f2f',
-    marginVertical: 12,
-  },
   sectionImage: {
     width: width - 24,
-    height: height/4,
-    borderRadius: 4,
-    resizeMode:'center'
-  },
-  filterContainer: {
-    flexDirection: 'row',
-    marginTop: 10,
-  },
-  filterActiveButtonContainer: {
-    backgroundColor: '#242424',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 4,
-    marginRight: 10,
-  },
-  filterInactiveButtonContainer: {
-    backgroundColor: '#fff',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 4,
-    borderColor: '#5a5a5a',
-    borderWidth: 1,
-    marginRight: 10,
-  },
-  filterActiveText: {
-    color: '#fff',
-  },
-  filterInactiveText: {
-    color: '#5a5a5a',
+    height: height/4.5,
+    borderRadius: 10,
+    resizeMode:'center',
   },
   hotimgtype1:{
     width:width/3.5,
@@ -625,17 +610,17 @@ const styles = StyleSheet.create({
     borderRadius:25,
     marginRight:5
   },
-  dotView:{
-    flexDirection:'row',
-    justifyContent:'center'
+  reviewimg:{
+    width:width/4,
+    height:height/50,
+    marginLeft:width/60
   },
-  child: {
-    height: height * 0.5,
-    width,
-    justifyContent: 'center',
-  },
-  text: {
-    fontSize: width * 0.5,
-    textAlign: 'center',
-  },
+  tophotimg1:{
+    width:width/3,
+    height:height/3.285, 
+    borderWidth:1, 
+    borderColor:'#DDDDDD', 
+    borderRadius:5,
+    resizeMode:'cover'
+  }
 });

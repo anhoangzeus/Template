@@ -1,14 +1,24 @@
 import React,{Component} from 'react';
-import { StyleSheet, Dimensions, ScrollView, Image, TouchableOpacity, Alert,View,Button,Text,StatusBar ,FlatList} from 'react-native';
+import { 
+  StyleSheet, 
+  Dimensions, 
+  ScrollView, 
+  Image, 
+  TouchableOpacity, 
+  Alert,
+  View,
+  Button,
+  Text,
+  StatusBar,
+  FlatList
+} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 import NumberFormat from 'react-number-format';
-import { set } from 'react-native-reanimated';
 
 const { width, height } = Dimensions.get('screen');
 const thumbMeasure = (width - 48 - 32) / 3;
-
 function ReactNativeNumberFormat({ value }) {
   return (
     <NumberFormat
@@ -19,7 +29,7 @@ function ReactNativeNumberFormat({ value }) {
     />
   );
 }
-class Product extends Component {
+export default class Product extends Component {
   constructor(props) {
     super(props);
     this.itemRef = fbApp.database();
@@ -34,11 +44,9 @@ class Product extends Component {
       idsanpham:this.props.content,
       listcart:[],
     };
-  }
- 
+  };
   addCart =()=>{
     const Id_Item = this.state.idsanpham;
-
     var key;
     var product={
       image:'https://i.ibb.co/dj6fBrX/empty.jpg',
@@ -92,39 +100,31 @@ class Product extends Component {
     navigation.navigate("Top");
   }
 }
-  getItemRespon=()=>{
-    var CategoryID = this.props.CategoryID;
-    var BrandID = this.props.BrandID;
-    var ProductID = this.state.idsanpham;
-    console.log(CategoryID, BrandID);
-    this.itemRef.ref('Products').once('value').then((snapshot)=>{
+getItemRespon=()=>{
+  var CategoryID = this.props.CategoryID;
+  var BrandID = this.props.BrandID;
+  var ProductID = this.state.idsanpham;
+  this.itemRef.ref('Products').once('value').then((snapshot)=>{
       var items= [];
       snapshot.forEach(function(snapshot){
-        var product={
-          image:'https://i.ibb.co/dj6fBrX/empty.jpg',
-          Name:'',
-          Price:'',
-          proid:''
-        }
-        if(snapshot.val().ProductID!= ProductID){
+        if(snapshot.val().ProductID != ProductID){
           if(snapshot.val().CategoryID == CategoryID){
-            if(snapshot.val().BrandID==BrandID){
-              product.image=snapshot.val().Image;
-              product.Name=snapshot.val().Name;
-              product.Price=snapshot.val().Price;
-              product.proid=snapshot.val().ProductID;
-              console.log(product);
-              items.push(product);    
+            if(snapshot.val().BrandID == BrandID){
+              items.push({
+                image : snapshot.val().Image,
+                Name : snapshot.val().Name,
+                Price : snapshot.val().Price,
+                proid : snapshot.val().ProductID,
+              });    
             }                      
           }
         }
-      })
-      console.log(items);
+      });
       this.setState({
         List_Productlienquan:items
-      })
-    })
-  }
+      });
+    });
+  };
   getData =()=>{
     this.itemRef.ref('/Products/').child(this.state.idsanpham)
     .on('value', snapshot => {
@@ -134,9 +134,9 @@ class Product extends Component {
         Name:snapshot.val().Name,
         Price:snapshot.val().Price,
         Waranty:snapshot.val().Warranty,
-      })  
+      });
     });
-  }
+  };
   GetCartData = ()=>{
     if(fbApp.auth().currentUser){
       this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid).once('value').then((snapshot) => {
@@ -160,17 +160,14 @@ class Product extends Component {
         });
         this.setState({
           listcart:items,
-        })  
-        
-      })  
-    }
-  }
+        });   
+      });  
+    };
+  };
   ProductItem = ({image, Name, Price}) => (
     <View style={styles.itemContainer}>
       <Image source={{uri: image}} style={styles.itemImage1}/>
-      <Text style={styles.itemName} numberOfLines={2}>
-        {Name}
-      </Text>
+      <Text style={styles.itemName} numberOfLines={2}>{Name}</Text>
       <ReactNativeNumberFormat value={Price} />
     </View>
   );
@@ -179,57 +176,54 @@ class Product extends Component {
       this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid).once('value').then((snapshot) => {
         var dem =0;
         snapshot.forEach(function(childSnapshot){
-          
-         dem += childSnapshot.val().Quantity ;
+         dem += childSnapshot.val().Quantity 
         });
         this.setState({
          numcart:dem,
-        })  
-      })  
-    }
+        });  
+      });
+    };
     if(this.state.numcart == 0){
       return null;
     }
     else{
       return(
-        <View style={{position:"absolute", borderRadius:15,backgroundColor:"red",
-              height:15,width:15,alignItems:"center",justifyContent:"center",
-              marginLeft:width/10}}>
-                <Text style={{color:"white"}}>{this.state.numcart}</Text>
-              </View>
-      )
+        <View style={styles.cartposition}>
+          <Text style={{color:"white"}}>{this.state.numcart}</Text>
+        </View>
+      );
     }
-  }
+  };
   componentDidMount(){
     this.getData();
     this.getItemRespon();
     this.GetCartData();
-  }
+  };
   componentDidUpdate(prevProps, prevState){
     if(this.state.idsanpham != prevState.idsanpham){
       this.getData();
       this.getItemRespon();
     }
-  }
+  };
   render() {
     const { navigation } = this.props;
     return (
-        <View  style={{flex:1,backgroundColor:"#ededed"}}>
-              <StatusBar barStyle="dark-content" backgroundColor="#1e88e5"/>
-             <View style={styles.headerFont} >
-              <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,alignItems:'center',marginLeft:5,justifyContent:'center'}} onPress={()=> navigation.goBack()}> 
-                    <FontAwesome name="chevron-left" size={25} color="white"/>
-              </TouchableOpacity>
-              <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,marginLeft:width*0.45,alignItems:'center',justifyContent:'center'}} onPress={()=> {}}> 
-                    <FontAwesome name="search" size={25} color="white"/>
-              </TouchableOpacity>
-               <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,marginLeft:width*0.01,alignItems:'center',justifyContent:'center'}} onPress={() => navigation.navigate("App")}>
-               <FontAwesome name="home" size={30} color="white" />
-               </TouchableOpacity>
-               <View>
-               <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,marginLeft:width*0.01,alignItems:'center',justifyContent:'center'}} onPress={() => navigation.navigate("Cart")} >
-               <FontAwesome name="shopping-cart" size={30} color="white" />
-               </TouchableOpacity>  
+      <View  style={{flex:1,backgroundColor:"#ededed"}}>
+      <StatusBar barStyle="dark-content" backgroundColor="#1e88e5"/>
+        <View style={styles.headerFont} >
+          <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,alignItems:'center',marginLeft:5,justifyContent:'center'}} onPress={()=> navigation.goBack()}> 
+            <FontAwesome name="chevron-left" size={25} color="white"/>
+          </TouchableOpacity>
+          <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,marginLeft:width*0.45,alignItems:'center',justifyContent:'center'}} onPress={()=> navigation.navigate("Setting")}> 
+            <FontAwesome name="search" size={25} color="white"/>
+          </TouchableOpacity>
+          <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,marginLeft:width*0.01,alignItems:'center',justifyContent:'center'}} onPress={() => navigation.navigate("App")}>
+            <FontAwesome name="home" size={30} color="white" />
+          </TouchableOpacity>
+        <View>
+          <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,marginLeft:width*0.01,alignItems:'center',justifyContent:'center'}} onPress={() => navigation.navigate("Cart")} >
+            <FontAwesome name="shopping-cart" size={30} color="white" />
+          </TouchableOpacity>  
                {this.renderNofiCart()}    
                </View>
               </View>
@@ -289,62 +283,79 @@ class Product extends Component {
         </ScrollView>
         <View style={styles.devide} />
         <View style={{backgroundColor:"#fff",flexDirection:"row",height:height/16, justifyContent:'center'}}>
-          <TouchableOpacity style={{width:width/1.1, backgroundColor:"#FF3333", justifyContent:'center',borderRadius:5, marginVertical:5,alignItems:'center' }} onPress={this.addCart}>
+          <TouchableOpacity style={styles.btnmua} onPress={this.addCart}>
             <Text style={{color:'#fff', fontSize:15}}>Chọn mua</Text>
           </TouchableOpacity>
         </View>
       </View> 
     );
-  }
-}
-export default Product;
+  };
+};
 const styles = StyleSheet.create({
- headerFont:{
-   flexDirection:"row",
-   backgroundColor:"#fff"
- },
- devide:{
-   height:2
- },
- profileImage: {
-  width: width*0.95 ,
-  height: height*0.6,
-},
-profileContainer: {
-  paddingTop:5,
-  paddingLeft:10,
-  marginLeft:10,
-  width: width-20,
-  height: height*0.5,
-  resizeMode:"contain",
-},
-options: {
-  position: 'relative',
-  paddingTop: -5,
-  backgroundColor: "#fff",
-  shadowColor: 'black',
-  shadowOffset: { width: 0, height: 0 },
-  shadowRadius: 8,
-  shadowOpacity: 0.2,
-  zIndex: 2,
-},
-thumb: {
-  borderRadius: 4,
-  marginVertical: 4,
-  alignSelf: 'center',
-  width: thumbMeasure,
-  height: thumbMeasure,
-  resizeMode: 'contain',
-  marginLeft:10
-},
-itemContainer: {
-  width: width/3.5,
-  marginRight: 12,
-  marginTop: 10,
-},
-itemImage1: {
-  width: 100,
-  height: 120,
-  resizeMode:'contain'
-},
+  headerFont:{
+    flexDirection:"row",
+    backgroundColor:"#fff"
+  },
+  devide:{
+    height:2
+  },
+  profileImage: {
+    width: width*0.95 ,
+    height: height*0.6,
+  },
+  profileContainer: {
+    paddingTop:5,
+    paddingLeft:10,
+    marginLeft:10,
+    width: width-20,
+    height: height*0.5,
+    resizeMode:"contain",
+  },
+  options: {
+    position: 'relative',
+    paddingTop: -5,
+    backgroundColor: "#fff",
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 8,
+    shadowOpacity: 0.2,
+    zIndex: 2,
+  },
+  thumb: {
+    borderRadius: 4,
+    marginVertical: 4,
+    alignSelf: 'center',
+    width: thumbMeasure,
+    height: thumbMeasure,
+    resizeMode: 'contain',
+    marginLeft:10
+  },
+  itemContainer: {
+    width: width/3.5,
+    marginRight: 12,
+    marginTop: 10,
+  },
+  itemImage1: {
+    width: 100,
+    height: 120,
+    resizeMode:'contain'
+  },
+  cartposition:{
+    position:"absolute", 
+    borderRadius:15,
+    backgroundColor:"red",
+    height:15,
+    width:15,
+    alignItems:"center",
+    justifyContent:"center",
+    marginLeft:width/10
+  },
+  btnmua:{
+    width:width/1.1, 
+    backgroundColor:"#FF3333", 
+    justifyContent:'center',
+    borderRadius:5, 
+    marginVertical:5,
+    alignItems:'center' 
+  }
 });

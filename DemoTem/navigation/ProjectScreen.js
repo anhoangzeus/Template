@@ -146,7 +146,22 @@ export function AppStack(props) {
         }}
       />
 
-     
+      <Tab.Screen
+        name="Thông báo"
+        component={NotificationScreen}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Icon
+              size={24}
+              name="bells"
+              family="antdesign"
+              color={focused ? "blue" : materialTheme.COLORS.MUTED}
+              color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
+              style={{ marginRight: -3 }}
+            />
+          )
+        }}
+      />
       <Tab.Screen
         name="Cá nhân"
         component={Profile_User}
@@ -163,22 +178,7 @@ export function AppStack(props) {
         }}
       />
 
-       <Tab.Screen
-        name="Thông báo"
-        component={NotificationScreen}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Icon
-              size={24}
-              name="bells"
-              family="antdesign"
-              color={focused ? "blue" : materialTheme.COLORS.MUTED}
-              color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
-              style={{ marginRight: -3 }}
-            />
-          )
-        }}
-      />
+      
       
     </Tab.Navigator>
   );
