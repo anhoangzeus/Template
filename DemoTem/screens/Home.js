@@ -76,7 +76,6 @@ export default class Home extends React.PureComponent {
      listphukien:[],
      listall:[],
      listcontents:[],
-     searchText:"",
      numcart:0,
      refreshing: false,
      loading:true
@@ -301,7 +300,7 @@ export default class Home extends React.PureComponent {
       </View>     
     </View>
     <View style={styles.bodyContainer}>
-      <ScrollView
+       <ScrollView
            refreshControl={
             <RefreshControl
                 refreshing={this.state.refreshing}
@@ -309,6 +308,7 @@ export default class Home extends React.PureComponent {
             />
           }
       >
+        
         <Swiper 
             autoplay={true}
             autoplayTimeout={2}
@@ -498,7 +498,7 @@ export default class Home extends React.PureComponent {
     </View>
       <View style={{height:10, backgroundColor:'silver'}}/>
       <View style={styles.sectionContainer}>
-      </View>
+      </View> 
       </ScrollView>
     </View>
   </View>

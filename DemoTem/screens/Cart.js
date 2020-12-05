@@ -1,17 +1,26 @@
 import React, { Component } from 'react';
-import { ImageBackground, Image, StyleSheet,ScrollView, StatusBar, Dimensions, Platform,View,LogBox,ActivityIndicator, Alert } from 'react-native';
-import {  Button, Text } from 'galio-framework';
-
-
-const { height, width } = Dimensions.get('screen');
+import {
+  Image, 
+  StyleSheet,
+  ScrollView, 
+  StatusBar, 
+  Dimensions, 
+  Platform,
+  View,
+  ActivityIndicator, 
+  Alert ,
+  FlatList,
+  TouchableOpacity,
+  Text
+} from 'react-native';
+import {  Button} from 'galio-framework';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-const section_banner = require('../assets/section_banner.png');
-import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
-
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 import { element } from 'prop-types';
 import NumberFormat from 'react-number-format';
+const { height, width } = Dimensions.get('screen');
+
 function ReactNativeNumberFormat({ value }) {
   return (
     <NumberFormat
@@ -22,19 +31,17 @@ function ReactNativeNumberFormat({ value }) {
     />
   );
 }
-
 export default class Cart extends Component{
     constructor(props) {
         super(props);
-        LogBox.ignoreAllLogs();
         this.itemRef = fbApp.database();
         this.state = { 
          CartItem:[],
          Address:{},
          refesh:true,
          amount:0,
-         loading:true
-
+         loading:true,
+         hasAddress:false
         }; 
       }
     componentDidMount(){
@@ -66,38 +73,32 @@ export default class Cart extends Component{
                   item=Address;
                 }
               });
-              console.log(item);
+              if(item !=null){
+                this.setState({hasAddress:true})
+              }
               this.setState({
                 Address:item,
                 loading:false
-              }) 
             })
+          })
         }
       }
-
       ListenCart = () => {
         console.log("vao gio hang");
         if(fbApp.auth().currentUser){
           this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid).once('value').then((snapshot) => {
             var items =[];
             snapshot.forEach(function(childSnapshot){
-              var product={
-              key:'',
-              Id:'',
-              Name:'',
-              Picture:'',
-              Price:'',
-              Quantity:'',
-              }
-              product.key=childSnapshot.key;
-              product.Id=childSnapshot.val().Id;
-              product.Name=childSnapshot.val().Name;
-              product.Picture=childSnapshot.val().Picture;
-              product.Price=childSnapshot.val().Price;
-              product.Quantity=childSnapshot.val().Quantity;
-              product.BrandID=childSnapshot.val().BrandID;
-              product.CategoryID=childSnapshot.val().CategoryID;
-              items.push(product);
+              items.push({
+                key : childSnapshot.key,
+                Id : childSnapshot.val().Id,
+                Name : childSnapshot.val().Name,
+                Picture : childSnapshot.val().Picture,
+                Price : childSnapshot.val().Price,
+                Quantity : childSnapshot.val().Quantity,
+                BrandID : childSnapshot.val().BrandID,
+                CategoryID : childSnapshot.val().CategoryID,
+              });
             });
             this.setState({
               CartItem:items,
@@ -105,9 +106,7 @@ export default class Cart extends Component{
             console.log(this.state.amount);
           })  
         }
-        }
-
-       
+      }   
        GetCurrentDate =()=>{
         var date = new Date().getDate();
         var month = new Date().getMonth() + 1; 
@@ -118,16 +117,14 @@ export default class Cart extends Component{
           return date + '/' +month+ "/" +year + " " + gio+":"+ phut+":"+giay;
       }
       _checkGioHang=()=>{
-        if(this.state.amount!=0)
+        if(this.state.amount!=0 && this.state.hasAddress==true)
         {
           this.props.navigation.navigate("Payment",{content : this.state.amount})
         }else{
           Alert.alert("Hãy mua sắm ngay thôi")
         }
-
       }
     render(){
-
       const { navigation } = this.props;
       console.log(this.state.CartItem);
       this.state.amount=0;
@@ -142,7 +139,7 @@ export default class Cart extends Component{
           </View>
         )
       }
-        return(      
+    return(      
      <View style={styles.screenContainer}>
         <StatusBar barStyle="light-content" />
         <View style={styles.headerContainer}>
@@ -152,8 +149,9 @@ export default class Cart extends Component{
         
           <Text style={styles.headerText}>Giỏ hàng</Text>  
         </View>
-        <ScrollView style={{height:height}}>     
-        <View style={styles.listItem}>
+        <ScrollView style={{height:height}}>
+        { this.state.hasAddress ? 
+          <View style={styles.listItem}>
           <View style={{flex:1, margin: 10}}>   
             <View style={{flexDirection:'row',justifyContent:'space-between' }}>
             <Text style={styles.addresstitle}>Địa chỉ nhận hàng</Text>
@@ -169,8 +167,17 @@ export default class Cart extends Component{
             <View style={{justifyContent:'space-between', flexDirection:'row',marginTop:10}}>
               </View>             
             </View>                   
-      </View>
-
+          </View>
+          :
+          <View style={styles.listItem}>
+                <TouchableOpacity 
+                    onPress={()=> {this.props.navigation.navigate('DetailAddressScreen', {id: ""})}}
+                    style={{flex:1, margin: 10, flexDirection:'row'}}>
+                  <FontAwesome name="plus" color="green" size={25}/>
+                     <Text style={{color: 'green',fontSize:20, marginLeft:10}}>Thêm địa chỉ nhận hàng</Text>
+               </TouchableOpacity>
+          </View>
+        }
         <FlatList 
           data={this.state.CartItem}
           extraData={this.state.refesh}
@@ -265,8 +272,7 @@ export default class Cart extends Component{
               });
               }}>
               <FontAwesome  name="remove" size={25} color="red" />
-              </TouchableOpacity>
-            
+              </TouchableOpacity>       
             </View>
           </View>
         </View>
@@ -278,38 +284,7 @@ export default class Cart extends Component{
               <Text style={{marginLeft:10, fontSize:16}}>Thành tiền: </Text>
               <View style={{marginLeft:width*0.4}}><Text color="red" style={{fontSize:20}}><ReactNativeNumberFormat value={this.state.amount} /></Text></View>
           </View>
-          <Button style={styles.btnSubmit} color='#ff3333' onPress={() =>{
-            //  var key = fbApp.database().ref().child('Orders/').push().key;
-            //  var phone = this.state.Address.ShipPhone;
-            //  var name = this.state.Address.ShipName;
-            //  console.log(phone);
-            //  console.log(name);
-            //  var diachi = this.state.Address.NumberAddress+", "+this.state.Address.Xa+", "+this.state.Address.Huyen+", "+ this.state.Address.City;
-             
-            //    this.itemRef.ref('/Orders/'+key).set({
-            //      Status:1,
-            //      CreatedDate:this.GetCurrentDate(),
-            //      ShipAddress:diachi,
-            //      ShipName:name,
-            //      ShipMoblie:phone,
-            //      OrderID: key,
-            //      Payment:"01",
-            //      Total:this.state.amount,
-            //      CustomerID:fbApp.auth().currentUser.uid,
-                 
-            //    })
-            //    this.state.CartItem.forEach(element =>{
-            //     var keyDetail = fbApp.database().ref().child('OrderDetails/').push().key;
-            //      this.itemRef.ref('/OrderDetails/'+keyDetail).set({
-            //       OrderDetailID:keyDetail,
-            //       OrderID:key,
-            //       Price:element.Price,
-            //       ProductID: element.Id,
-            //       Quantity:element.Quantity
-            //      })
-            //    })
-            this._checkGioHang()
-              }} >Tiến hành đặt hàng</Button>
+          <Button style={styles.btnSubmit} color='#ff3333' onPress={() =>{this._checkGioHang()}} >Tiến hành đặt hàng</Button>
         </View>
       <View style={styles.bodyContainer}></View>
     </View>
@@ -358,6 +333,7 @@ const styles = StyleSheet.create({
       alignSelf:"center",
       flexDirection:"row",
       borderRadius:5,
+      width:width
     },
     inputText: {
       color: '#969696',
@@ -416,7 +392,5 @@ const styles = StyleSheet.create({
     addresstitle:{
       fontWeight:'bold',
       fontSize:17
-
     }
-    
-  });
+});

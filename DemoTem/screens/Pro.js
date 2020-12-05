@@ -48,8 +48,7 @@
       </View>
     </View>
   );
-
-  export default class Pro extends React.Component {
+  export default class Pro extends React.PureComponent {
     constructor(props) {
       super(props);
       this.itemRef = fbApp.database();

@@ -208,19 +208,19 @@ getItemRespon=()=>{
     const { navigation } = this.props;
     return (
       <View  style={{flex:1,backgroundColor:"#ededed"}}>
-      <StatusBar barStyle="dark-content" backgroundColor="#1e88e5"/>
+      <StatusBar hidden />
         <View style={styles.headerFont} >
-          <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,alignItems:'center',marginLeft:5,justifyContent:'center'}} onPress={()=> navigation.goBack()}> 
+          <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,alignItems:'center',marginLeft:5,justifyContent:'center',marginTop:10}} onPress={()=> navigation.goBack()}> 
             <FontAwesome name="chevron-left" size={25} color="white"/>
           </TouchableOpacity>
-          <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,marginLeft:width*0.45,alignItems:'center',justifyContent:'center'}} onPress={()=> navigation.navigate("Setting")}> 
+          <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,marginLeft:width*0.45,alignItems:'center',justifyContent:'center',marginTop:10}} onPress={()=> navigation.navigate("Setting")}> 
             <FontAwesome name="search" size={25} color="white"/>
           </TouchableOpacity>
-          <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,marginLeft:width*0.01,alignItems:'center',justifyContent:'center'}} onPress={() => navigation.navigate("App")}>
+          <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,marginLeft:width*0.01,alignItems:'center',justifyContent:'center',marginTop:10}} onPress={() => navigation.navigate("App")}>
             <FontAwesome name="home" size={30} color="white" />
           </TouchableOpacity>
         <View>
-          <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,marginLeft:width*0.01,alignItems:'center',justifyContent:'center'}} onPress={() => navigation.navigate("Cart")} >
+          <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,marginLeft:width*0.01,alignItems:'center',justifyContent:'center',marginTop:10}} onPress={() => navigation.navigate("Cart")} >
             <FontAwesome name="shopping-cart" size={30} color="white" />
           </TouchableOpacity>  
                {this.renderNofiCart()}    
@@ -293,7 +293,7 @@ getItemRespon=()=>{
 const styles = StyleSheet.create({
   headerFont:{
     flexDirection:"row",
-    backgroundColor:"#fff"
+    backgroundColor:"#fff",
   },
   devide:{
     height:2
@@ -303,12 +303,10 @@ const styles = StyleSheet.create({
     height: height*0.6,
   },
   profileContainer: {
-    paddingTop:5,
-    paddingLeft:10,
     marginLeft:10,
     width: width-20,
     height: height*0.5,
-    resizeMode:"contain",
+    resizeMode:'contain'
   },
   options: {
     position: 'relative',

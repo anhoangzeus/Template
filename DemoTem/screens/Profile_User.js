@@ -1,15 +1,13 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, StatusBar, ScrollView, Image,Dimensions} from 'react-native';
+import {StyleSheet, View, Text, StatusBar, ScrollView, Image,Dimensions,TouchableOpacity} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
-import Header from '../components/HeaderComponent';
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 import{ AuthContext } from '../components/context';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
        
 
