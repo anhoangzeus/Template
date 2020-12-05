@@ -76,12 +76,14 @@ export default class Home extends React.PureComponent {
      listphukien:[],
      listall:[],
      listcontents:[],
-     searchText:"",
      numcart:0,
      refreshing: false,
      loading:true
     }; 
   };
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.state.numcart !== nextProps.numcart
+  } 
   componentDidMount(){
     this.ListenForItems();
     this.getListBanner();
