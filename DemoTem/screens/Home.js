@@ -63,7 +63,7 @@ const NewProductItem = ({image, name, price}) => (
     </View>
   </View>
 );
-export default class Home extends React.Component {
+export default class Home extends React.PureComponent {
   constructor(props) {
     super(props);
     LogBox.ignoreAllLogs();
@@ -298,7 +298,7 @@ export default class Home extends React.Component {
       </View>     
     </View>
     <View style={styles.bodyContainer}>
-      <ScrollView
+       <ScrollView
            refreshControl={
             <RefreshControl
                 refreshing={this.state.refreshing}
@@ -306,6 +306,7 @@ export default class Home extends React.Component {
             />
           }
       >
+        
         <Swiper 
             autoplay={true}
             autoplayTimeout={2}
@@ -495,7 +496,7 @@ export default class Home extends React.Component {
     </View>
       <View style={{height:10, backgroundColor:'silver'}}/>
       <View style={styles.sectionContainer}>
-      </View>
+      </View> 
       </ScrollView>
     </View>
   </View>

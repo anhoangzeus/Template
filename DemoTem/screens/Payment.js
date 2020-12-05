@@ -1,13 +1,20 @@
 import React, { Component } from 'react';
-import { ImageBackground, Image, StyleSheet,ScrollView, StatusBar, Dimensions, Platform,View,LogBox,ActivityIndicator } from 'react-native';
-import {  Button, Text } from 'galio-framework';
-
+import { 
+  Image,
+  Text, 
+  StyleSheet,
+  ScrollView, 
+  StatusBar, 
+  Dimensions, 
+  Platform,
+  View,
+  ActivityIndicator,
+  TouchableOpacity,
+  FlatList
+} from 'react-native';
 
 const { height, width } = Dimensions.get('screen');
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-const section_banner = require('../assets/section_banner.png');
-import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
-
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 import { element } from 'prop-types';
@@ -31,16 +38,15 @@ export default function Payment({ route, navigation}){
       
   }
   return (
-      <Payscreen
-          amount = {para}
-          navigation = {navigation}
-      />
+    <Payscreen
+      amount = {para}
+      navigation = {navigation}
+    />
   );    
 }
 export class Payscreen extends Component{
     constructor(props) {
         super(props);
-        LogBox.ignoreAllLogs();
         this.itemRef = fbApp.database();
         this.state = { 
          Address:{},
@@ -96,10 +102,7 @@ export class Payscreen extends Component{
         var key = fbApp.database().ref().child('Orders/').push().key;
         var phone = this.state.Address.ShipPhone;
         var name = this.state.Address.ShipName;
-        console.log(phone);
-        console.log(name);
-        var diachi = this.state.Address.NumberAddress+", "+this.state.Address.Xa+", "+this.state.Address.Huyen+", "+ this.state.Address.City;
-        
+        var diachi = this.state.Address.NumberAddress+", "+this.state.Address.Xa+", "+this.state.Address.Huyen+", "+ this.state.Address.City;       
           this.itemRef.ref('/Orders/'+key).set({
             Status:1,
             CreatedDate:this.GetCurrentDate(),
@@ -109,25 +112,24 @@ export class Payscreen extends Component{
             OrderID: key,
             Payment:"01",
             Total:this.props.amount + 50000,
-            CustomerID:fbApp.auth().currentUser.uid,               
-          })
+            CustomerID:fbApp.auth().currentUser.uid       
+          });
           await(this.itemRef.ref("Cart/"+fbApp.auth().currentUser.uid).once("value").then((snapshot)=>{                
-             snapshot.forEach(function(childSnapshot){
-             var keyDetail = fbApp.database().ref().child('OrderDetails/').push().key;
-             fbApp.database().ref('/OrderDetails/'+keyDetail).set({
-              OrderDetailID:keyDetail,
-              OrderID:key,
-              Price:childSnapshot.val().Price,
-              ProductID: childSnapshot.val().Id,
-              Quantity:childSnapshot.val().Quantity
-             })
-           })
-          }))
-          this.itemRef.ref("Cart/"+fbApp.auth().currentUser.uid).set({               
-          });            
-          this.props.navigation.navigate("App");
+            snapshot.forEach(function(childSnapshot){
+            var keyDetail = fbApp.database().ref().child('OrderDetails/').push().key;
+            fbApp.database().ref('/OrderDetails/'+keyDetail).set({
+             OrderDetailID:keyDetail,
+             OrderID:key,
+             Price:childSnapshot.val().Price,
+             ProductID: childSnapshot.val().Id,
+             Quantity:childSnapshot.val().Quantity
+            })
+          })
+         }))
+         this.itemRef.ref("Cart/"+fbApp.auth().currentUser.uid).set({               
+         });            
+         this.props.navigation.navigate("App");
       }
-
     render(){
       const { navigation } = this.props;
       const { checked } = this.state;
@@ -165,7 +167,7 @@ export class Payscreen extends Component{
             </View>                   
       </View>
           <View style={styles.paymentoption}>
-            <Text style={{fontSize:16}}>Chọn hình thức thanh toán</Text>
+            <Text style={{fontSize:16,marginLeft:10}}>Chọn hình thức thanh toán</Text>
             <View style={styles.option}>
             <RadioButton value="first"
             color="#3399ff"
@@ -181,22 +183,23 @@ export class Payscreen extends Component{
             </View>
           </View>
           <View style={styles.count}>
-            <View flexDirection='row'>
-              <Text style={{fontSize:17, fontWeight:'10'}} color="#666666">Tạm tính</Text>
-            <Text style={{marginLeft:width/2,fontSize:20}}><ReactNativeNumberFormat value={this.props.amount} /></Text>
+            <View flexDirection='row' justifyContent="space-between">
+              <Text style={{fontSize:17, marginHorizontal:10}} color="#666666">Tạm tính</Text>
+            <Text style={{fontSize:20,marginHorizontal:10}}><ReactNativeNumberFormat value={this.props.amount} /></Text>
             </View>
-            <View flexDirection='row'>
-              <Text style={{fontSize:17}} color="#666666">Phí vận chuyển</Text>
-              <Text style={{marginLeft:width/2,fontSize:20}}><ReactNativeNumberFormat value={50000} /></Text>
+            <View flexDirection="row" justifyContent="space-between">
+              <Text style={{fontSize:17,marginLeft:10}} color="#666666">Phí vận chuyển</Text>
+              <Text style={{fontSize:20,marginHorizontal:10}}><ReactNativeNumberFormat value={50000} /></Text>
             </View>
           </View>
         </ScrollView>
         <View style={{backgroundColor:"#fff",marginBottom:5}}>
-        <View flexDirection="row">
+        <View flexDirection="row" justifyContent="space-between">
               <Text style={{marginLeft:10, fontSize:16}}>Thành tiền: </Text>
-              <View style={{marginLeft:width*0.4}}><Text color="red" style={{fontSize:20}}><ReactNativeNumberFormat value={this.props.amount + 50000} /></Text></View>
+              <Text color="red" style={{fontSize:20,marginHorizontal:10}}><ReactNativeNumberFormat value={this.props.amount + 50000} /></Text>
           </View>
-          <Button style={styles.btnSubmit} color="#ff3333" onPress={()=>{this._thanhToan()}}>Xác nhận</Button>
+          <TouchableOpacity style={styles.btnSubmit} color="#ff3333" onPress={()=>{this._thanhToan()}}>
+            <Text style={{color:'white',fontSize:20,alignSelf:"center"}}>Xác Nhận</Text></TouchableOpacity>
         </View>
       <View style={styles.bodyContainer}></View>
     </View>
@@ -250,6 +253,11 @@ const styles = StyleSheet.create({
     btnSubmit:{
       width:width*0.9,
       marginLeft:width*0.05,
+      height:height/15,
+      backgroundColor:'red',
+      borderRadius:10,
+      justifyContent:'center',
+      marginBottom:10,
     },
     address:{
       marginTop:5,
