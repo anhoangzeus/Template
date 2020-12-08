@@ -49,7 +49,7 @@ export default class Payscreen extends React.PureComponent{
       var giay = new Date().getSeconds();
         return date + '/' +month+ "/" +year + " " + gio+":"+ phut+":"+giay;
     }
-      thanhToan=()=>{
+      thanhToan=async()=>{
         var key = this.itemRef.ref().child('Orders/').push().key;
         var phone = this.props.address.ShipPhone;
         var name = this.props.address.ShipName;
