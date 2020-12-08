@@ -9,6 +9,7 @@ import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 import{ AuthContext } from '../components/context';
 import AsyncStorage from '@react-native-community/async-storage';
+import { database } from 'firebase';
        
 
 const { width,height } = Dimensions.get('screen');
@@ -67,7 +68,7 @@ const ProfileUser =(props)=> {
         <TouchableOpacity onPress={()=> {props.navigation.navigate("InfoUser")}}>
           <View style={styles.userContainer}>
             <View style={styles.avatarContainer}>
-            <Image source={{uri: Avatar,}} size={80} style={styles.avatarContainer}/>
+            <Image source={{uri: Avatar}} size={80} style={styles.avatarContainer}/>
             </View>
             <View style={styles.textContainer}>
                 <Text style={styles.welcomeText}>{FullName}</Text>

@@ -119,7 +119,7 @@ export default class Cart extends Component{
       _checkGioHang=()=>{
         if(this.state.amount!=0 && this.state.hasAddress==true)
         {
-          this.props.navigation.navigate("Payment",{content : this.state.amount})
+          this.props.navigation.navigate("ItemsCart",{content : this.state.amount,listItem : this.state.CartItem, address: this.state.Address })
         }else{
           Alert.alert("Hãy mua sắm ngay thôi")
         }
@@ -280,11 +280,12 @@ export default class Cart extends Component{
         />
         </ScrollView>
         <View style={{backgroundColor:"#fff",marginBottom:5}}>
-          <View flexDirection="row">
+          <View flexDirection="row"   justifyContent="space-between">
               <Text style={{marginLeft:10, fontSize:16}}>Thành tiền: </Text>
-              <View style={{marginLeft:width*0.4}}><Text color="red" style={{fontSize:20}}><ReactNativeNumberFormat value={this.state.amount} /></Text></View>
+              <Text color="red" style={{fontSize:20,marginHorizontal:10}}><ReactNativeNumberFormat value={this.state.amount} /></Text>
           </View>
-          <Button style={styles.btnSubmit} color='#ff3333' onPress={() =>{this._checkGioHang()}} >Tiến hành đặt hàng</Button>
+          <TouchableOpacity style={styles.btnSubmit}  onPress={() =>{this._checkGioHang()}} >
+            <Text style={{color:"white",alignSelf:'center',fontSize:20}}>Tiến hành đặt hàng</Text></TouchableOpacity>
         </View>
       <View style={styles.bodyContainer}></View>
     </View>
@@ -370,7 +371,7 @@ const styles = StyleSheet.create({
       fontSize: 16,
       color: '#484848',
       marginVertical: 4,
-      fontWeight:"bold"
+      fontWeight:"bold",
     },
     itemDec:{
       marginLeft: width/20,
@@ -383,7 +384,12 @@ const styles = StyleSheet.create({
     },
     btnSubmit:{
       width:width*0.9,
+      height:height/18,
       marginLeft:width*0.05,
+      backgroundColor:'red',
+      borderRadius:10,
+      marginVertical:10,
+      justifyContent:'center'
     },
     address:{
       marginTop:5,

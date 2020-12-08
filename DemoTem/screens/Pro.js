@@ -68,6 +68,9 @@
         numcart:0,
       }; 
     };
+    shouldComponentUpdate(nextProps, nextState) {
+      return this.state.numcart !== nextProps.numcart
+    } 
     BrandItem = ({image,id}) => (
       <TouchableOpacity onPress={()=> this.setState({BrandID :id})} style={styles.branditemContainer}>
             <Image source={{uri:image}} style={styles.cateImage} />
