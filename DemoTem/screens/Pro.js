@@ -14,6 +14,7 @@
     FlatList,
     TouchableOpacity,
     RefreshControl,
+    ImageBackground,
   } from 'react-native';
   import NumberFormat from 'react-number-format';
   import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -21,6 +22,7 @@
   import {fbApp} from "../firebaseconfig";
   import "firebase/auth";
   import Swiper from 'react-native-swiper';
+ 
 
   const { height, width } = Dimensions.get('screen');
   function ReactNativeNumberFormat({ value }) {
@@ -75,8 +77,24 @@
     );
     CategoryItem = ({name,id,icon}) => (
         <TouchableOpacity  onPress={()=> this.setState({CatogoryID: id})}>
-          <Icons name={icon} color="gold" size={width/8} 
+          <View style={{width:width/7,height:height/15,marginHorizontal:14, 
+          borderRadius:30,
+          marginVertical:5,
+          marginLeft:width/70,
+          justifyContent:"center"}
+          }>
+          <ImageBackground style={{width:width/7,height:height/15,marginHorizontal:14, 
+          borderRadius:30,
+          marginVertical:5,
+         
+          justifyContent:"center"}
+          }
+          source={require('../assets/bg.png')}>
+          <Icons name={icon} color="#fff" size={width/12} 
             style={styles.cateIcon}/>
+          </ImageBackground>
+          </View>
+          
           <Text style={styles.itemName1}>{name}</Text>
         </TouchableOpacity>
     );
@@ -481,10 +499,10 @@
       borderColor:'#3eafff'
     },
     cateIcon:{
-      backgroundColor:'#3eafff', 
       marginHorizontal:14, 
       borderRadius:30,
-      marginVertical:5
+      marginVertical:5,
+      marginLeft:width/40,
     }
   });
   

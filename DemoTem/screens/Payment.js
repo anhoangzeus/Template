@@ -123,11 +123,11 @@ export class Payscreen extends React.PureComponent{
              Price:childSnapshot.val().Price,
              ProductID: childSnapshot.val().Id,
              Quantity:childSnapshot.val().Quantity
-            })
+            });
+            fbApp.database().ref("Cart/"+fbApp.auth().currentUser.uid).child(childSnapshot.key).set({})
           })
          }))
-         this.itemRef.ref("Cart/"+fbApp.auth().currentUser.uid).set({               
-         });            
+                    
          this.props.navigation.navigate("App");
       }
     render(){
