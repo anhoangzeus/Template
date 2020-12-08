@@ -49,7 +49,7 @@ export default class Payscreen extends React.PureComponent{
       var giay = new Date().getSeconds();
         return date + '/' +month+ "/" +year + " " + gio+":"+ phut+":"+giay;
     }
-      thanhToan=()=>{
+      thanhToan=async()=>{
         var key = this.itemRef.ref().child('Orders/').push().key;
         var phone = this.props.address.ShipPhone;
         var name = this.props.address.ShipName;
@@ -67,21 +67,23 @@ export default class Payscreen extends React.PureComponent{
               Total:this.props.amount + 50000,
               CustomerID:fbApp.auth().currentUser.uid,       
           });
-
-          _listItem.forEach((child) => {
-            var keyDetail = this.itemRef.ref().child('OrderDetails/').push().key;
-              this.itemRef.ref('OrderDetails/'+keyDetail).set({
-                 OrderDetailID:keyDetail,
-                 OrderID:key,
-                 Price:child.Price,
-                 ProductID: child.Id,
-                 Quantity:child.Quantity
-                });
-              });
-            this.itemRef.ref("Cart/"+fbApp.auth().currentUser.uid).remove();
-           this.props.navigation.navigate('App');
-      };
-  render(){
+          await(this.itemRef.ref("Cart/"+fbApp.auth().currentUser.uid).once("value").then((snapshot)=>{                
+            snapshot.forEach(function(childSnapshot){
+            var keyDetail = fbApp.database().ref().child('OrderDetails/').push().key;
+            fbApp.database().ref('/OrderDetails/'+keyDetail).set({
+             OrderDetailID:keyDetail,
+             OrderID:key,
+             Price:childSnapshot.val().Price,
+             ProductID: childSnapshot.val().Id,
+             Quantity:childSnapshot.val().Quantity
+            });
+            fbApp.database().ref("Cart/"+fbApp.auth().currentUser.uid).child(childSnapshot.key).set({})
+          })
+         }))
+                    
+         this.props.navigation.navigate("App");
+      }
+    render(){
       const { navigation } = this.props;
       if (this.state.loading) {
         return (
