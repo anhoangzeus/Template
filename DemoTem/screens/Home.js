@@ -286,7 +286,7 @@ export default class Home extends React.PureComponent {
     <View style={styles.screenContainer}>
     <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
     <View style={styles.headerContainer}>
-    <TouchableOpacity  onPress={()=> navigation.navigate("Setting")}>
+    <TouchableOpacity  onPress={()=> navigation.navigate("Tìm kiếm")}>
     <View style={styles.inputContainer}>
           <FontAwesome name="search" size={24} color="#969696" />
           <Text style={styles.inputText}>Bạn tìm gì hôm nay?</Text>

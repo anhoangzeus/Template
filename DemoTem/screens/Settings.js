@@ -96,7 +96,7 @@ export default class Setting extends React.Component {
           id: '',
         }
         var rs = childSnapshot.val().Name.toLowerCase();
-        var des = childSnapshot.val().Description.toLowerCase();
+        var des = childSnapshot.val().MetaDescription.toLowerCase();
         bodau(rs);bodau(des);
         if (rs.indexOf(st) != -1 || des.indexOf(st) != -1){        
           product.title = childSnapshot.val().Name;
@@ -136,13 +136,27 @@ export default class Setting extends React.Component {
       )
     }
   };
+
+  renderTextnull= ()=>{
+    if(this.state.searchText != null && this.state.listcate == null){
+      return(
+        <View>
+          <Text>Không tìm thấy sản phẩm</Text>
+        </View>
+      )
+    }
+    else
+    return null
+  }
+
   render() {
     const { navigation } = this.props;
 
     return (
     <View style={styles.screenContainer}>
     <StatusBar barStyle="light-content" />
-    <View style={styles.headerContainer}>    
+    <View style={styles.headerContainer}>   
+    
       <View style={styles.inputContainer}>
         <FontAwesome name="search" size={24} color="#969696" />
         <TextInput style={styles.inputText} placeholder="Bạn tìm gì hôm nay?" 
@@ -162,6 +176,7 @@ export default class Setting extends React.Component {
       <SafeAreaView>
       <ScrollView>
       <View style={styles.listItemContainer}>
+        {this.renderTextnull()}
       <FlatList 
         horizontal={false}
         numColumns={2}
@@ -177,7 +192,8 @@ export default class Setting extends React.Component {
         </TouchableOpacity>    
         }
         ></FlatList>           
-      </View>    
+      </View>  
+      <View style={{height:height/7}}></View>  
       </ScrollView>
       </SafeAreaView>
       </View>
