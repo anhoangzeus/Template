@@ -35,6 +35,7 @@ const SignUp1 = (navigation) => {
     CreateDate:"06/11/2020",
     Status:"true",
     UserID:"",
+    Avatar:"https://i.ibb.co/HDzz1rC/avartarnone.png",
     check_textInputChange: false,
     check_textInputChange1: false, 
     check_textInputChange2: false, 
@@ -136,6 +137,7 @@ const registerHandle = (userName, password, fullname , phone ) => {
             UserID: fbApp.auth().currentUser.uid,
             Password:data.password,
             Email:userName,
+            Avatar:data.Avatar,
         });
         Alert.alert(
             'Thông báo',

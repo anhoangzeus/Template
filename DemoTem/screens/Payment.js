@@ -9,18 +9,17 @@ import {
   Platform,
   View,
   ActivityIndicator,
-  TouchableOpacity,
-  FlatList
+  FlatList,
+  TouchableOpacity
 } from 'react-native';
-
-const { height, width } = Dimensions.get('screen');
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
-import { element } from 'prop-types';
 import NumberFormat from 'react-number-format';
 import { RadioButton } from 'react-native-paper';
+import { Button } from 'galio-framework';
 
+const { height, width } = Dimensions.get('screen');
 function ReactNativeNumberFormat({ value }) {
   return (
     <NumberFormat
@@ -31,32 +30,16 @@ function ReactNativeNumberFormat({ value }) {
     />
   );
 };
-export default function Payment({ route, navigation}){
-  console.log(route.params);
-  if (route.params != null) {
-      para =route.params.content;
-      
-  }
-  return (
-    <Payscreen
-      amount = {para}
-      navigation = {navigation}
-    />
-  );    
-}
-export class Payscreen extends React.PureComponent{
+export default class Payscreen extends React.PureComponent{
+
     constructor(props) {
         super(props);
         this.itemRef = fbApp.database();
         this.state = { 
-         Address:{},
          checked: 'first',
-         loading:true
+         loading:false
         }; 
-      }
-    componentDidMount(){  
-          this.GetAddress();
-    }
+      }  
     GetCurrentDate =()=>{
       var date = new Date().getDate();
       var month = new Date().getMonth() + 1; 
@@ -66,53 +49,23 @@ export class Payscreen extends React.PureComponent{
       var giay = new Date().getSeconds();
         return date + '/' +month+ "/" +year + " " + gio+":"+ phut+":"+giay;
     }
-      GetAddress =() =>{
-        if(fbApp.auth().currentUser)
-        {
-            this.itemRef.ref('ListAddress').child(fbApp.auth().currentUser.uid).once('value')
-            .then((snapshot)=>{
-              var item;
-              snapshot.forEach(function(childSnapshot){
-                var Address={
-                  ShipName:'',
-                  ShipPhone:'',
-                  NumberAddress:'',
-                  Xa:'',
-                  Huyen:'',
-                  City:'',
-                }
-                if(childSnapshot.val().Main==true){
-                  Address.ShipName= childSnapshot.val().ShipName;
-                  Address.ShipPhone= childSnapshot.val().ShipPhone;
-                  Address.NumberAddress= childSnapshot.val().NumberAddress;
-                  Address.Xa= childSnapshot.val().Xa;
-                  Address.Huyen= childSnapshot.val().Huyen;
-                  Address.City= childSnapshot.val().City;
-                  item=Address;
-              }
-            });
-            this.setState({
-                Address:item,
-                loading:false
-            }) 
-          })
-        }
-      }
-      _thanhToan=async()=>{
-        var key = fbApp.database().ref().child('Orders/').push().key;
-        var phone = this.state.Address.ShipPhone;
-        var name = this.state.Address.ShipName;
-        var diachi = this.state.Address.NumberAddress+", "+this.state.Address.Xa+", "+this.state.Address.Huyen+", "+ this.state.Address.City;       
-          this.itemRef.ref('/Orders/'+key).set({
-            Status:1,
-            CreatedDate:this.GetCurrentDate(),
-            ShipAddress:diachi,
-            ShipName:name,
-            ShipMoblie:phone,
-            OrderID: key,
-            Payment:"01",
-            Total:this.props.amount + 50000,
-            CustomerID:fbApp.auth().currentUser.uid       
+      thanhToan=()=>{
+        var key = this.itemRef.ref().child('Orders/').push().key;
+        var phone = this.props.address.ShipPhone;
+        var name = this.props.address.ShipName;
+        var diachi = this.props.address.NumberAddress+", "+this.props.address.Xa+", "+this.props.address.Huyen+", "+ this.props.address.City;       
+        var _listItem = this.props._listItem;
+
+          this.itemRef.ref('Orders/'+key).set({
+              Status:1,
+              CreatedDate:this.GetCurrentDate(),
+              ShipAddress:diachi,
+              ShipName:name,
+              ShipMoblie:phone,
+              OrderID: key,
+              Payment:"01",
+              Total:this.props.amount + 50000,
+              CustomerID:fbApp.auth().currentUser.uid,       
           });
           await(this.itemRef.ref("Cart/"+fbApp.auth().currentUser.uid).once("value").then((snapshot)=>{                
             snapshot.forEach(function(childSnapshot){
@@ -132,14 +85,13 @@ export class Payscreen extends React.PureComponent{
       }
     render(){
       const { navigation } = this.props;
-      const { checked } = this.state;
       if (this.state.loading) {
         return (
           <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
             <ActivityIndicator size="large" color="dodgerblue" />
           </View>
-        )
-      }
+        );
+      };
         return(      
      <View style={styles.screenContainer}>
         <StatusBar barStyle="light-content" />
@@ -160,8 +112,8 @@ export class Payscreen extends React.PureComponent{
               <Text style={{color:'green', marginRight:5, fontSize:17}}>Thay đổi</Text>
             </TouchableOpacity>
             </View>  
-            <Text style={styles.address}>{this.state.Address.NumberAddress}, {this.state.Address.Xa}, {this.state.Address.Huyen}, {this.state.Address.City}</Text>
-            <Text style={styles.address}>{this.state.Address.ShipName} - {this.state.Address.ShipPhone}</Text>
+            <Text style={styles.address}>{this.props.address.NumberAddress}, {this.props.address.Xa}, {this.props.address.Huyen}, {this.props.address.City}</Text>
+            <Text style={styles.address}>{this.props.address.ShipName} - {this.props.address.ShipPhone}</Text>
             <View style={{justifyContent:'space-between', flexDirection:'row',marginTop:10}}>
               </View>             
             </View>                   
@@ -170,9 +122,9 @@ export class Payscreen extends React.PureComponent{
             <Text style={{fontSize:16,marginLeft:10}}>Chọn hình thức thanh toán</Text>
             <View style={styles.option}>
             <RadioButton value="first"
-            color="#3399ff"
-            status={checked === 'first' ? 'checked' : 'unchecked'}
-            onPress={() => { this.setState({ checked: 'first' }); }} />
+                color="#3399ff"
+                status={this.state.checked === 'first' ? 'checked' : 'unchecked'}
+                onPress={() => {this.setState({ checked: 'first' })}} />
             <FontAwesome name="money" size={30} />
             <Text style={{marginLeft:width/40,fontSize:16}}>Thanh toán tiền mặt</Text>
             </View>
@@ -193,19 +145,20 @@ export class Payscreen extends React.PureComponent{
             </View>
           </View>
         </ScrollView>
-        <View style={{backgroundColor:"#fff",marginBottom:5}}>
-        <View flexDirection="row" justifyContent="space-between">
-              <Text style={{marginLeft:10, fontSize:16}}>Thành tiền: </Text>
+        <View style={{backgroundColor:"#fff",marginBottom:5,height:height/7.5}}>
+        <View style={{flexDirection:"row" ,justifyContent:"space-between" ,marginTop:10}}>
+              <Text style={{marginLeft:10, fontSize:20}}>Thành tiền: </Text>
               <Text color="red" style={{fontSize:20,marginHorizontal:10}}><ReactNativeNumberFormat value={this.props.amount + 50000} /></Text>
           </View>
-          <TouchableOpacity style={styles.btnSubmit} color="#ff3333" onPress={()=>{this._thanhToan()}}>
-            <Text style={{color:'white',fontSize:20,alignSelf:"center"}}>Xác Nhận</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.btnSubmit}   onPress={()=> {this.thanhToan()}}>
+                <Text style={{color:"white", fontSize:20, alignSelf:'center'}}>Xác Nhận</Text>
+            </TouchableOpacity>
         </View>
       <View style={styles.bodyContainer}></View>
     </View>
-        )
-    }
-}
+    );
+  };
+};
 const styles = StyleSheet.create({
     screenContainer: {
       flex: 1,
@@ -254,10 +207,10 @@ const styles = StyleSheet.create({
       width:width*0.9,
       marginLeft:width*0.05,
       height:height/15,
-      backgroundColor:'red',
       borderRadius:10,
       justifyContent:'center',
-      marginBottom:10,
+      marginVertical:10,
+      backgroundColor:'red'
     },
     address:{
       marginTop:5,

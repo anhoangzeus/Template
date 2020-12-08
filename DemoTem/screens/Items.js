@@ -9,7 +9,7 @@ function Items({ route, navigation}) {
     if (route.params != null) {
         const {content} =route.params.id;
         searchContent = route.params.id;
-        CategoryID =route.params.CategoryID
+        CategoryID =route.params.CategoryID;
         BrandID= route.params.BrandID;
     }
     return (

@@ -29,7 +29,7 @@ function ReactNativeNumberFormat({ value }) {
     />
   );
 }
-export default class Product extends Component {
+export default class Product extends React.PureComponent {
   constructor(props) {
     super(props);
     this.itemRef = fbApp.database();
@@ -45,6 +45,9 @@ export default class Product extends Component {
       listcart:[],
     };
   };
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.state.numcart !== nextProps.numcart
+  } 
   addCart =()=>{
     const Id_Item = this.state.idsanpham;
     var key;
@@ -85,6 +88,8 @@ export default class Product extends Component {
     else {
       this.itemRef.ref('/Cart/'+fbApp.auth().currentUser.uid+"/"+key).set({
         Id:product.ProductID,
+        CategoryID :this.props.CategoryID,
+        BrandID : this.props.BrandID,
         Name:product.Name,
         Picture:product.image,
         Price:product.Price,
@@ -208,7 +213,7 @@ getItemRespon=()=>{
     const { navigation } = this.props;
     return (
       <View  style={{flex:1,backgroundColor:"#ededed"}}>
-      <StatusBar hidden />
+      <StatusBar barStyle='dark-content' />
         <View style={styles.headerFont} >
           <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,alignItems:'center',marginLeft:5,justifyContent:'center',marginTop:10}} onPress={()=> navigation.goBack()}> 
             <FontAwesome name="chevron-left" size={25} color="white"/>

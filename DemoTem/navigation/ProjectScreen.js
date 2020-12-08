@@ -10,6 +10,7 @@ import { Block, Text, theme } from "galio-framework";
 import ComponentsScreen from '../screens/Components';
 import HomeScreen from '../screens/Home';
 import ItemsScreen from '../screens/Items';
+import ItemsCart from '../screens/ItemsCart';
 import ProScreen from '../screens/Pro';
 import SettingsScreen from '../screens/Settings';
 import ProductScreen from '../screens/Product';
@@ -196,6 +197,7 @@ export default function ProjectStack(props) {
       <Stack.Screen name="Components" component={ComponentsScreen} />
       <Stack.Screen name="Product" component={ProductScreen}/>
       <Stack.Screen name="Items" component={ItemsScreen}/>
+      <Stack.Screen name="ItemsCart" component={ItemsCart}/>
       <Stack.Screen name="Cart" component={Cart}/>
       <Stack.Screen name='View_OrderDetail' component={Route_OrderDetail}/>
       <Stack.Screen name='InfoUser' component={InfoUser}/>
