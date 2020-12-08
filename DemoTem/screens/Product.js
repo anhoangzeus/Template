@@ -73,7 +73,6 @@ export default class Product extends React.PureComponent {
         product.Quantity=element.Quantity;
       }
     })
-    console.log("product:"+product.image);
     if(fbApp.auth().currentUser != null){ 
     if(temp == 0){
       this.itemRef.ref('/Cart/'+fbApp.auth().currentUser.uid).push({

@@ -30,7 +30,8 @@ function ReactNativeNumberFormat({ value }) {
     />
   );
 };
-export default class Payscreen extends Component{
+export default class Payscreen extends React.PureComponent{
+
     constructor(props) {
         super(props);
         this.itemRef = fbApp.database();

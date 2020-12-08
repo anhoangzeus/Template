@@ -1,7 +1,7 @@
 import React from 'react';
 import { ImageBackground, Image, StyleSheet,ScrollView, StatusBar, Dimensions, TextInput,View,LogBox } from 'react-native';
 import { Block, Button, Text, theme } from 'galio-framework';
-
+import NumberFormat from 'react-number-format';
 
 const { height, width } = Dimensions.get('screen');
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -12,15 +12,60 @@ import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 import { SafeAreaView } from 'react-navigation';
 
+function ReactNativeNumberFormat({ value }) {
+  return (
+    <NumberFormat
+      value={value}
+      displayType={'text'}
+      thousandSeparator={true}
+      renderText={formattedValue => <Text>{formattedValue} đ</Text>} 
+    />
+  );
+};
+
+export function bodau(str){
+  str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g,"a"); 
+  str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g,"e"); 
+  str = str.replace(/ì|í|ị|ỉ|ĩ/g,"i"); 
+  str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g,"o"); 
+  str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g,"u"); 
+  str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g,"y"); 
+  str = str.replace(/đ/g,"d");
+  str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
+  str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
+  str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
+  str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
+  str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
+  str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
+  str = str.replace(/Đ/g, "D");
+  // Some system encode vietnamese combining accent as individual utf-8 characters
+  // Một vài bộ encode coi các dấu mũ, dấu chữ như một kí tự riêng biệt nên thêm hai dòng này
+  str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, ""); // ̀ ́ ̃ ̉ ̣  huyền, sắc, ngã, hỏi, nặng
+  str = str.replace(/\u02C6|\u0306|\u031B/g, ""); // ˆ ̆ ̛  Â, Ê, Ă, Ơ, Ư
+  // Remove extra spaces
+  // Bỏ các khoảng trắng liền nhau
+  str = str.replace(/ + /g," ");
+  str = str.trim();
+  // Remove punctuations
+  // Bỏ dấu câu, kí tự đặc biệt
+  str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g," ");
+  return str;
+}
 
 const ProductItem = ({image, name, price}) => (
-  <View style={styles.itemContainer}>
-    <Image source={{uri:image}} style={styles.itemImage} />
-    <Text style={styles.itemName} numberOfLines={2}>
-      {name}
-    </Text>
-    <Text style={styles.itemPrice}>{price}</Text>
+  <View style={styles.itemContainer1}>
+  <Image source={{uri:image}} style={styles.itemImage} />
+  <Text style={styles.itemName} numberOfLines={2}>
+    {name}
+  </Text>
+  <Text style={styles.itemPrice}><ReactNativeNumberFormat value={price}/> 
+      <Text style={{color:"red"}}>  -20%</Text>
+  </Text>
+  <View style={{flexDirection:'row'}}>
+    <Image source={require("../assets/images/star.jpg")} style={styles.reviewimg}/>
+    <Text style={{color:'green',}}>(500)</Text>
   </View>
+</View>
 );
 let brandname ="Oppo";
 export default class Setting extends React.Component {
@@ -37,40 +82,9 @@ export default class Setting extends React.Component {
     }; 
   }
  
-   vietname = ({str}) => {
-    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g,"a"); 
-    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g,"e"); 
-    str = str.replace(/ì|í|ị|ỉ|ĩ/g,"i"); 
-    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g,"o"); 
-    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g,"u"); 
-    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g,"y"); 
-    str = str.replace(/đ/g,"d");
-    str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
-    str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
-    str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
-    str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
-    str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
-    str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
-    str = str.replace(/Đ/g, "D");
-    // Some system encode vietnamese combining accent as individual utf-8 characters
-    // Một vài bộ encode coi các dấu mũ, dấu chữ như một kí tự riêng biệt nên thêm hai dòng này
-    str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, ""); // ̀ ́ ̃ ̉ ̣  huyền, sắc, ngã, hỏi, nặng
-    str = str.replace(/\u02C6|\u0306|\u031B/g, ""); // ˆ ̆ ̛  Â, Ê, Ă, Ơ, Ư
-    // Remove extra spaces
-    // Bỏ các khoảng trắng liền nhau
-    str = str.replace(/ + /g," ");
-    str = str.trim();
-    // Remove punctuations
-    // Bỏ dấu câu, kí tự đặc biệt
-    str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g," ");
-    console.log(str);
-    return str;
-}
-
   searchDictionary=()=>{
     var st = this.state.searchText.toLowerCase();
-    
-    console.log(st);
+    bodau(st);
     this.itemRef.ref('/Products').once('value').then((snapshot) => {
       var items=[];
       snapshot.forEach( function(childSnapshot){       
@@ -82,10 +96,8 @@ export default class Setting extends React.Component {
           id: '',
         }
         var rs = childSnapshot.val().Name.toLowerCase();
-        
         var des = childSnapshot.val().Description.toLowerCase();
-       
-        console.log(des.indexOf(st));
+        bodau(rs);bodau(des);
         if (rs.indexOf(st) != -1 || des.indexOf(st) != -1){        
           product.title = childSnapshot.val().Name;
           product.price=childSnapshot.val().Price;
@@ -151,15 +163,16 @@ export default class Setting extends React.Component {
       <ScrollView>
       <View style={styles.listItemContainer}>
       <FlatList 
-        initialNumToRende={3}
-        numColumns={3}
+        horizontal={false}
+        numColumns={2}
+        showsHorizontalScrollIndicator={false}
         data={this.state.listcate}
         renderItem={({item})=>
         <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id})}>
              <ProductItem
             name={item.title}
             image={item.image}
-        price={item.price}
+            price={item.price}
       />
         </TouchableOpacity>    
         }
@@ -228,19 +241,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   itemImage: {
-    width: 100,
-    height: 120,
-    resizeMode:'contain'
+    width: width/2.5,
+    height: height/4,
+    resizeMode:'contain',
+    alignSelf:'center'
   },
   itemName: {
     fontSize: 14,
-    color: '#484848',
-    marginVertical: 4,
+    color: 'black',
+    marginHorizontal:10,
   },
   itemPrice: {
     fontSize: 16,
-    fontWeight: '500',
-    color: '#2a2a2a',
+    fontWeight: 'bold',
+    color: 'black',
+    marginHorizontal:10
+  },
+  reviewimg:{
+    width:width/4,
+    height:height/50,
+    marginLeft:width/60
   },
   sectionContainer: {
     backgroundColor: '#fff',
@@ -256,6 +276,14 @@ const styles = StyleSheet.create({
     width: width - 24,
     height: 130,
     borderRadius: 4,
+  },
+  itemContainer1:{
+    width: width/2.15,
+    height:height/2.8,
+    borderColor:'silver',
+    borderWidth:1,
+    borderRadius:25,
+    marginRight:5
   },
   //
   filterContainer: {
