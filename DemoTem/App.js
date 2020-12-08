@@ -1,6 +1,6 @@
 import React ,  { useEffect }from 'react';
 import { Images, products, materialTheme , } from './constants/';
-import { StyleSheet, View} from 'react-native';
+import { ImageBackground, StyleSheet, View,Dimensions} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import Screens from './navigation/Screens';
 import ProjectScreen from './navigation/ProjectScreen';
@@ -12,6 +12,7 @@ import {
 } from 'react-native-paper';
 import { fbApp } from './firebaseconfig';
 import { faSlack } from '@fortawesome/free-brands-svg-icons';
+const { width,height } = Dimensions.get('screen');
 
 const App = () => {
   const initialLoginState = {
@@ -90,6 +91,7 @@ const App = () => {
       setisLoading(false);
       dispatch({ type: 'LOGOUT' });
     },
+    
     signUp:()=>{
       setUserToken('abc');
       setisLoading(false);
@@ -98,7 +100,8 @@ const App = () => {
   if(loginState.isLoading){
     return(
       <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-          <ActivityIndicator size="large" color="#0000ff"/>
+          <ImageBackground source={require("./assets/mockupblack.png")} style={{width:width,height:height}}/>
+          {/* <ActivityIndicator size="large" color="#0000ff"/> */}
       </View>
     );
   }
