@@ -330,6 +330,16 @@ export default class Cart extends Component{
                   </View>
              </Modal>  
         </View>
+        {
+          this.state.amount==0 ? 
+          <View style={{height:height/1.7, justifyContent:'center',backgroundColor:'#fff', marginTop:5,width:width}}>
+              <Image source={require('../assets/logoAn-03.png')} style={{height:width/3,width:width/3,alignSelf:'center'}}/>
+              <Text style={{textAlign:'center',color:'#a2459a', fontSize:20}}>Chưa có sản phẩm nào trong giỏ</Text>
+              <TouchableOpacity style={{backgroundColor:'#a2459a', margin:20, borderRadius:20,height:height/18,justifyContent:'center',}}>
+                <Text style={{color:'#fff',fontSize:20,textAlign:'center'}}>Tiếp tục mua sắm</Text>
+              </TouchableOpacity>
+          </View>:null
+        }
         <FlatList 
           data={this.state.CartItem}
           renderItem={ ({item})=>
@@ -396,7 +406,8 @@ const styles = StyleSheet.create({
       alignSelf:"center",
       flexDirection:"row",
       borderRadius:5,
-      width:width
+      width:width,
+      height:height/7
     },
     inputText: {
       color: '#969696',
@@ -448,7 +459,7 @@ const styles = StyleSheet.create({
       width:width*0.9,
       height:height/18,
       marginLeft:width*0.05,
-      backgroundColor:'red',
+      backgroundColor:'#a2459a',
       borderRadius:10,
       marginVertical:10,
       justifyContent:'center'
