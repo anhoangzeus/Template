@@ -65,7 +65,7 @@ export function AppStack(props) {
               family="ionicons"
               color={focused ? "blue" : materialTheme.COLORS.MUTED}
               family="antdesign"
-              color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
+              color={focused ? "#a2459a" : materialTheme.COLORS.MUTED}
             />
           )
         }}
@@ -80,7 +80,7 @@ export function AppStack(props) {
               size={24}
               name="appstore1"
               family="antdesign"
-              color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
+              color={focused ? "#a2459a" : materialTheme.COLORS.MUTED}
              
             />
           )
@@ -96,7 +96,7 @@ export function AppStack(props) {
               name="search"
               family="font-awesome"
               color={focused ? "blue" : materialTheme.COLORS.MUTED}
-              color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
+              color={focused ? "#a2459a" : materialTheme.COLORS.MUTED}
               style={{ marginRight: -3 }}
             />
           )
@@ -113,7 +113,7 @@ export function AppStack(props) {
               name="bells"
               family="antdesign"
               color={focused ? "blue" : materialTheme.COLORS.MUTED}
-              color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
+              color={focused ? "#a2459a" : materialTheme.COLORS.MUTED}
               style={{ marginRight: -3 }}
             />
           )
@@ -129,7 +129,7 @@ export function AppStack(props) {
               name="user"
               family="antdesign"
               color={focused ? "blue" : materialTheme.COLORS.MUTED}
-              color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
+              color={focused ? "#a2459a" : materialTheme.COLORS.MUTED}
             />
           )
         }}

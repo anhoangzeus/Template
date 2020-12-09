@@ -23,7 +23,7 @@ export default class Profile extends Component {
   render(){
     return (
            <View style={styles.screenContainer}>
-        <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
+        <StatusBar backgroundColor='#a2459a' barStyle="light-content"/>
             <View style={styles.headerContainer}>
         <View style={styles.cartContainer}>
           <View style={styles.cartIcon} />
@@ -44,7 +44,7 @@ export default class Profile extends Component {
                 <Text style={styles.authText}>Đăng nhập/Đăng ký</Text>
                 </TouchableOpacity>
               </View>
-              <FontAwesome name="angle-right" size={26} color="#1e88e5" />
+              <FontAwesome name="angle-right" size={26} color="#a2459a" />
             </View>
             <View style={styles.divider} />
             <TouchableOpacity onPress={()=> this.props.navigation.navigate("Top")}>
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#1e88e5',
+    backgroundColor: '#a2459a',
   },
   textContainer: {
     flex: 1,
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   authText: {
-    color: '#1e88e5',
+    color: '#a2459a',
     fontSize: 18,
     fontWeight: '500',
   },
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     paddingTop: 15,
-    backgroundColor: '#1e88e5',
+    backgroundColor: '#a2459a',
     justifyContent: 'space-between',
     paddingBottom: 12,
   },

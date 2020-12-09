@@ -1,6 +1,5 @@
 import React ,  { useEffect }from 'react';
-import { Images, products, materialTheme , } from './constants/';
-import { ImageBackground, StyleSheet, View,Dimensions} from 'react-native';
+import { ImageBackground, StyleSheet, View,Dimensions, StatusBar,Image} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import Screens from './navigation/Screens';
 import ProjectScreen from './navigation/ProjectScreen';
@@ -11,7 +10,6 @@ import {
   Provider as PaperProvider, ActivityIndicator
 } from 'react-native-paper';
 import { fbApp } from './firebaseconfig';
-import { faSlack } from '@fortawesome/free-brands-svg-icons';
 const { width,height } = Dimensions.get('screen');
 
 const App = () => {
@@ -32,8 +30,8 @@ const App = () => {
       } catch(e){
         console.log(e);
       }
-      dispatch({ type: 'REGISTER', token: userToken})
-    },1000)
+      dispatch({ type: 'LOGIN', token: userToken})
+    },2500)
   }, [])
 
  
@@ -91,7 +89,7 @@ const App = () => {
       setisLoading(false);
       dispatch({ type: 'LOGOUT' });
     },
-    
+
     signUp:()=>{
       setUserToken('abc');
       setisLoading(false);
@@ -100,8 +98,8 @@ const App = () => {
   if(loginState.isLoading){
     return(
       <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-          <ImageBackground source={require("./assets/mockupblack.png")} style={{width:width,height:height}}/>
-          {/* <ActivityIndicator size="large" color="#0000ff"/> */}
+          <StatusBar barStyle='light-content' backgroundColor ='white'/>
+          <Image source={require("./assets/whitelogo.png")} style={{width:width,height:height, resizeMode:'contain'}}/>
       </View>
     );
   }

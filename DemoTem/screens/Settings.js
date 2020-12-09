@@ -5,7 +5,6 @@ import NumberFormat from 'react-number-format';
 
 const { height, width } = Dimensions.get('screen');
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-const section_banner = require('../assets/section_banner.png');
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 
 import {fbApp} from "../firebaseconfig";
@@ -212,7 +211,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingTop: 10,
     paddingBottom: 4,
-    backgroundColor: '#1e88e5',
+    backgroundColor: '#a2459a',
   },
   inputContainer: {
     backgroundColor: '#fff',

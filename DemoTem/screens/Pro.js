@@ -50,7 +50,7 @@
       </View>
     </View>
   );
-  export default class Pro extends React.PureComponent {
+  export default class Pro extends React.Component {
     constructor(props) {
       super(props);
       this.itemRef = fbApp.database();
@@ -69,10 +69,9 @@
         refreshing: false,
         numcart:0,
       }; 
+      this.timer;
     };
-    shouldComponentUpdate(nextProps, nextState) {
-      return this.state.numcart !== nextProps.numcart
-    } 
+
     BrandItem = ({image,id}) => (
       <TouchableOpacity onPress={()=> this.setState({BrandID :id})} style={styles.branditemContainer}>
             <Image source={{uri:image}} style={styles.cateImage} />
@@ -80,19 +79,15 @@
     );
     CategoryItem = ({name,id,icon}) => (
         <TouchableOpacity  onPress={()=> this.setState({CatogoryID: id})}>
-          <View style={{width:width/7,height:height/15,marginHorizontal:14, 
-          borderRadius:30,
+          <View style={{width:width/7,height:height/15,marginHorizontal:10,
           marginVertical:5,
-          marginLeft:width/70,
           justifyContent:"center"}
           }>
-          <ImageBackground style={{width:width/7,height:height/15,marginHorizontal:14, 
-          borderRadius:30,
+          <ImageBackground style={{width:width/6,height:height/13.6,
           marginVertical:5,
-         
           justifyContent:"center"}
           }
-          source={require('../assets/bg.png')}>
+            source={require('../assets/bg.png')}>
           <Icons name={icon} color="#fff" size={width/12} 
             style={styles.cateIcon}/>
           </ImageBackground>
@@ -110,13 +105,30 @@
       this.GetAllBrand();
       this.GetAllCate();
       this.getListBanner();
+      this.timer = setInterval(() => {
+        this.getnumcart();
+      }, 1500);
     };
+    getnumcart=()=> {
+      if(fbApp.auth().currentUser){ 
+        this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid).once('value').then((snapshot) => {
+          var dem = 0;
+          snapshot.forEach(function(childSnapshot){
+          dem += childSnapshot.val().Quantity;
+          });
+          this.setState({
+          numcart:dem,
+          });  
+        });  
+      }
+    }
     _onRefresh = () => {
       this.setState({refreshing: true});
+      this.getListBanner();
       this.ListenForItemsSamsung();
       this.GetAllBrand();
       this.GetAllCate();
-      this.getListBanner();
+      this.getnumcart();
     };
     GetAllBrand =() =>{
       var items= [];
@@ -232,17 +244,6 @@
     });    
   };
   renderNofiCart = () =>{
-    if(fbApp.auth().currentUser){ 
-      this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid).once('value').then((snapshot) => {
-        var dem = 0;
-        snapshot.forEach(function(childSnapshot){
-        dem += childSnapshot.val().Quantity;
-        });
-        this.setState({
-        numcart:dem,
-        });  
-      });  
-    }
     if(this.state.numcart == 0){
       return null;
     }
@@ -258,9 +259,9 @@
     const { navigation } = this.props;
     if (this.state.loading1 || this.state.loading1 || this.state.loading3) {
       return (
-        <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
-          <ActivityIndicator size="large" color="dodgerblue" />
-        </View>
+        <View style={{ flex: 1, backgroundColor:'#fff', justifyContent:'center'}}>
+        <Image source={require('../assets/homeloading.png')} style={{width:width,height:height,resizeMode:'contain'}}/>
+      </View>
       )
     }
     return (
@@ -303,7 +304,7 @@
               </TouchableOpacity>)}
           </Swiper>
         <View style={{backgroundColor:'#fff'}}>
-        <View style={{height:2, backgroundColor:'#1ba8ff'}}/>
+        <View style={{height:2, backgroundColor:'#a2459a'}}/>
           <FlatList 
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -348,7 +349,7 @@
             <Text style={styles.textnum}>Trên 20 triệu</Text>
           </TouchableOpacity>
      </ScrollView>                                          
-      <View style={{height:2, backgroundColor:'#1ba8ff'}}/>
+      <View style={{height:2, backgroundColor:'#a2459a'}}/>
         <View style={styles.listItemContainer}>
           <FlatList 
             initialNumToRende={3}
@@ -366,9 +367,7 @@
             keyExtractor={item => item.id}
           />     
         </View>   
-      </View>
-      <View style={{height:height/7}}>
-    </View>     
+      </View>  
     </ScrollView>  
     </View>   
     </View>
@@ -383,7 +382,7 @@
       flexDirection: 'row',
       paddingTop: 10,
       paddingBottom: 4,
-      backgroundColor: '#1e88e5',
+      backgroundColor: '#a2459a',
     },
     inputContainer: {
       backgroundColor: '#fff',
@@ -421,7 +420,7 @@
       width: width/2,
       height:height/3.6,
       margin: -0.2,
-      borderColor:'#3eafff',
+      borderColor:'#a2459a',
       borderWidth: 1,     
     },
     listItemContainer: {
@@ -499,13 +498,14 @@
       alignItems:'center',
       borderWidth:2,
       borderRadius:70, 
-      borderColor:'#3eafff'
+      borderColor:'#a2459a'
     },
     cateIcon:{
       marginHorizontal:14, 
       borderRadius:30,
       marginVertical:5,
       marginLeft:width/40,
+      alignSelf:'center'
     }
   });
   

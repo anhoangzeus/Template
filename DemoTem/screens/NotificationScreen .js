@@ -18,7 +18,7 @@ export default class NotificationScreen extends Component{
           style={[
             styles.itemTypeContainer,
             {
-              backgroundColor: item.type === 1 ? '#fc820a' : '#dc3988',
+              backgroundColor: item.type === 1 ? '#a2459a' : '#dc3988',
             },
           ]}>
           <MaterialCommunityIcons
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#e5e5e5',
   },
   activeMark: {
-    backgroundColor: '#1e88e5',
+    backgroundColor: '#a2459a',
     width: 4,
   },
   activeIcon: {

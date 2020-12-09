@@ -12,7 +12,8 @@ import { StyleSheet,
   RefreshControl,
   Text,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  ImageBackground
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Foundation from 'react-native-vector-icons/Foundation';
@@ -63,7 +64,8 @@ const NewProductItem = ({image, name, price}) => (
     </View>
   </View>
 );
-export default class Home extends React.PureComponent {
+
+export default class Home extends React.Component {
   constructor(props) {
     super(props);
     LogBox.ignoreAllLogs();
@@ -80,29 +82,55 @@ export default class Home extends React.PureComponent {
      refreshing: false,
      loading:true
     }; 
+    this.timer;
   };
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.state.numcart !== nextProps.numcart
-  } 
+  componentDidUpdate(nextProps, nextState) {
+      if(this.state.numcart != nextState.numcart){
+        this.getnumcart();
+      }
+    } 
+  getnumcart=()=> {
+    if(fbApp.auth().currentUser){ 
+      this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid).once('value').then((snapshot) => {
+        var dem = 0;
+        snapshot.forEach(function(childSnapshot){
+        dem += childSnapshot.val().Quantity;
+        });
+        this.setState({
+        numcart:dem,
+        });  
+      });  
+    }
+  }
   componentDidMount(){
-    this.ListenForItems();
     this.getListBanner();
+    this.ListenForItems();
     this._getListPhoneNew();
     this._getListLaptopNew();
     this._getListTabletNew();
     this._getListDongHoNew();
     this._getListPhukienNew();
+    this.timer = setInterval(() => {
+      this.getnumcart();
+    }, 1500);
+
   };
+  
   _onRefresh = () => {
     this.setState({refreshing: true});
-    this.ListenForItems();
     this.getListBanner();
+    this.ListenForItems();
     this._getListPhoneNew();
     this._getListLaptopNew();
     this._getListTabletNew();
     this._getListDongHoNew();
     this._getListPhukienNew();
+    this.getnumcart();
+  
   };
+  componentWillUnmount() {
+  clearInterval(this.timer); 
+}
   _getListPhoneNew = () => {
     this.itemRef.ref('/Products').once('value').then((snapshot) => {
       var itemsphone=[];
@@ -245,23 +273,12 @@ export default class Home extends React.PureComponent {
       });
       this.setState({
         listcontents:items,
-        refreshing: false,
-        loading:false
+        loading:false,
+        refreshing:false
       });
     });
   };
   renderNofiCart = () =>{
-    if(fbApp.auth().currentUser){ 
-      this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid).once('value').then((snapshot) => {
-        var dem = 0;
-        snapshot.forEach(function(childSnapshot){
-        dem += childSnapshot.val().Quantity;
-        });
-        this.setState({
-        numcart:dem,
-        });  
-      });  
-    }
     if(this.state.numcart == 0){
       return null;
     }
@@ -277,14 +294,15 @@ export default class Home extends React.PureComponent {
     const { navigation } = this.props;
     if (this.state.loading) {
       return (
-        <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
-          <ActivityIndicator size="large" color="dodgerblue" />
+        <View style={{ flex: 1, backgroundColor:'#fff', justifyContent:'center'}}>
+          <StatusBar barStyle='light-content' backgroundColor='#a2459a'/>
+          <Image source={require('../assets/homeloading.png')} style={{width:width,height:height,resizeMode:'contain'}}/>
         </View>
       )
     }  
   return (  
     <View style={styles.screenContainer}>
-    <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
+    <StatusBar backgroundColor='#a2459a' barStyle="light-content" />
     <View style={styles.headerContainer}>
     <TouchableOpacity  onPress={()=> navigation.navigate("Tìm kiếm")}>
     <View style={styles.inputContainer}>
@@ -481,7 +499,7 @@ export default class Home extends React.PureComponent {
       </View>
     <View style={{marginTop:10}}>
     <FlatList 
-        initialNumToRende={3}
+        initialNumToRender={20}
         showsVerticalScrollIndicator={false}
         numColumns={2}
         data={this.state.listall}
@@ -518,7 +536,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingTop: 15,
     paddingBottom: 4,
-    backgroundColor: '#1e88e5',
+    backgroundColor: '#a2459a',
   },
   inputContainer: {
     backgroundColor: '#fff',

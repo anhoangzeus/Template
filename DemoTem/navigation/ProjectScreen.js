@@ -36,6 +36,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import Profile_User from '../screens/Profile_User';
 import ProfileScreen from '../screens/Profile';
 import NotificationScreen from '../screens/NotificationScreen ';
+import { color } from 'react-native-reanimated';
 
 const { width } = Dimensions.get("screen");
 
@@ -53,11 +54,11 @@ export function TopOrder(props){
         <Ionicons name="arrow-back-outline" color={'white'}  size={30} />
         </TouchableOpacity> 
       <Text style={styles.texthead}>ĐƠN HÀNG CỦA TÔI</Text>
-      <Ionicons name="arrow-undo" color={'#1e88e5'} size={26} />
+      <Ionicons name="arrow-undo" color={'#a2459a'} size={26} />
       </View>
           <TopStackOrder.Navigator
           tabBarOptions={{
-          activeTintColor: 'blue',
+          activeTintColor: '#a2459a',
           scrollEnabled: true,
         }}      
       >
@@ -96,20 +97,22 @@ export function AppStack(props) {
     <Tab.Navigator
       style={{ flex: 1 }}
       initialRouteName="Home"
+      tabBarOptions={{
+        activeTintColor: '#a2459a',
+      }}      
     >
       <Tab.Screen
         name="Trang chủ"
         component={HomeScreen}
-
         options={{
           tabBarIcon: ({ focused }) => (
             <Icon
               size={24}
               name="home"
               family="ionicons"
-              color={focused ? "blue" : materialTheme.COLORS.MUTED}
+              color={focused ? "a2459a" : materialTheme.COLORS.MUTED}
               family="antdesign"
-              color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
+              color={focused ? "#a2459a" : materialTheme.COLORS.MUTED}
             />
           )
         }}
@@ -123,8 +126,10 @@ export function AppStack(props) {
             <Icon
               size={24}
               name="appstore1"
+              family="ionicons"
+              color={focused ? "a2459a" : materialTheme.COLORS.MUTED}
               family="antdesign"
-              color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
+              color={focused ? "#a2459a" : materialTheme.COLORS.MUTED}
              
             />
           )
@@ -139,8 +144,8 @@ export function AppStack(props) {
               size={24}
               name="search"
               family="font-awesome"
-              color={focused ? "blue" : materialTheme.COLORS.MUTED}
-              color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
+              color={focused ? "a2459a" : materialTheme.COLORS.MUTED}
+              color={focused ? "#a2459a" : materialTheme.COLORS.MUTED}
               style={{ marginRight: -3 }}
             />
           )
@@ -156,8 +161,8 @@ export function AppStack(props) {
               size={24}
               name="bells"
               family="antdesign"
-              color={focused ? "blue" : materialTheme.COLORS.MUTED}
-              color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
+              color={focused ? "a2459a" : materialTheme.COLORS.MUTED}
+              color={focused ? "#a2459a" : materialTheme.COLORS.MUTED}
               style={{ marginRight: -3 }}
             />
           )
@@ -172,8 +177,8 @@ export function AppStack(props) {
               size={24}
               name="user"
               family="antdesign"
-              color={focused ? "blue" : materialTheme.COLORS.MUTED}
-              color={focused ? "#1e88e5" : materialTheme.COLORS.MUTED}
+              color={focused ? "a2459a" : materialTheme.COLORS.MUTED}
+              color={focused ? "#a2459a" : materialTheme.COLORS.MUTED}
             />
           )
         }}
@@ -211,7 +216,7 @@ export default function ProjectStack(props) {
 const styles = StyleSheet.create({
     containner: {
       flex: 1,
-      backgroundColor:"#1e88e5",
+      backgroundColor:"#a2459a",
     },
     texthead:{
       color:"white",

@@ -59,7 +59,7 @@ const ProfileUser =(props)=> {
   });
     return (
       <View style={styles.screenContainer}>
-        <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
+        <StatusBar backgroundColor='#a2459a' barStyle="light-content"/>
             <View style={styles.headerContainer}>
           <Text style={styles.headerText}>Cá nhân</Text>
             </View>
@@ -75,7 +75,7 @@ const ProfileUser =(props)=> {
                 <Text style={styles.authText}>{Email}</Text>
                 <Text style={styles.authText}>Thành viên từ {CreatedDate}</Text>
             </View>
-            <FontAwesome name="angle-right" size={26} color="#1e88e5" />
+            <FontAwesome name="angle-right" size={26} color="#a2459a" />
           </View>
           </TouchableOpacity>
           <View style={styles.divider} />
@@ -158,7 +158,7 @@ const ProfileUser =(props)=> {
                   onPress={() => {LogOut()}}
               >
               <LinearGradient
-                    colors={['#3eafff', '#3eafff']}
+                    colors={['#a2459a', '#3eafff']}
                   style={styles.signIn}
               >
                   <Text style={[styles.textSign, {
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   authText1: {
-    color: '#1e88e5',
+    color: '#a2459a',
     fontSize: 18,
     fontWeight: '500',
   },
@@ -249,7 +249,7 @@ textSign: {
 headerContainer: {
   flexDirection: 'row',
   paddingTop: 15,
-  backgroundColor: '#1e88e5',
+  backgroundColor: '#a2459a',
   justifyContent: 'center',
   paddingBottom: 12,
 },

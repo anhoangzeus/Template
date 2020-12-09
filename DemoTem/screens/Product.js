@@ -10,7 +10,9 @@ import {
   Button,
   Text,
   StatusBar,
-  FlatList
+  FlatList,
+  Modal,
+  TouchableHighlight
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {fbApp} from "../firebaseconfig";
@@ -29,7 +31,7 @@ function ReactNativeNumberFormat({ value }) {
     />
   );
 }
-export default class Product extends React.PureComponent {
+export default class Product extends React.Component {
   constructor(props) {
     super(props);
     this.itemRef = fbApp.database();
@@ -40,14 +42,14 @@ export default class Product extends React.PureComponent {
       Name: "",
       Price: "",
       Waranty:"",
+      MetaDescription:"",
       List_Productlienquan:[],
       idsanpham:this.props.content,
       listcart:[],
+      modalVisible:false,
     };
+    this.timer;
   };
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.state.numcart !== nextProps.numcart
-  } 
   addCart =()=>{
     const Id_Item = this.state.idsanpham;
     var key;
@@ -97,11 +99,24 @@ export default class Product extends React.PureComponent {
       })
     }
     this.GetCartData();
-    Alert.alert("thêm thành công");
   }
   else{
     const {navigation}= this.props;
     navigation.navigate("Top");
+  }
+  this.setModalVisible(true);
+}
+getnumcart=()=> {
+  if(fbApp.auth().currentUser){ 
+    this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid).once('value').then((snapshot) => {
+      var dem = 0;
+      snapshot.forEach(function(childSnapshot){
+      dem += childSnapshot.val().Quantity;
+      });
+      this.setState({
+      numcart:dem,
+      });  
+    });  
   }
 }
 getItemRespon=()=>{
@@ -138,6 +153,7 @@ getItemRespon=()=>{
         Name:snapshot.val().Name,
         Price:snapshot.val().Price,
         Waranty:snapshot.val().Warranty,
+        MetaDescription:snapshot.val().MetaDescription,
       });
     });
   };
@@ -176,17 +192,6 @@ getItemRespon=()=>{
     </View>
   );
   renderNofiCart = () =>{
-    if(fbApp.auth().currentUser){ 
-      this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid).once('value').then((snapshot) => {
-        var dem =0;
-        snapshot.forEach(function(childSnapshot){
-         dem += childSnapshot.val().Quantity 
-        });
-        this.setState({
-         numcart:dem,
-        });  
-      });
-    };
     if(this.state.numcart == 0){
       return null;
     }
@@ -198,11 +203,25 @@ getItemRespon=()=>{
       );
     }
   };
+  setModalVisible = (visible) => {
+    if(fbApp.auth().currentUser){
+      this.setState({ modalVisible: visible },()=> {setTimeout(this.handleClose,1000)});
+    }
+  };
+  handleClose = () => {
+    this.setState({
+      modalVisible: false 
+    });
+  };
   componentDidMount(){
     this.getData();
     this.getItemRespon();
     this.GetCartData();
+    this.timer = setInterval(() => {
+      this.getnumcart();
+    }, 1500);
   };
+
   componentDidUpdate(prevProps, prevState){
     if(this.state.idsanpham != prevState.idsanpham){
       this.getData();
@@ -211,21 +230,22 @@ getItemRespon=()=>{
   };
   render() {
     const { navigation } = this.props;
+    const { modalVisible } = this.state;
     return (
       <View  style={{flex:1,backgroundColor:"#ededed"}}>
       <StatusBar barStyle='dark-content' />
         <View style={styles.headerFont} >
-          <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,alignItems:'center',marginLeft:5,justifyContent:'center',marginTop:10}} onPress={()=> navigation.goBack()}> 
+          <TouchableOpacity style={{width:50,backgroundColor:'#a2459a', borderRadius:25,alignItems:'center',marginLeft:5,justifyContent:'center',marginTop:10}} onPress={()=> navigation.goBack()}> 
             <FontAwesome name="chevron-left" size={25} color="white"/>
           </TouchableOpacity>
-          <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,marginLeft:width*0.45,alignItems:'center',justifyContent:'center',marginTop:10}} onPress={()=> navigation.navigate("Setting")}> 
+          <TouchableOpacity style={{width:50,backgroundColor:'#a2459a', borderRadius:25,marginLeft:width*0.45,alignItems:'center',justifyContent:'center',marginTop:10}} onPress={()=> navigation.navigate("Setting")}> 
             <FontAwesome name="search" size={25} color="white"/>
           </TouchableOpacity>
-          <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,marginLeft:width*0.01,alignItems:'center',justifyContent:'center',marginTop:10}} onPress={() => navigation.navigate("App")}>
+          <TouchableOpacity style={{width:50,backgroundColor:'#a2459a', borderRadius:25,marginLeft:width*0.01,alignItems:'center',justifyContent:'center',marginTop:10}} onPress={() => navigation.navigate("App")}>
             <FontAwesome name="home" size={30} color="white" />
           </TouchableOpacity>
         <View>
-          <TouchableOpacity style={{width:50,backgroundColor:'#1e88e5', borderRadius:25,marginLeft:width*0.01,alignItems:'center',justifyContent:'center',marginTop:10}} onPress={() => navigation.navigate("Cart")} >
+          <TouchableOpacity style={{width:50,backgroundColor:'#a2459a', borderRadius:25,marginLeft:width*0.01,alignItems:'center',justifyContent:'center',marginTop:10}} onPress={() => navigation.navigate("Cart")} >
             <FontAwesome name="shopping-cart" size={30} color="white" />
           </TouchableOpacity>  
                {this.renderNofiCart()}    
@@ -245,19 +265,45 @@ getItemRespon=()=>{
                 <Image source={require("../assets/images/star.jpg")} style={{width:width/4,height:height/40,marginLeft:width/40}}/>
                 <TouchableOpacity style={{marginLeft:10,}}><Text style={{ color:'green'}}>(Xem 518 đánh giá)</Text></TouchableOpacity>
               </View>
-              <View style={{flexDirection:'row', alignItems:'center', marginVertical:10}}>
+              <Text  style={{marginVertical: 10,fontSize:25,fontWeight:"bold",marginLeft:width/40}}>{this.state.MetaDescription}</Text>
+              <View style={{flexDirection:'row', alignItems:'center', marginBottom:10}}>
                 <Text color="Black"  style={{ fontSize:24,marginLeft:width/40, color:'black', fontWeight:'bold' }}><ReactNativeNumberFormat value={this.state.Price}/> </Text>
                 <Text style={{textDecorationLine:"line-through", fontSize:15, marginLeft:15, color:"#696969"}}>3000000 đ</Text>
                 <Text style={{marginLeft:5, color:'red'}}>-20%</Text>
               </View>   
                 <View>  
                     <Text  style={{marginBottom: 10,fontSize:15,fontWeight:"bold",marginLeft:width/40}}>{this.state.Waranty} tháng bảo hành</Text>
-              </View>      
+              </View>    
               </View>
             </View>
           <View> 
-        </View>      
+        </View>    
         </View>
+        <View style={styles.centeredView}>
+              <Modal
+                  animationType="fade"
+                  transparent={true}
+                  visible={modalVisible}
+                
+                  onRequestClose={() => {
+                    Alert.alert("Modal has been closed.");
+                  }}
+               >
+                  <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                      <Text style={styles.modalText}>Thêm thành công!</Text>
+                      {/* <TouchableHighlight
+                        style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+                        onPress={() => {
+                          this.setModalVisible;
+                        }}
+                      >
+                        <Text style={styles.textStyle}>Hide Modal</Text>
+                      </TouchableHighlight> */}
+                    </View>
+                  </View>
+             </Modal>  
+        </View>    
         <View style={{height:5}}/>
         <View style={{backgroundColor:'#fff',height:height/3.5}}>
           <Text bold size={12} style={{marginVertical: 10,marginLeft:width/40, fontWeight:'bold'}}>Sản phẩm tương tự</Text>
@@ -288,7 +334,7 @@ getItemRespon=()=>{
         <View style={styles.devide} />
         <View style={{backgroundColor:"#fff",flexDirection:"row",height:height/16, justifyContent:'center'}}>
           <TouchableOpacity style={styles.btnmua} onPress={this.addCart}>
-            <Text style={{color:'#fff', fontSize:15}}>Chọn mua</Text>
+            <Text style={{color:'#fff', fontSize:20,  fontWeight:'bold'}}>Chọn mua</Text>
           </TouchableOpacity>
         </View>
       </View> 
@@ -347,17 +393,57 @@ const styles = StyleSheet.create({
     borderRadius:15,
     backgroundColor:"red",
     height:15,
-    width:15,
+    width:20,
     alignItems:"center",
     justifyContent:"center",
-    marginLeft:width/10
+    marginLeft:width/11,
+    marginTop:height/70
   },
   btnmua:{
     width:width/1.1, 
-    backgroundColor:"#FF3333", 
+    backgroundColor:"#a2459a", 
     justifyContent:'center',
     borderRadius:5, 
     marginVertical:5,
-    alignItems:'center' 
+    alignItems:'center',
+  
+  },
+  centeredView: {
+    justifyContent: "center",
+    alignItems: "center",
+    flex:1
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "#a2459a",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    justifyContent:'center'
+  },
+  openButton: {
+    backgroundColor: "#F194FF",
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+    fontSize:20,
+    color:'white'
   }
 });
