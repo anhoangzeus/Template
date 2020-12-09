@@ -78,7 +78,7 @@ export default class Product extends React.Component {
     })
     if(fbApp.auth().currentUser != null){ 
     if(temp == 0){
-      this.itemRef.ref('/Cart/'+fbApp.auth().currentUser.uid).push({
+      this.itemRef.ref('/Cart/'+fbApp.auth().currentUser.uid).child(this.props.content).set({
         Id :this.props.content,
         CategoryID :this.props.CategoryID,
         BrandID : this.props.BrandID,

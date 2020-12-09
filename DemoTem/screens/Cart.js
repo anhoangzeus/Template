@@ -40,23 +40,51 @@ export default class Cart extends Component{
         this.state = { 
          CartItem:[],
          Address:{},
-         refesh:true,
          amount:0,
          loading:true,
          hasAddress:false,
          modalVisible:false,
-         modalPayment:false
+         modalPayment:false,
+         refesh:true,
+         _idCanXoa:''
         }; 
       }
     componentDidMount(){
       this.ListenCart();       
       this.GetAddress();
     };
+    setModalVisible = (visible) => {
+      this.setState({ modalVisible: visible });
+    };
+    handleClose = () => {
+      this.setState({
+        modalVisible: false 
+      });
+    };
+    setmodalPayment = (visible) => {
+      if(fbApp.auth().currentUser){
+        this.setState({ modalPayment: visible },()=> {setTimeout(this.handleClosemodalPayment,1000)});
+      }
+    };
+    handleClosemodalPayment = () => {
+      this.setState({
+        modalPayment: false 
+      });
+    };
+    
+    GetCurrentDate =()=>{
+      var date = new Date().getDate();
+      var month = new Date().getMonth() + 1; 
+      var year = new Date().getFullYear();
+      var gio = new Date().getHours();
+      var phut = new Date().getMinutes();
+      var giay = new Date().getSeconds();
+        return date + '/' +month+ "/" +year + " " + gio+":"+ phut+":"+giay;
+    }
       GetAddress =() =>{
         if(fbApp.auth().currentUser)
         {
-            this.itemRef.ref('ListAddress').child(fbApp.auth().currentUser.uid).once('value')
-            .then((snapshot)=>{
+            this.itemRef.ref('ListAddress').child(fbApp.auth().currentUser.uid).once('value').then((snapshot)=>{
               var item;
               snapshot.forEach(function(childSnapshot){
                 var Address={
@@ -88,13 +116,11 @@ export default class Cart extends Component{
         };
       };
       ListenCart = () => {
-        console.log("vao gio hang");
         if(fbApp.auth().currentUser){
           this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid).once('value').then((snapshot) => {
             var items =[];
-            snapshot.forEach(function(childSnapshot){
+            snapshot.forEach((childSnapshot)=>{
               items.push({
-                key : childSnapshot.key,
                 Id : childSnapshot.val().Id,
                 Name : childSnapshot.val().Name,
                 Picture : childSnapshot.val().Picture,
@@ -104,41 +130,13 @@ export default class Cart extends Component{
                 CategoryID : childSnapshot.val().CategoryID,
               });
             });
+            console.log(items);
             this.setState({
               CartItem:items,
-            })  
-            console.log(this.state.amount);
-          })  
-        }
-      }   
-      setModalVisible = (visible) => {
-          this.setState({ modalVisible: visible });
+            });  
+          });  
+        };
       };
-      handleClose = () => {
-        this.setState({
-          modalVisible: false 
-        });
-      };
-      setmodalPayment = (visible) => {
-        if(fbApp.auth().currentUser){
-          this.setState({ modalPayment: visible },()=> {setTimeout(this.handleClosemodalPayment,1000)});
-        }
-      };
-      handleClosemodalPayment = () => {
-        this.setState({
-          modalPayment: false 
-        });
-      };
-      
-       GetCurrentDate =()=>{
-        var date = new Date().getDate();
-        var month = new Date().getMonth() + 1; 
-        var year = new Date().getFullYear();
-        var gio = new Date().getHours();
-        var phut = new Date().getMinutes();
-        var giay = new Date().getSeconds();
-          return date + '/' +month+ "/" +year + " " + gio+":"+ phut+":"+giay;
-      }
       _checkGioHang=()=>{
         if(this.state.amount!=0 && this.state.hasAddress==true)
         {
@@ -147,31 +145,128 @@ export default class Cart extends Component{
             this.setmodalPayment(true);
         }
       };
-      _xoaGioHang=(item)=>{
-        this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid+'/'+item.key).set({
-        })
-        var dem=0;
-        
-        this.state.CartItem.forEach(element => {
-          if(element.Id == item.Id){return;}
-          else{
-            dem++;
-          }       
+      _tangSoLuong=(item)=>{
+          this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid+"/"+item.Id).set({
+            Id:item.Id,
+            Name:item.Name,
+            Picture:item.Picture,
+            Price:item.Price,
+            Quantity:item.Quantity+1,
+            BrandID : item.BrandID,
+            CategoryID : item.CategoryID,
+          })
+          this.state.CartItem.forEach(element => {if(element.Id == item.Id){element.Quantity=item.Quantity+1}});
+          this.setState({ 
+            refesh: !this.state.refesh
         });
-        this.state.CartItem.splice(dem-1,1);
+      };
+      _giamSoLuong=(item)=>{
+        if(item.Quantity>1){
+          this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid+"/"+item.Id).set({
+            Id:item.Id,
+            Name:item.Name,
+            Picture:item.Picture,
+            Price:item.Price,
+            Quantity:item.Quantity-1,
+            BrandID : item.BrandID,
+            CategoryID : item.CategoryID,
+           });
+          this.state.CartItem.forEach(element => {if(element.Id == item.Id){element.Quantity=item.Quantity-1}});
+          this.setState({ 
+            refesh: !this.state.refesh
+        });
+        }else{
+          this.setModalVisible(true),
+          this.setState({ 
+            _idCanXoa: item.Id
+        });
+        }
+      };
+      _xoaGioHang=()=>{
+        this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid).child(this.state._idCanXoa).remove();
+        this.ListenCart();
         this.setState({ 
-          refresh: !this.state.refresh
+          modalVisible:false,
+          refesh: !this.state.refesh
       });
-    };  
+    }; 
+    renderItem=({item})=>{
+      const { navigation } = this.props;
+      const { modalVisible } = this.state;
+      return(
+        <View style={styles.itemcard}>
+        <View style={{paddingLeft:10,paddingTop:5,flexDirection:"row"}}>
+          <TouchableOpacity onPress={() =>navigation.navigate('Items', {id: item.Id, CategoryID: item.CategoryID, BrandID: item.BrandID})}>
+          <Text style={styles.itemName}>{item.Name} </Text>
+          </TouchableOpacity>
+        <View style={{marginTop:0}}>
+        <FontAwesome name="angle-right" size={30} />
+        </View>
+        </View>
+        <View style={{flexDirection:"row"}}>
+        <FontAwesome name="gift" color="green" size={24} style={styles.itemGift} ></FontAwesome>
+        <Text style={{marginLeft:5, color:"green", fontSize:18}}>nhận một phần quà may mắn</Text>
+        </View>
+        <View style={styles.itemInfo}>
+          <Image style={styles.itemImage} source={{uri:item.Picture }}></Image>
+          <View style={styles.itemDec}>
+            <Text style={{marginVertical:4,fontSize:16}} numberOfLines={2}> </Text>
+            <Text style={{marginVertical:4,fontSize:19, color:"red"}}><ReactNativeNumberFormat value={item.Price}/></Text>
+            <View style={{flexDirection:"row"}}>            
+                <Button style={styles.buttonUpDown} color='#ff3333' onPress={()=>{this._giamSoLuong(item)}}>-</Button>
+              <View style={{marginTop:10}}><Text style={{fontSize:20, marginHorizontal:10}} >{item.Quantity}</Text></View>
+              <Button style={styles.buttonUpDown} color='#ff3333' onPress={()=>{this._tangSoLuong(item)}}>+</Button>
+            </View>
+          </View>
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalVisible}     
+                onRequestClose={() => {
+                  Alert.alert("Modal has been closed.");
+                }}
+            >
+                <View style={styles.centeredView}>
+                  <View style={{...styles.modalView, padding: width/15,}}>
+                    <Text style={styles.modalText}>Bạn có chắc bỏ sản phẩm này khỏi giỏ hàng?</Text>
+                    <View style={{flexDirection:'row'}}>
+                    <TouchableOpacity
+                      style={{ ...styles.openButton, backgroundColor: "#2196F3",width:width/2.5, }}
+                      onPress={() => {
+                        this._xoaGioHang();
+                      }}
+                    >
+                      <Text style={styles.textStyle}>Xác nhận</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{ ...styles.openButton, backgroundColor: "#2196F3",marginLeft:5, width:width/2.5 }}
+                      onPress={() => {
+                        this.handleClose();
+                      }}
+                    >
+                      <Text style={styles.textStyle}>Huỷ bỏ</Text>
+                    </TouchableOpacity>
+                    </View>                  
+                  </View>
+                </View>
+          </Modal>  
+            <TouchableOpacity style={{marginLeft:width/15,width:50,height:50, borderRadius:20}} 
+                  onPress={() =>{this.setModalVisible(true); this.setState({_idCanXoa:item.Id})}}>
+            <FontAwesome  name="remove" size={30} color="red" />
+            </TouchableOpacity>       
+        </View>
+      </View>
+      );
+    }
     render(){
       const { navigation } = this.props;
-      const { modalVisible,modalPayment } = this.state;
+      const { modalPayment } = this.state;
       
       this.state.amount=0;
       this.state.CartItem.forEach(element =>{      
         const a = Number(element.Price);        
         this.state.amount+=(Number(element.Price) * element.Quantity);
-      })  
+      });
       if (this.state.loading) {
         return (
           <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
@@ -237,107 +332,13 @@ export default class Cart extends Component{
         </View>
         <FlatList 
           data={this.state.CartItem}
-          extraData={this.state.refesh}
           renderItem={ ({item})=>
-          <View style={styles.itemcard}>
-          <View style={{paddingLeft:10,paddingTop:5,flexDirection:"row"}}>
-            <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.Id, CategoryID: item.CategoryID, BrandID: item.BrandID})}>
-            <Text style={styles.itemName}>{item.Name} </Text>
-            </TouchableOpacity>
-          <View style={{marginTop:0}}>
-          <FontAwesome name="angle-right" size={30} />
-          </View>
-          </View>
-          <View style={{flexDirection:"row"}}>
-          <FontAwesome name="gift" color="green" size={24} style={styles.itemGift} ></FontAwesome>
-          <Text style={{marginLeft:5, color:"green", fontSize:18}}>nhận một phần quà may mắn</Text>
-          </View>
-          <View style={styles.itemInfo}>
-            <Image style={styles.itemImage} source={{uri:item.Picture }}></Image>
-            <View style={styles.itemDec}>
-              <Text style={{marginVertical:4,fontSize:16}} numberOfLines={2}> </Text>
-              <Text style={{marginVertical:4,fontSize:19, color:"red"}}><ReactNativeNumberFormat value={item.Price}/></Text>
-              <View style={{flexDirection:"row"}}>            
-                  <Button style={styles.buttonUpDown} color='#ff3333' onPress={()=>{
-                    if(item.Quantity>1){
-                      console.log("vào sub");
-                      this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid+"/"+item.key).set({
-                        Id:item.Id,
-                        Name:item.Name,
-                        Picture:item.Picture,
-                        Price:item.Price,
-                        Quantity:item.Quantity-1,
-                       });
-                      this.state.CartItem.forEach(element => {if(element.Id == item.Id){element.Quantity=item.Quantity-1}});
-                      this.setState({ 
-                        refresh: !this.state.refresh
-                    });
-                    console.log(this.state.refesh);
-                    }else{
-                      this.setModalVisible(true)
-                    }
-                  }}>-</Button>
-                <View style={{marginTop:10}}><Text style={{fontSize:20, marginHorizontal:10}} >{item.Quantity}</Text></View>
-                <Button style={styles.buttonUpDown} color='#ff3333' onPress={
-                  ()=>{
-                    console.log("vào add");
-                    this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid+"/"+item.key).set({
-                      Id:item.Id,
-                      Name:item.Name,
-                      Picture:item.Picture,
-                      Price:item.Price,
-                      Quantity:item.Quantity+1,
-                     })
-                     this.state.CartItem.forEach(element => {if(element.Id == item.Id){element.Quantity=item.Quantity+1}});
-                     this.setState({ 
-                      refresh: !this.state.refresh
-                  });
-                  }
-                }>+</Button>
-              </View>
-            </View>
-            <View style={styles.centeredView}>
-              <Modal
-                  animationType="fade"
-                  transparent={true}
-                  visible={modalVisible}
-                
-                  onRequestClose={() => {
-                    Alert.alert("Modal has been closed.");
-                  }}
-              >
-                  <View style={styles.centeredView}>
-                    <View style={{...styles.modalView, padding: width/15,}}>
-                      <Text style={styles.modalText}>Bạn có chắc bỏ sản phẩm này khỏi giỏ hàng?</Text>
-                      <View style={{flexDirection:'row'}}>
-                      <TouchableOpacity
-                        style={{ ...styles.openButton, backgroundColor: "#2196F3",width:width/2.5, }}
-                        onPress={() => {
-                          this._xoaGioHang(item);
-                        }}
-                      >
-                        <Text style={styles.textStyle}>Xác nhận</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={{ ...styles.openButton, backgroundColor: "#2196F3",marginLeft:5, width:width/2.5 }}
-                        onPress={() => {
-                          this.handleClose();
-                        }}
-                      >
-                        <Text style={styles.textStyle}>Huỷ bỏ</Text>
-                      </TouchableOpacity>
-                      </View>
-                    
-                    </View>
-                  </View>
-            </Modal>  
-        </View>    
-              <TouchableOpacity style={{marginLeft:width/15,width:50,height:50, borderRadius:20}} onPress={() =>{this.setModalVisible(true)}}>
-              <FontAwesome  name="remove" size={30} color="red" />
-              </TouchableOpacity>       
-          </View>
-        </View>
+            <this.renderItem 
+                item={item}
+            />
           }
+          extraData={this.state.refesh}
+          keyExtractor={(item) => item.Id}
         />
         </ScrollView>
         <View style={{backgroundColor:"#fff",marginBottom:5}}>
