@@ -68,6 +68,7 @@
         loading3:true,
         refreshing: false,
         numcart:0,
+        selectedId:null
       }; 
       this.timer;
     };
@@ -77,8 +78,10 @@
             <Image source={{uri:image}} style={styles.cateImage} />
       </TouchableOpacity>
     );
-    CategoryItem = ({name,id,icon}) => (
-        <TouchableOpacity  onPress={()=> this.setState({CatogoryID: id})}>
+    CategoryItem = ({name,id,icon}) => {
+      const colorText = id === this.state.selectedId ? "#6e3b6e" : "#1ba8ff";
+      return(
+        <TouchableOpacity  onPress={()=> this.setState({CatogoryID: id, selectedId:id})} >
           <View style={{width:width/7,height:height/15,marginHorizontal:10,
           marginVertical:5,
           justifyContent:"center"}
@@ -92,10 +95,11 @@
             style={styles.cateIcon}/>
           </ImageBackground>
           </View>
-          
-          <Text style={styles.itemName1}>{name}</Text>
+
+          <Text style={{textAlign:'center', fontWeight:'bold',color:colorText }}>{name}</Text>
         </TouchableOpacity>
-    );
+        )
+    };
     componentDidUpdate(prevProps, prevState){
       if(this.state.BrandID != prevState.BrandID || this.state.CatogoryID != prevState.CatogoryID)
         this.ListenForItemsSamsung();
@@ -145,6 +149,7 @@
       });      
     });
   };
+  
   getListBanner =() =>{
     this.itemRef.ref('Contents').once('value').then((snapshot)=>{
       var items=[];
@@ -260,7 +265,9 @@
     if (this.state.loading1 || this.state.loading1 || this.state.loading3) {
       return (
         <View style={{ flex: 1, backgroundColor:'#fff', justifyContent:'center'}}>
+        <StatusBar barStyle='light-content' backgroundColor='#a2459a'/>
         <Image source={require('../assets/homeloading.png')} style={{width:width,height:height,resizeMode:'contain'}}/>
+        <ActivityIndicator size='large' color="'#a2459a" style={{position:'absolute', alignSelf:'center'}}/>
       </View>
       )
     }
@@ -309,13 +316,14 @@
             horizontal
             showsHorizontalScrollIndicator={false}
             data={this.state.listcategory}
-            renderItem={({item})=>
+            renderItem={({item })=>
               <this.CategoryItem           
                 name={item.name}
                 id={item.id}
                 icon={item.icon}
               />}
-            keyExtractor={item => item.id}
+            keyExtractor={(item) => item.id}
+            extraData={this.state.selectedId}
           />    
           <FlatList 
             style={{marginTop:10}}
@@ -462,11 +470,6 @@
     button1:{
       borderColor:'#1ba8ff', 
       borderLeftWidth:5
-    },
-    itemName1:{
-      color:'#1ba8ff', 
-      textAlign:'center', 
-      fontWeight:'bold'
     },
     sectionImage: {
       width: width - 24,

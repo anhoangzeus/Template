@@ -15,6 +15,7 @@ import {
   TouchableHighlight
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 import NumberFormat from 'react-number-format';
@@ -291,15 +292,8 @@ getItemRespon=()=>{
                >
                   <View style={styles.centeredView}>
                     <View style={styles.modalView}>
+                      <FontAwesome5 name="cart-plus" size={40} color="#a2459a"/>
                       <Text style={styles.modalText}>Thêm thành công!</Text>
-                      {/* <TouchableHighlight
-                        style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
-                        onPress={() => {
-                          this.setModalVisible;
-                        }}
-                      >
-                        <Text style={styles.textStyle}>Hide Modal</Text>
-                      </TouchableHighlight> */}
                     </View>
                   </View>
              </Modal>  
@@ -415,7 +409,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: "#a2459a",
+    backgroundColor: "#fff",
     borderRadius: 20,
     padding: 35,
     alignItems: "center",
@@ -444,6 +438,6 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "center",
     fontSize:20,
-    color:'white'
+    color:'#a2459a'
   }
 });

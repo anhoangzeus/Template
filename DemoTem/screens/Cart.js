@@ -11,7 +11,8 @@ import {
   Alert ,
   FlatList,
   TouchableOpacity,
-  Text
+  Text,
+  Modal
 } from 'react-native';
 import {  Button} from 'galio-framework';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -19,6 +20,7 @@ import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 import { element } from 'prop-types';
 import NumberFormat from 'react-number-format';
+import Entypo from 'react-native-vector-icons/Entypo';
 const { height, width } = Dimensions.get('screen');
 
 function ReactNativeNumberFormat({ value }) {
@@ -41,13 +43,15 @@ export default class Cart extends Component{
          refesh:true,
          amount:0,
          loading:true,
-         hasAddress:false
+         hasAddress:false,
+         modalVisible:false,
+         modalPayment:false
         }; 
       }
     componentDidMount(){
-          this.ListenCart();       
-          this.GetAddress();
-    }
+      this.ListenCart();       
+      this.GetAddress();
+    };
       GetAddress =() =>{
         if(fbApp.auth().currentUser)
         {
@@ -73,16 +77,16 @@ export default class Cart extends Component{
                   item=Address;
                 }
               });
-              if(item !=null){
+              if(item != null){
                 this.setState({hasAddress:true})
               }
               this.setState({
                 Address:item,
                 loading:false
-            })
-          })
-        }
-      }
+            });
+          });
+        };
+      };
       ListenCart = () => {
         console.log("vao gio hang");
         if(fbApp.auth().currentUser){
@@ -107,6 +111,25 @@ export default class Cart extends Component{
           })  
         }
       }   
+      setModalVisible = (visible) => {
+          this.setState({ modalVisible: visible });
+      };
+      handleClose = () => {
+        this.setState({
+          modalVisible: false 
+        });
+      };
+      setmodalPayment = (visible) => {
+        if(fbApp.auth().currentUser){
+          this.setState({ modalPayment: visible },()=> {setTimeout(this.handleClosemodalPayment,1000)});
+        }
+      };
+      handleClosemodalPayment = () => {
+        this.setState({
+          modalPayment: false 
+        });
+      };
+      
        GetCurrentDate =()=>{
         var date = new Date().getDate();
         var month = new Date().getMonth() + 1; 
@@ -121,12 +144,29 @@ export default class Cart extends Component{
         {
           this.props.navigation.navigate("ItemsCart",{content : this.state.amount,listItem : this.state.CartItem, address: this.state.Address })
         }else{
-          Alert.alert("Hãy mua sắm ngay thôi")
+            this.setmodalPayment(true);
         }
-      }
+      };
+      _xoaGioHang=(item)=>{
+        this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid+'/'+item.key).set({
+        })
+        var dem=0;
+        
+        this.state.CartItem.forEach(element => {
+          if(element.Id == item.Id){return;}
+          else{
+            dem++;
+          }       
+        });
+        this.state.CartItem.splice(dem-1,1);
+        this.setState({ 
+          refresh: !this.state.refresh
+      });
+    };  
     render(){
       const { navigation } = this.props;
-      console.log(this.state.CartItem);
+      const { modalVisible,modalPayment } = this.state;
+      
       this.state.amount=0;
       this.state.CartItem.forEach(element =>{      
         const a = Number(element.Price);        
@@ -137,13 +177,13 @@ export default class Cart extends Component{
           <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
             <ActivityIndicator size="large" color="dodgerblue" />
           </View>
-        )
+        );
       }
     return(      
      <View style={styles.screenContainer}>
         <StatusBar barStyle="light-content" backgroundColor="#a2459a"/>
         <View style={styles.headerContainer}>
-          <TouchableOpacity style={{width:75}} onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={{width:75}} onPress={() => navigation.navigate('App')}>
           <FontAwesome name="chevron-left" size={24} color="#fff" style={{marginLeft:width/40}}/>
           </TouchableOpacity>
         
@@ -178,6 +218,23 @@ export default class Cart extends Component{
                </TouchableOpacity>
           </View>
         }
+             <View style={styles.centeredView}>
+              <Modal
+                  animationType="fade"
+                  transparent={true}
+                  visible={modalPayment}   
+                  onRequestClose={() => {
+                    Alert.alert("Modal has been closed.");
+                  }}
+               >
+                  <View style={styles.centeredView}>
+                  <View style={{...styles.modalView,  padding: 35,alignItems: "center",}}>
+                      <Entypo name="emoji-flirt" size={40} color="#a2459a"/>
+                      <Text style={styles.modalText1}>Mua sắm ngay nào!!!</Text>
+                    </View>
+                  </View>
+             </Modal>  
+        </View>
         <FlatList 
           data={this.state.CartItem}
           extraData={this.state.refesh}
@@ -217,24 +274,10 @@ export default class Cart extends Component{
                     });
                     console.log(this.state.refesh);
                     }else{
-                      this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid+'/'+item.key).set({
-                      })
-                      var dem=0;
-                      
-                      this.state.CartItem.forEach(element => {
-                        if(element.Id == item.Id){return;}
-                        else{
-                          dem++;
-                        }       
-                      });
-                      console.log(dem);
-                      this.state.CartItem.splice(dem-1,1);
-                      this.setState({ 
-                        refresh: !this.state.refresh
-                    });
+                      this.setModalVisible(true)
                     }
                   }}>-</Button>
-                <View style={{marginTop:10}}><Text fontSize={18} >{item.Quantity}</Text></View>
+                <View style={{marginTop:10}}><Text style={{fontSize:20, marginHorizontal:10}} >{item.Quantity}</Text></View>
                 <Button style={styles.buttonUpDown} color='#ff3333' onPress={
                   ()=>{
                     console.log("vào add");
@@ -253,27 +296,45 @@ export default class Cart extends Component{
                 }>+</Button>
               </View>
             </View>
-            <View style={{marginLeft:width/8}}>
-              <TouchableOpacity onPress={() =>{
-                this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid+'/'+item.key).set({
-                })
-                var dem=0;
+            <View style={styles.centeredView}>
+              <Modal
+                  animationType="fade"
+                  transparent={true}
+                  visible={modalVisible}
                 
-                this.state.CartItem.forEach(element => {
-                  if(element.Id == item.Id){return;}
-                  else{
-                    dem++;
-                  }       
-                });
-                console.log(dem);
-                this.state.CartItem.splice(dem-1,1);
-                this.setState({ 
-                  refresh: !this.state.refresh
-              });
-              }}>
-              <FontAwesome  name="remove" size={25} color="red" />
+                  onRequestClose={() => {
+                    Alert.alert("Modal has been closed.");
+                  }}
+              >
+                  <View style={styles.centeredView}>
+                    <View style={{...styles.modalView, padding: width/15,}}>
+                      <Text style={styles.modalText}>Bạn có chắc bỏ sản phẩm này khỏi giỏ hàng?</Text>
+                      <View style={{flexDirection:'row'}}>
+                      <TouchableOpacity
+                        style={{ ...styles.openButton, backgroundColor: "#2196F3",width:width/2.5, }}
+                        onPress={() => {
+                          this._xoaGioHang(item);
+                        }}
+                      >
+                        <Text style={styles.textStyle}>Xác nhận</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={{ ...styles.openButton, backgroundColor: "#2196F3",marginLeft:5, width:width/2.5 }}
+                        onPress={() => {
+                          this.handleClose();
+                        }}
+                      >
+                        <Text style={styles.textStyle}>Huỷ bỏ</Text>
+                      </TouchableOpacity>
+                      </View>
+                    
+                    </View>
+                  </View>
+            </Modal>  
+        </View>    
+              <TouchableOpacity style={{marginLeft:width/15,width:50,height:50, borderRadius:20}} onPress={() =>{this.setModalVisible(true)}}>
+              <FontAwesome  name="remove" size={30} color="red" />
               </TouchableOpacity>       
-            </View>
           </View>
         </View>
           }
@@ -379,7 +440,7 @@ const styles = StyleSheet.create({
       width:width*0.45,
     },
     buttonUpDown:{
-     width:width/15,
+     width:width/10,
      height:height/30,
     },
     btnSubmit:{
@@ -398,5 +459,47 @@ const styles = StyleSheet.create({
     addresstitle:{
       fontWeight:'bold',
       fontSize:17
+    },
+    centeredView: {
+      justifyContent: "center",
+      alignItems: "center",
+      flex:1,
+    },
+    modalView: {
+      margin: 20,
+      backgroundColor: "#fff",
+      borderRadius: 20,
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 2
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+      justifyContent:'center'
+    },
+    openButton: {
+      backgroundColor: "#F194FF",
+      borderRadius: 20,
+      padding: 10,
+      elevation: 2,
+
+    },
+    modalText: {
+      marginBottom: 15,
+      fontSize:20,
+      color:'#2196F3'
+    },
+    textStyle: {
+      color: "white",
+      fontWeight: "bold",
+      textAlign: "center"
+    },
+    modalText1: {
+      marginBottom: 15,
+      textAlign: "center",
+      fontSize:20,
+      color:'#a2459a'
     }
 });

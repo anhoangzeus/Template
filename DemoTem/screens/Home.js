@@ -297,6 +297,7 @@ export default class Home extends React.Component {
         <View style={{ flex: 1, backgroundColor:'#fff', justifyContent:'center'}}>
           <StatusBar barStyle='light-content' backgroundColor='#a2459a'/>
           <Image source={require('../assets/homeloading.png')} style={{width:width,height:height,resizeMode:'contain'}}/>
+          <ActivityIndicator size='large' color="'#a2459a" style={{position:'absolute', alignSelf:'center'}}/>
         </View>
       )
     }  
