@@ -335,7 +335,9 @@ export default class Cart extends Component{
           <View style={{height:height/1.7, justifyContent:'center',backgroundColor:'#fff', marginTop:5,width:width}}>
               <Image source={require('../assets/logoAn-03.png')} style={{height:width/3,width:width/3,alignSelf:'center'}}/>
               <Text style={{textAlign:'center',color:'#a2459a', fontSize:20}}>Chưa có sản phẩm nào trong giỏ</Text>
-              <TouchableOpacity style={{backgroundColor:'#a2459a', margin:20, borderRadius:20,height:height/18,justifyContent:'center',}}>
+              <TouchableOpacity style={{backgroundColor:'#a2459a', margin:20, borderRadius:20,height:height/18,justifyContent:'center',}}
+                onPress={() => navigation.navigate('App')}
+              >
                 <Text style={{color:'#fff',fontSize:20,textAlign:'center'}}>Tiếp tục mua sắm</Text>
               </TouchableOpacity>
           </View>:null
