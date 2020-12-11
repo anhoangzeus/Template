@@ -130,7 +130,7 @@ export default class Cart extends Component{
                 CategoryID : childSnapshot.val().CategoryID,
               });
             });
-            console.log(items);
+           
             this.setState({
               CartItem:items,
             });  

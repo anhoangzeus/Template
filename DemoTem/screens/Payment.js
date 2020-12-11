@@ -50,6 +50,7 @@ export default class Payscreen extends React.PureComponent{
         return date + '/' +month+ "/" +year + " " + gio+":"+ phut+":"+giay;
     }
       thanhToan=async()=>{
+        if(this.state.checked == "first"){
         var key = this.itemRef.ref().child('Orders/').push().key;
         var phone = this.props.address.ShipPhone;
         var name = this.props.address.ShipName;
@@ -80,8 +81,12 @@ export default class Payscreen extends React.PureComponent{
             fbApp.database().ref("Cart/"+fbApp.auth().currentUser.uid).child(childSnapshot.key).set({})
           })
          }))
-                    
          this.props.navigation.navigate("App");
+        }
+        else{
+          this.props.navigation.navigate("ZaloPayScreen",{amount: this.props.amount});
+        }          
+        
       }
     render(){
       const { navigation } = this.props;
@@ -129,9 +134,12 @@ export default class Payscreen extends React.PureComponent{
             <Text style={{marginLeft:width/40,fontSize:16}}>Thanh toán tiền mặt</Text>
             </View>
             <View style={styles.option}>
-            <RadioButton />
+            <RadioButton value="second"
+            color="#3399ff"
+            status={this.state.checked === 'second' ? 'checked' : 'unchecked'}
+            onPress={() => {this.setState({ checked: 'second' })}}/>
             <FontAwesome name="credit-card" size={30} />
-            <Text style={{marginLeft:width/40,fontSize:16}}>Thanh toán trực tuyến (hiện chưa hỗ trợ)</Text>      
+            <Text style={{marginLeft:width/40,fontSize:16}}>Thanh toán trực tuyến </Text>      
             </View>
           </View>
           <View style={styles.count}>
