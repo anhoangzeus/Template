@@ -231,21 +231,22 @@ export default class Cart extends Component{
                     <Text style={styles.modalText}>Bạn có chắc bỏ sản phẩm này khỏi giỏ hàng?</Text>
                     <View style={{flexDirection:'row'}}>
                     <TouchableOpacity
-                      style={{ ...styles.openButton, backgroundColor: "#2196F3",width:width/2.5, }}
+                      style={{ ...styles.openButton, backgroundColor: "#2196F3", width:width/2.5 }}
+                      onPress={() => {
+                        this.handleClose();
+                      }}
+                    >
+                      <Text style={styles.textStyle}>Giữ lại</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{ ...styles.openButton, backgroundColor: "#2196F3",width:width/2.5,marginLeft:5, }}
                       onPress={() => {
                         this._xoaGioHang();
                       }}
                     >
                       <Text style={styles.textStyle}>Xác nhận</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity
-                      style={{ ...styles.openButton, backgroundColor: "#2196F3",marginLeft:5, width:width/2.5 }}
-                      onPress={() => {
-                        this.handleClose();
-                      }}
-                    >
-                      <Text style={styles.textStyle}>Huỷ bỏ</Text>
-                    </TouchableOpacity>
+                  
                     </View>                  
                   </View>
                 </View>
@@ -390,18 +391,6 @@ const styles = StyleSheet.create({
       height:height*0.3,
       marginTop:width/100,
     },
-    
-    inputContainer: {
-      backgroundColor: '#fff',
-      flexDirection: 'row',
-      flex: 1,
-      marginLeft: 10,
-      alignItems: 'center',
-      paddingVertical: 8,
-      paddingHorizontal: 12,
-      borderRadius: 2,
-      
-    },
     listItem:{
       backgroundColor:"#fff",
       flex:1,
@@ -411,18 +400,6 @@ const styles = StyleSheet.create({
       width:width,
       height:height/7
     },
-    inputText: {
-      color: '#969696',
-      fontSize: 14,
-      marginLeft: 8,
-      fontWeight: '500',
-    },
-    cartContainer: {
-      paddingHorizontal: 20,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    
     bodyContainer: {
       flex: 1,
       backgroundColor: 'silver',

@@ -10,7 +10,8 @@ import {
     StatusBar,
     Alert,
     Image,
-    Dimensions
+    Dimensions,
+    Modal
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
@@ -18,6 +19,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import { useTheme } from 'react-native-paper';
 import { AuthContext } from '../components/context';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 
@@ -26,14 +28,16 @@ const Login1 = ({navigation}) => {
     const [data, setData] = React.useState({
         username: '',
         password: '',
+        email:'',
         check_textInputChange: false,
         secureTextEntry: true,
         isValidUser: true,
         isValidPassword: true,
+        modalVisibleWarning:false,
+        textAlert:''
     });
 
     const { colors } = useTheme();
-
     const { signIn } = React.useContext(AuthContext);
 
     const textInputChange = (val) => {
@@ -91,30 +95,45 @@ const Login1 = ({navigation}) => {
             });
         }
     }
+    const setModalVisibleWarning = (visible,text) => {
+        setData({ ...data,
+          modalVisibleWarning: visible,
+          textAlert:text },setTimeout(handleClose,2000));
+    };
+      const handleClose = () => {
+        setData({  ...data,
+          modalVisibleWarning:false
+        });
+      };
 
     const loginHandle = (userName, password) => {
-                if ( data.username.length == 0 || data.password.length == 0 ) {
-                    Alert.alert('Lỗi!', 'Bạn chưa nhập tài khoản hoặc mật khẩu', [
-                        {text: 'Okay'}
-                    ]);
-                    return;
+        if ( data.username.length < 6 || data.password.length <6 ) {
+            setModalVisibleWarning(true,"Quý khách chưa nhập đủ thông tin");
+            return;
+        }
+        fbApp.database().ref('Users').on('value',snapshot=>{
+            var temp = false;
+            snapshot.forEach((child)=>{
+                if(child.val().UserName==userName) {
+                    temp= true;
+                    if(child.val().Passwords==password){
+                        fbApp.auth().signInWithEmailAndPassword(child.val().Email,password)
+                        .then(()=> signIn())
+                        .catch(function(error) {
+                            setModalVisibleWarning(true,"Quý khách kiểm tra lại Internet");         
+                            return;
+                        });      
+                    }else{
+                        setModalVisibleWarning(true,"Mật khẩu không chính xác");
+                    }    
                 }
-                fbApp
-                .auth()
-                .signInWithEmailAndPassword(userName,password)
-                .then(()=>{
-                    signIn();
-                })
-                .catch(function(error) {
-                    var errorCode = error.code;
-                    var errorMessage = error.message;
-                    Alert.alert('Lỗi!', error.message, [
-                        {text: 'Okay'}
-                    ]);                  
-                    return;
-                });  
-                 
+            })
+            if(temp==false){
+                setModalVisibleWarning(true,"Tài khoản không tồn tại");
+            }
+        });                              
     }
+    
     return (
         <View style={styles.container}>
         <StatusBar backgroundColor='#1ba8ff' barStyle="light-content"/>
@@ -226,6 +245,22 @@ const Login1 = ({navigation}) => {
               </TouchableOpacity>
           </View>         
       </Animatable.View>
+      <Modal
+                  animationType="fade"
+                  transparent={true}
+                  visible={data.modalVisibleWarning}
+                
+                  onRequestClose={() => {
+                    Alert.alert("Modal has been closed.");
+                  }}
+               >
+                  <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                      <FontAwesome5 name="grin-beam-sweat" size={40} color="red"/>
+                      <Text style={styles.modalText1}>{data.textAlert}</Text>
+                    </View>
+                  </View>
+             </Modal>  
     </View>
     );
 };
@@ -299,5 +334,38 @@ const styles = StyleSheet.create({
     textSign: {
         fontSize: 18,
         fontWeight: 'bold'
-    }
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: "#fff",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+        justifyContent:'center'
+      },
+      modalText: {
+        marginBottom: 15,
+        textAlign: "center",
+        fontSize:20,
+        color:'#a2459a'
+      },
+      modalText1: {
+        marginBottom: 15,
+        textAlign: "center",
+        fontSize:20,
+        color:'red'
+      },
+      centeredView: {
+        justifyContent: "center",
+        alignItems: "center",
+        flex:1
+      },
   });

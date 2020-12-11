@@ -9,7 +9,8 @@ import {
     StatusBar,
     Alert,
     ScrollView,
-    Dimensions
+    Dimensions,
+    Modal
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
@@ -17,6 +18,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import { useTheme } from 'react-native-paper';
 import { AuthContext } from '../components/context';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 
@@ -39,10 +41,15 @@ const SignUp1 = (navigation) => {
     check_textInputChange: false,
     check_textInputChange1: false, 
     check_textInputChange2: false, 
+    check_textInputChange3: false, 
     secureTextEntry: true,
-    confirm_secureTextEntry: true,
+    isValidUser: true,
+    isValidPassword: true,
+    modalVisible:false,
+    modalVisibleWarning:false,
+    textAlert:''
 });
-const { signIn } = React.useContext(AuthContext);
+const { signUp } = React.useContext(AuthContext);
 
 const GetCurrentDate =()=>{
     var date = new Date().getDate();
@@ -71,7 +78,7 @@ const textInputChange2 = (val) => {
   }
 
 const textInputChange = (val) => {
-  if( val.length !== 0 ) {
+  if( val.length !==0 ) {
       setData({
           ...data,
           fullname: val,
@@ -86,26 +93,39 @@ const textInputChange = (val) => {
   }
 }
 const textInputChange1 = (val) => {
-    if( val.length !== 0 ) {
+    if( val.length >= 6 ) {
         setData({
             ...data,
             username: val,
-            check_textInputChange1: true
+            check_textInputChange1: true,
+            isValidUser: true
         });
     } else {
         setData({
             ...data,
             username: val,
-            check_textInputChange1: false
+            check_textInputChange1: false,
+            isValidUser: false
         });
     }
   }
 
 const handlePasswordChange = (val) => {
-  setData({
-      ...data,
-      password: val
-  });
+    if( val.length >= 6 ) {
+        setData({
+            ...data,
+            password: val,
+            check_textInputChange3: true,
+            isValidPassword: true
+        });
+    } else{
+        setData({
+            ...data,
+            password: val,
+            check_textInputChange3: false,
+            isValidPassword: false
+        });
+    }
 }
 
 const updateSecureTextEntry = () => {
@@ -114,54 +134,51 @@ const updateSecureTextEntry = () => {
       secureTextEntry: !data.secureTextEntry
   });
 }
-
-const registerHandle = (userName, password, fullname , phone ) => {
-    if ( data.username.length == 0 || data.password.length == 0 || data.fullname.length == 0 
+const setModalVisible = async(visible,text) => {
+    await(setData({ ...data,
+      modalVisible: visible,
+      textAlert:text },setTimeout(handleClose,2000)));
+      signUp();
+};
+const setModalVisibleWarning = (visible,text) => {
+  setData({ ...data,
+    modalVisibleWarning: visible,
+    textAlert:text },setTimeout(handleClose,2000));
+};
+const handleClose = () => {
+  setData({  ...data,
+    modalVisible: false,
+    modalVisibleWarning:false
+  });
+};
+const registerHandle = () => {
+    if ( data.username.length <6 || data.password.length <6 || data.fullname.length == 0 
         || data.phone.length == 0) {
-        Alert.alert('Lỗi!', 'Bạn chưa điền đầy đủ thông tin', [
-            {text: 'Okay'}
-        ]);
+            setModalVisibleWarning(true,"Bạn chưa điền đầy đủ thông tin");
         return;
     }
     GetCurrentDate();
     fbApp
     .auth()
-    .createUserWithEmailAndPassword(userName,password)
+    .createUserWithEmailAndPassword(data.phone,data.password)
     .then(() =>{
         fbApp.database().ref("Users").child(fbApp.auth().currentUser.uid).set({
             FullName: data.fullname,
-            Phone: data.phone,
             CreatedDate: data.CreateDate,
             CreatedBy: data.Createby,
             Status: data.Status,
             UserID: fbApp.auth().currentUser.uid,
-            Password:data.password,
-            Email:userName,
+            Passwords:data.password,
+            Email:data.phone,
             Avatar:data.Avatar,
+            UserName:data.username
         });
-        Alert.alert(
-            'Thông báo',
-            'Đăng kí thành công ' + data.username,
-            [
-                {text: 'OK', onPress:() =>{signIn()}}
-            ],
-            {cancelable: false}
-        )
-        setData({
-            username:"",
-            password:"",
-            CreateDate:"",
-            fullname:"",
-            phone:"",
-            UserID:""
-        })
+        setModalVisible(true,"Đăng kí thành công");
     })
     .catch(function(error) {
         var errorCode = error.code;
         var errorMessage = error.message;
-        Alert.alert('Lỗi mạng!', error.message, [
-            {text: 'Okay'}
-        ]);                  
+        setModalVisibleWarning(true,"Quý khách kiểm tra lại Internet");              
         return;
     });   
 }
@@ -202,7 +219,7 @@ const registerHandle = (userName, password, fullname , phone ) => {
 
             <Text style={[styles.text_footer, {
                             marginTop: 10
-                        }]}>Số điện thoại</Text>
+                        }]}>Email</Text>
             <View style={styles.action}>
                 <FontAwesome 
                     name="user-o"
@@ -210,7 +227,7 @@ const registerHandle = (userName, password, fullname , phone ) => {
                     size={20}
                 />
                 <TextInput 
-                    placeholder="Số điện thoại"
+                    placeholder="Email"
                     style={styles.textInput}
                     autoCapitalize="none"
                     onChangeText={(val) => textInputChange2(val)}
@@ -256,7 +273,11 @@ const registerHandle = (userName, password, fullname , phone ) => {
                 </Animatable.View>
                 : null}
             </View>
-            
+            { data.isValidUser ? null : 
+          <Animatable.View animation="fadeInLeft" duration={500}>
+          <Text style={styles.errorMsg}>Tài khoản ít nhất 6 kí tự</Text>
+          </Animatable.View>
+          }
 
             <Text style={[styles.text_footer, {
                 marginTop: 10
@@ -274,6 +295,18 @@ const registerHandle = (userName, password, fullname , phone ) => {
                     autoCapitalize="none"
                     onChangeText={(val) => handlePasswordChange(val)}
                 />
+                 {data.check_textInputChange3 ? 
+                <Animatable.View
+                    animation="bounceIn"
+                >
+                    <Feather 
+                        name="check-circle"
+                        color="green"
+                        size={20}
+                        style={{marginRight:5}}
+                    />
+                </Animatable.View>
+                : null}
                 <TouchableOpacity
                     onPress={updateSecureTextEntry}
                 >
@@ -292,12 +325,16 @@ const registerHandle = (userName, password, fullname , phone ) => {
                     }
                 </TouchableOpacity>
             </View>
-
+            { data.isValidPassword ? null : 
+          <Animatable.View animation="fadeInLeft" duration={500}>
+          <Text style={styles.errorMsg}>Mật khẩu ít nhất 6 kí tự</Text>
+          </Animatable.View>
+          }
            
             <View style={styles.button}>
                 <TouchableOpacity
                     style={styles.signIn}
-                    onPress={() => {registerHandle(data.username, data.password, data.fullname, data.phone)}}
+                    onPress={() => {registerHandle()}}
                 >
                 <LinearGradient
                       colors={['red', 'red']}
@@ -312,6 +349,38 @@ const registerHandle = (userName, password, fullname , phone ) => {
             </View>
             </ScrollView>
         </Animatable.View>
+        <Modal
+                  animationType="fade"
+                  transparent={true}
+                  visible={data.modalVisible}
+                
+                  onRequestClose={() => {
+                    Alert.alert("Modal has been closed.");
+                  }}
+               >
+                  <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                      <FontAwesome5 name="grin-beam" size={40} color="#a2459a"/>
+                      <Text style={styles.modalText}>{data.textAlert}</Text>
+                    </View>
+                  </View>
+             </Modal>  
+             <Modal
+                  animationType="fade"
+                  transparent={true}
+                  visible={data.modalVisibleWarning}
+                
+                  onRequestClose={() => {
+                    Alert.alert("Modal has been closed.");
+                  }}
+               >
+                  <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                      <FontAwesome5 name="grin-beam-sweat" size={40} color="red"/>
+                      <Text style={styles.modalText1}>{data.textAlert}</Text>
+                    </View>
+                  </View>
+             </Modal>  
       </View>
     );
 };
@@ -385,5 +454,38 @@ const styles = StyleSheet.create({
   textSign: {
       fontSize: 18,
       fontWeight: 'bold'
-  }
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    justifyContent:'center'
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+    fontSize:20,
+    color:'#a2459a'
+  },
+  modalText1: {
+    marginBottom: 15,
+    textAlign: "center",
+    fontSize:20,
+    color:'red'
+  },
+  centeredView: {
+    justifyContent: "center",
+    alignItems: "center",
+    flex:1
+  },
 });

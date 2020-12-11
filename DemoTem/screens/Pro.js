@@ -35,14 +35,16 @@
       />
     );
   };
-  const ProductItem = ({image, name, price}) => (
+  const ProductItem = ({image, name, price,PromotionPrice}) => (
     <View style={styles.itemContainer}>
       <Image source={{uri:image}} style={styles.itemImage} />
       <Text style={styles.itemName} numberOfLines={2}>
         {name}
       </Text>
       <Text style={styles.itemPrice}><ReactNativeNumberFormat value={price}/> 
-          <Text style={{color:"red"}}>  -20%</Text>
+          {price === PromotionPrice? null:
+          <Text style={{color:"red"}}>  -{((PromotionPrice-price)/PromotionPrice*100).toFixed(0)}%</Text>
+          }
       </Text>
       <View style={{flexDirection:'row'}}>
         <Image source={require("../assets/images/star.jpg")} style={styles.reviewimg}/>
@@ -50,7 +52,7 @@
       </View>
     </View>
   );
-  export default class Pro extends React.Component {
+  export default class Pro extends React.PureComponent {
     constructor(props) {
       super(props);
       this.itemRef = fbApp.database();
@@ -68,20 +70,28 @@
         loading3:true,
         refreshing: false,
         numcart:0,
-        selectedId:null
       }; 
       this.timer;
     };
 
-    BrandItem = ({image,id}) => (
-      <TouchableOpacity onPress={()=> this.setState({BrandID :id})} style={styles.branditemContainer}>
-            <Image source={{uri:image}} style={styles.cateImage} />
-      </TouchableOpacity>
-    );
-    CategoryItem = ({name,id,icon}) => {
-      const colorText = id === this.state.selectedId ? "#6e3b6e" : "#1ba8ff";
+    BrandItem = ({image,id}) => {
       return(
-        <TouchableOpacity  onPress={()=> this.setState({CatogoryID: id, selectedId:id})} >
+      <View>
+        <TouchableOpacity onPress={()=> this.setState({BrandID :id})} style={styles.branditemContainer}>
+              <Image source={{uri:image}} style={styles.cateImage} />
+        </TouchableOpacity>
+        {  id=== this.state.BrandID ?
+        <View style={{height:7,width:7,borderRadius:7,backgroundColor:'#a2459a',alignSelf:'center',marginTop:3}}></View> 
+        :
+          null
+        }
+      </View>
+      );
+    };
+    CategoryItem = ({name,id,icon}) => {
+      const colorText = id === this.state.CatogoryID ? "#6e3b6e" : "#1ba8ff";
+      return(
+        <TouchableOpacity  onPress={()=> this.setState({CatogoryID: id})} >
           <View style={{width:width/7,height:height/15,marginHorizontal:10,
           marginVertical:5,
           justifyContent:"center"}
@@ -104,6 +114,9 @@
       if(this.state.BrandID != prevState.BrandID || this.state.CatogoryID != prevState.CatogoryID)
         this.ListenForItemsSamsung();
     };
+    componentWillUnmount() {
+      clearInterval(this.timer); 
+    }
     componentDidMount(){
       this.ListenForItemsSamsung();
       this.GetAllBrand();
@@ -200,6 +213,7 @@
               id: childSnapshot.val().ProductID,
               BrandID:childSnapshot.val().BrandID,
               CategoryID:childSnapshot.val().CategoryID,
+              PromotionPrice : childSnapshot.val().PromotionPrice
             })    
           }else{
               if(childSnapshot.val().CategoryID == cateid){
@@ -211,6 +225,7 @@
                   id: childSnapshot.val().ProductID,
                   BrandID:childSnapshot.val().BrandID,
                   CategoryID:childSnapshot.val().CategoryID,
+                  PromotionPrice : childSnapshot.val().PromotionPrice
                 })                
               }  
             }                    
@@ -225,6 +240,7 @@
                   id: childSnapshot.val().ProductID,
                   BrandID:childSnapshot.val().BrandID,
                   CategoryID:childSnapshot.val().CategoryID,
+                  PromotionPrice : childSnapshot.val().PromotionPrice
                 })                
               }  
             }else{
@@ -237,6 +253,7 @@
                   id: childSnapshot.val().ProductID,
                   BrandID:childSnapshot.val().BrandID,
                   CategoryID:childSnapshot.val().CategoryID,
+                  PromotionPrice : childSnapshot.val().PromotionPrice
                 })                
               }  
             }                
@@ -323,7 +340,7 @@
                 icon={item.icon}
               />}
             keyExtractor={(item) => item.id}
-            extraData={this.state.selectedId}
+            extraData={this.state.CatogoryID}
           />    
           <FlatList 
             style={{marginTop:10}}
@@ -370,12 +387,14 @@
                   name={item.title}
                   image={item.image}
                   price={item.price}
+                  PromotionPrice={item.PromotionPrice}
                 />                   
               </TouchableOpacity>}
             keyExtractor={item => item.id}
           />     
         </View>   
       </View>  
+      <View style={{height:20, backgroundColor:'#fff'}}></View>
     </ScrollView>  
     </View>   
     </View>
@@ -417,7 +436,8 @@
     },
     bodyContainer: {
       flex: 1,
-      backgroundColor: '#ededed',
+      backgroundColor: '#a2459a',
+      marginTop:1,
     },
     scrollCate1:{
         height: height/12,
@@ -509,7 +529,7 @@
       marginVertical:5,
       marginLeft:width/40,
       alignSelf:'center'
-    }
+    },
   });
   
    

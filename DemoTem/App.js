@@ -89,10 +89,16 @@ const App = () => {
       setisLoading(false);
       dispatch({ type: 'LOGOUT' });
     },
+    signUp:async()=>{
+      let userToken;
+      userToken = 'abc';
+      try{
+        await AsyncStorage.setItem('userToken',userToken)
+      } catch(e){
+          console.log(e);
+      }
 
-    signUp:()=>{
-      setUserToken('abc');
-      setisLoading(false);
+      dispatch({ type: 'REGISTER', token: userToken})
     }
   }), []);
   if(loginState.isLoading){

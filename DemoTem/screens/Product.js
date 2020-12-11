@@ -43,6 +43,7 @@ export default class Product extends React.Component {
       Name: "",
       Price: "",
       Waranty:"",
+      PromotionPrice:"",
       MetaDescription:"",
       List_Productlienquan:[],
       idsanpham:this.props.content,
@@ -155,6 +156,7 @@ getItemRespon=()=>{
         Price:snapshot.val().Price,
         Waranty:snapshot.val().Warranty,
         MetaDescription:snapshot.val().MetaDescription,
+        PromotionPrice:snapshot.val().PromotionPrice,
       });
     });
   };
@@ -231,7 +233,7 @@ getItemRespon=()=>{
   };
   render() {
     const { navigation } = this.props;
-    const { modalVisible } = this.state;
+    const { modalVisible ,PromotionPrice,Price,List_Productlienquan} = this.state;
     return (
       <View  style={{flex:1,backgroundColor:"#ededed"}}>
       <StatusBar barStyle='dark-content' />
@@ -268,9 +270,17 @@ getItemRespon=()=>{
               </View>
               <Text  style={{marginVertical: 10,fontSize:25,fontWeight:"bold",marginLeft:width/40}}>{this.state.MetaDescription}</Text>
               <View style={{flexDirection:'row', alignItems:'center', marginBottom:10}}>
-                <Text color="Black"  style={{ fontSize:24,marginLeft:width/40, color:'black', fontWeight:'bold' }}><ReactNativeNumberFormat value={this.state.Price}/> </Text>
-                <Text style={{textDecorationLine:"line-through", fontSize:15, marginLeft:15, color:"#696969"}}>3000000 đ</Text>
-                <Text style={{marginLeft:5, color:'red'}}>-20%</Text>
+                <Text color="Black"  style={{ fontSize:24,marginLeft:width/40, color:'black', fontWeight:'bold' }}><ReactNativeNumberFormat value={Price}/> </Text>
+                {Price === PromotionPrice ? 
+                  null:
+                  <View style={{flexDirection:'row'}}>
+                  <Text style={{textDecorationLine:"line-through", fontSize:15, marginLeft:15, color:"#696969"}}>
+                  <ReactNativeNumberFormat value={PromotionPrice}/>
+                  </Text>
+                  <Text style={{marginLeft:5, color:'red'}}>
+                    -{((PromotionPrice-Price)/PromotionPrice*100).toFixed(0)}%</Text>
+                </View>
+                }               
               </View>   
                 <View>  
                     <Text  style={{marginBottom: 10,fontSize:15,fontWeight:"bold",marginLeft:width/40}}>{this.state.Waranty} tháng bảo hành</Text>
@@ -299,25 +309,29 @@ getItemRespon=()=>{
              </Modal>  
         </View>    
         <View style={{height:5}}/>
+        {List_Productlienquan.length==0 ? null:
         <View style={{backgroundColor:'#fff',height:height/3.5}}>
-          <Text bold size={12} style={{marginVertical: 10,marginLeft:width/40, fontWeight:'bold'}}>Sản phẩm tương tự</Text>
-          <FlatList
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={{marginHorizontal:10}}
-              data={this.state.List_Productlienquan}
-                  renderItem={({item})=>
-                  <TouchableOpacity  onPress={() => this.setState({idsanpham:item.proid})}>
-                      <this.ProductItem           
-                      image={item.image}
-                      Name={item.Name}
-                      Price={item.Price}
-                  />
-                  </TouchableOpacity>                    
-              }
-              keyExtractor={item => item.proid}                
-          />        
-        </View>   
+        <Text bold size={12} style={{marginVertical: 10,marginLeft:width/40, fontWeight:'bold'}}>Sản phẩm tương tự</Text>
+        <FlatList
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{marginHorizontal:10}}
+            data={List_Productlienquan}
+                renderItem={({item})=>
+                <TouchableOpacity  onPress={() => this.setState({idsanpham:item.proid})}>
+                    <this.ProductItem           
+                    image={item.image}
+                    Name={item.Name}
+                    Price={item.Price}
+                    
+                />
+                </TouchableOpacity>                    
+            }
+            keyExtractor={item => item.proid}                
+        />        
+      </View>   
+        }
+       
           <View style={{height:5}}/>
           <View style={{backgroundColor:'#fff'}}>
           <Text bold size={12} style={{marginVertical: 10,marginLeft:width/40,fontWeight:'bold'}}>Mô tả sản phẩm</Text>
