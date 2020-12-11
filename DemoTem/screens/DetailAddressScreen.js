@@ -159,7 +159,6 @@ const saveChangesHandle = async() => {
     ]);
     return;
   }
-  console.log(data);
   if(fbApp.auth().currentUser.uid != null){
     if(data.ListID=="")
     {
@@ -264,7 +263,7 @@ const saveChangesHandle = async() => {
 });
     return (
       <View style={styles.screenContainer}>
-      <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
+      <StatusBar backgroundColor='#a2459a' barStyle="light-content"/>
       <View style={styles.headerContainer}>
               <TouchableOpacity style={styles.cartContainer} onPress={() =>{navigation.goBack()}}>
                 <Ionicons 
@@ -549,7 +548,7 @@ const styles = StyleSheet.create({
       headerContainer: {
         flexDirection: 'row',
         paddingTop: 15,
-        backgroundColor: '#1e88e5',
+        backgroundColor: '#a2459a',
         paddingBottom: 12,
 
       },

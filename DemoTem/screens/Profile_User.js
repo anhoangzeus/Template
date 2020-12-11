@@ -45,14 +45,14 @@ const ProfileUser =(props)=> {
     </View>
   );
   
-  useEffect(()=>{
+  useState(()=>{
     if(fbApp.auth().currentUser != null)
     {
       fbApp.database().ref('Users').child(fbApp.auth().currentUser.uid)
       .on('value', (snapshot) => {
         setCreatedDate(snapshot.val().CreatedDate);
         setFullName(snapshot.val().FullName);;
-        setEmail(snapshot.val().Phone);
+        setEmail(snapshot.val().Email);
         setAvatar(snapshot.val().Avatar);
       });
     };    

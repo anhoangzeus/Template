@@ -34,14 +34,16 @@ function ReactNativeNumberFormat({ value }) {
     />
   );
 };
-const ProductItem = ({image, name, price}) => (
+const ProductItem = ({image, name, price,PromotionPrice}) => (
   <View style={styles.itemContainer}>
     <Image source={{uri:image}} style={styles.itemImage} />
     <Text style={styles.itemName} numberOfLines={2}>
       {name}
     </Text>
     <Text style={styles.itemPrice}><ReactNativeNumberFormat value={price}/> 
-        <Text style={{color:"red"}}>  -20%</Text>
+    {price === PromotionPrice? null:
+      <Text style={{color:"red"}}>  -{((PromotionPrice-price)/PromotionPrice*100).toFixed(0)}%</Text>
+    }
     </Text>
     <View style={{flexDirection:'row'}}>
       <Image source={require("../assets/images/star.jpg")} style={styles.reviewimg}/>
@@ -49,14 +51,16 @@ const ProductItem = ({image, name, price}) => (
     </View>
   </View>
 );
-const NewProductItem = ({image, name, price}) => (
+const NewProductItem = ({image, name, price,PromotionPrice}) => (
   <View style={styles.itemContainer1}>
     <Image source={{uri:image}} style={styles.itemImage} />
     <Text style={styles.itemName} numberOfLines={2}>
       {name}
     </Text>
     <Text style={styles.itemPrice}><ReactNativeNumberFormat value={price}/> 
-        <Text style={{color:"red"}}>  -20%</Text>
+    {price === PromotionPrice? null:
+      <Text style={{color:"red"}}>  -{((PromotionPrice-price)/PromotionPrice*100).toFixed(0)}%</Text>
+    }
     </Text>
     <View style={{flexDirection:'row'}}>
       <Image source={require("../assets/images/star.jpg")} style={styles.reviewimg}/>
@@ -65,7 +69,7 @@ const NewProductItem = ({image, name, price}) => (
   </View>
 );
 
-export default class Home extends React.Component {
+export default class Home extends React.PureComponent {
   constructor(props) {
     super(props);
     LogBox.ignoreAllLogs();
@@ -139,12 +143,13 @@ export default class Home extends React.Component {
         {
           itemsphone.push({ 
             title : childSnapshot.val().Name,
-            price : childSnapshot.val().Price,
+            price : childSnapshot.val().Price,       
             image : childSnapshot.val().Image,
             metades:childSnapshot.val().MetaDescription,
             id : childSnapshot.val().ProductID,
             BrandID : childSnapshot.val().BrandID,
             CategoryID : childSnapshot.val().CategoryID,
+            PromotionPrice : childSnapshot.val().PromotionPrice
           });
         };                   
       });
@@ -167,6 +172,7 @@ export default class Home extends React.Component {
             id : childSnapshot.val().ProductID,
             BrandID : childSnapshot.val().BrandID,
             CategoryID : childSnapshot.val().CategoryID,
+            PromotionPrice : childSnapshot.val().PromotionPrice
           });
         };                   
       });
@@ -189,6 +195,7 @@ export default class Home extends React.Component {
             id : childSnapshot.val().ProductID,
             BrandID : childSnapshot.val().BrandID,
             CategoryID : childSnapshot.val().CategoryID,
+            PromotionPrice : childSnapshot.val().PromotionPrice
           });
         };                   
       });
@@ -211,6 +218,7 @@ export default class Home extends React.Component {
             id : childSnapshot.val().ProductID,
             BrandID : childSnapshot.val().BrandID,
             CategoryID : childSnapshot.val().CategoryID,
+            PromotionPrice : childSnapshot.val().PromotionPrice
           });
         };                   
       });
@@ -233,6 +241,7 @@ export default class Home extends React.Component {
             id : childSnapshot.val().ProductID,
             BrandID : childSnapshot.val().BrandID,
             CategoryID : childSnapshot.val().CategoryID,
+            PromotionPrice : childSnapshot.val().PromotionPrice
           });
         };                   
       });
@@ -252,7 +261,8 @@ export default class Home extends React.Component {
             metades : childSnapshot.val().MetaDescription,
             id : childSnapshot.val().ProductID,
             BrandID : childSnapshot.val().BrandID,
-            CategoryID : childSnapshot.val().CategoryID,                          
+            CategoryID : childSnapshot.val().CategoryID,   
+            PromotionPrice : childSnapshot.val().PromotionPrice                       
           });
         }); 
       this.setState({
@@ -409,6 +419,7 @@ export default class Home extends React.Component {
                         name={item.title}
                         image={item.image}
                         price={item.price}
+                        PromotionPrice ={item.PromotionPrice}
                       />
             </TouchableOpacity>  
             }
@@ -430,6 +441,7 @@ export default class Home extends React.Component {
                         name={item.title}
                         image={item.image}
                         price={item.price}
+                        PromotionPrice ={item.PromotionPrice}
                       />
             </TouchableOpacity>  
             }
@@ -451,6 +463,7 @@ export default class Home extends React.Component {
                         name={item.title}
                         image={item.image}
                         price={item.price}
+                        PromotionPrice ={item.PromotionPrice}
                       />
             </TouchableOpacity>  
             }
@@ -472,6 +485,7 @@ export default class Home extends React.Component {
                         name={item.title}
                         image={item.image}
                         price={item.price}
+                        PromotionPrice ={item.PromotionPrice}
                       />
             </TouchableOpacity>  
             }
@@ -493,6 +507,7 @@ export default class Home extends React.Component {
                         name={item.title}
                         image={item.image}
                         price={item.price}
+                        PromotionPrice ={item.PromotionPrice}
                       />
             </TouchableOpacity>  
             }
@@ -510,6 +525,7 @@ export default class Home extends React.Component {
                     name={item.title}
                     image={item.image}
                     price={item.price}
+                    PromotionPrice ={item.PromotionPrice}
                   />
         </TouchableOpacity>  
         }
@@ -592,9 +608,9 @@ const styles = StyleSheet.create({
     marginHorizontal:10
   },
   sectionContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: '#a2459a',
     paddingHorizontal: 12,
-    marginTop:10,
+    marginTop:1,
   },
   proHotContainer: {
     backgroundColor: '#fff',
@@ -625,7 +641,7 @@ const styles = StyleSheet.create({
     resizeMode:'contain'
   },
   itemContainer1:{
-    width: width/2.15,
+    width: width/2.17,
     height:height/2.8,
     borderColor:'silver',
     borderWidth:1,

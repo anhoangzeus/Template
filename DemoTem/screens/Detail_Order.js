@@ -135,8 +135,8 @@ export class Detail_Order extends Component{
             <Image source={{uri: ProductImage}} style={styles.sectionImage}/>              
         </View>
         <View style={{marginHorizontal: 10}}>      
-            <Text style={styles.titletext}>{ProductName}</Text>
-            <Text style={styles.welcomeText}>Sản phẩm: {cate_Name}</Text>
+            <Text style={{...styles.titletext,marginRight:width/4}}>{ProductName}</Text>
+            <Text numberOfLines={3} style={styles.welcomeText}>Sản phẩm: {cate_Name}</Text>
             <Text style={styles.welcomeText}>Nhà cung cấp: {BrandName}</Text>
             <Text style={{color:'#1e88e5', fontWeight:'bold', fontSize:20, marginTop:10}}><ReactNativeNumberFormat value={Price} /> 
             <Text style={{fontSize:15, color:"black"}}>  x {Quantity}</Text></Text>          
@@ -146,7 +146,7 @@ export class Detail_Order extends Component{
     render(){
         return(
             <View style={styles.screenContainer}>
-                <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
+                <StatusBar backgroundColor='#a2459a' barStyle="light-content"/>
                 <View style={styles.headerContainer}>
                         <TouchableOpacity style={styles.cartContainer} onPress={()=>this.props.navigation.goBack()}>
                           <Ionicons 
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
       headerContainer: {
         flexDirection: 'row',
         paddingTop: 15,
-        backgroundColor: '#1e88e5',
+        backgroundColor: '#a2459a',
         paddingBottom: 12,
       },
       cartContainer: {

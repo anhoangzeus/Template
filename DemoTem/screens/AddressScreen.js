@@ -159,7 +159,7 @@ export default class AddressScreen extends Component {
         }
         return(
             <View style={styles.screenContainer}>
-            <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
+            <StatusBar backgroundColor='#a2459a' barStyle="light-content"/>
                 <View style={styles.headerContainer}>
                     <TouchableOpacity style={styles.cartContainer} onPress={() =>{this.props.navigation.goBack()}}>
                         <Ionicons 
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
       headerContainer: {
         flexDirection: 'row',
         paddingTop: 15,
-        backgroundColor: '#1e88e5',
+        backgroundColor: '#a2459a',
         paddingBottom: 12,
 
       },

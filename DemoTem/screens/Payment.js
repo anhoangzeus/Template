@@ -10,12 +10,14 @@ import {
   View,
   ActivityIndicator,
   FlatList,
-  TouchableOpacity
+  TouchableOpacity,
+  Modal
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 import NumberFormat from 'react-number-format';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { RadioButton } from 'react-native-paper';
 import { Button } from 'galio-framework';
 
@@ -37,7 +39,8 @@ export default class Payscreen extends React.PureComponent{
         this.itemRef = fbApp.database();
         this.state = { 
          checked: 'first',
-         loading:false
+         loading:false,
+         modalVisible:false,
         }; 
       }  
     GetCurrentDate =()=>{
@@ -90,6 +93,7 @@ export default class Payscreen extends React.PureComponent{
       }
     render(){
       const { navigation } = this.props;
+      const {modalVisible} = this.state;
       if (this.state.loading) {
         return (
           <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
@@ -163,6 +167,30 @@ export default class Payscreen extends React.PureComponent{
             </TouchableOpacity>
         </View>
       <View style={styles.bodyContainer}></View>
+      <View style={styles.centeredView}>
+              <Modal
+                  animationType="fade"
+                  transparent={true}
+                  visible={modalVisible}
+                
+                  onRequestClose={() => {
+                    Alert.alert("Modal has been closed.");
+                  }}
+               >
+                  <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                      <View style={{flexDirection:'row'}}>
+                      <Image source={require("../assets/logoAn-03.png")} style={{height:60,width:60,resizeMode:'contain'}}/>
+                      <FontAwesome5 name="kiss-wink-heart" size={40} color="#a2459a"/>
+                      </View>               
+                      <Text style={{...styles.modalText, color:'#a2459a'}}>Đặt hàng thành công!</Text>
+                      <TouchableOpacity style={{width:width/2, height:height/18, borderRadius:13, backgroundColor:'#a2459a',justifyContent:'center',alignItems:'center'}} onPress={()=> {this.handleClose}}>
+                        <Text  style={{...styles.modalText, color:'#fff'}}>Tiếp tục mua sắm</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+             </Modal>  
+        </View>    
     </View>
     );
   };
@@ -218,7 +246,7 @@ const styles = StyleSheet.create({
       borderRadius:10,
       justifyContent:'center',
       marginVertical:10,
-      backgroundColor:'red'
+      backgroundColor:'#a2459a'
     },
     address:{
       marginTop:5,
@@ -239,5 +267,42 @@ const styles = StyleSheet.create({
     count:{
       backgroundColor:'#fff',
       marginTop:height/100,
+    },
+    centeredView: {
+      justifyContent: "center",
+      alignItems: "center",
+      flex:1
+    },
+    modalView: {
+      margin: 20,
+      backgroundColor: "#fff",
+      borderRadius: 20,
+      padding: 35,
+      alignItems: "center",
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 2
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+      justifyContent:'center'
+    },
+    openButton: {
+      backgroundColor: "#F194FF",
+      borderRadius: 20,
+      padding: 10,
+      elevation: 2
+    },
+    textStyle: {
+      color: "white",
+      fontWeight: "bold",
+      textAlign: "center"
+    },
+    modalText: {
+      marginBottom: 15,
+      textAlign: "center",
+      fontSize:20,
     }
   });

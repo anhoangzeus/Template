@@ -1,18 +1,15 @@
 import React, { useState, useEffect} from 'react';
 import {StyleSheet, View, Text,Alert,
-   StatusBar,Image, Dimensions, ScrollView,Button,TextInput,CheckBox} from 'react-native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+   StatusBar,Image, Dimensions, ScrollView,Button,TextInput,CheckBox,Modal,FlatList,TouchableOpacity} from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Header from '../components/HeaderComponent';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
-import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
-import { HeaderBackButton } from '@react-navigation/stack';
 import Feather from 'react-native-vector-icons/Feather';
 import * as Animatable from 'react-native-animatable';
 import{ AuthContext } from '../components/context';
+import { colors } from 'react-native-elements';
 
 const { width, height } = Dimensions.get('screen');
 const InfoUser =({navigation}) =>  {
@@ -34,6 +31,9 @@ const InfoUser =({navigation}) =>  {
     secureTextOld: true,
     secureTextNew: true,
     secureTextConfirm: true,
+    modalVisible:false,
+    modalVisibleWarning:false,
+    textAlert:''
 });
 const { signOut } = React.useContext(AuthContext);
 
@@ -180,11 +180,9 @@ const saveChangesHandle = () => {
   var date = GetCurrentDate();
   if(isSelected == false)
   {
-    if ( data.FullName.length == 0 || data.Phone.length == 0) {
-      Alert.alert('Lỗi!', 'Bạn chưa điền đầy đủ thông tin', [
-          {text: 'Okay'}
-      ]);
-      return;
+    if ( data.FullName.length <= 1 || data.Phone.length  <= 1 ) {
+      setModalVisibleWarning(true,"Bạn chưa điền đầy đủ thông tin")
+      return;    
     }
     if(fbApp.auth().currentUser.uid!=null){
       fbApp.database().ref('Users').child(fbApp.auth().currentUser.uid).update({
@@ -194,28 +192,16 @@ const saveChangesHandle = () => {
         ModifiedBy:"User",
         ModifiedDate:date
       }).then(
-        Alert.alert(
-          'Thay đổi thành công',
-          '',
-          [
-            { text: 'OK', onPress: () => {navigation.navigate('App')}}
-          ],
-          { cancelable: false }
-        )
+        setModalVisible(true,"Thay đổi thành công")
       ).catch()
     }else{
-      Alert.alert('Lỗi!', 'Xin quý khách kiểm tra lại mạng', [
-        {text: 'Okay'}
-    ]);
+      setModalVisibleWarning(true,"Xin quý khách kiểm tra lại Internet")
     }
-
   }
   else{
-    if ( data.FullName.length == 0 || data.Phone.length == 0 
-      || data.oldpass.length == 0 || data.password.length == 0 || data.comfirm_pass.length == 0) {
-      Alert.alert('Lỗi!', 'Bạn chưa điền đầy đủ thông tin', [
-          {text: 'Okay'}
-      ]);
+    if ( data.FullName.length  <= 1  || data.Phone.length  <= 1  
+      || data.oldpass.length  <= 1  || data.password.length  <= 1  || data.comfirm_pass.length  <= 1 ) {
+        setModalVisibleWarning(true,"Bạn chưa điền đầy đủ thông tin")
       return;
     }
     if(fbApp.auth().currentUser.uid!=null){
@@ -233,31 +219,37 @@ const saveChangesHandle = () => {
               ModifiedDate:date,
               Password:data.password
           }).then(
-            Alert.alert(
-              'Thay đổi thành công',
-              '',
-              [
-                { text: 'OK', onPress: () => {navigation.navigate('App')}}
-              ],
-              { cancelable: false }
-            )
+            setModalVisible(true,"Thay đổi thành công")
           ).catch()
           LogOut();
         }         
       } 
       else{
-        Alert.alert('Lỗi!', 'Mật khẩu cũ không chính xác', [
-          {text: 'Okay'}
-      ]);
+        setModalVisibleWarning(true,"Mật khẩu cũ không chính xác")
+        setSelection(false)
       } 
     }else{
-      Alert.alert('Lỗi!', 'Xin quý khách kiểm tra lại mạng', [
-        {text: 'Okay'}
-    ]);
+      setModalVisibleWarning(true,"Xin quý khách kiểm tra lại Internet")
     }
   }
 }
-  useState(()=>{
+  const setModalVisible = (visible,text) => {
+      setData({ ...data,
+        modalVisible: visible,
+        textAlert:text },setTimeout(handleClose,2000));
+  };
+  const setModalVisibleWarning = (visible,text) => {
+    setData({ ...data,
+      modalVisibleWarning: visible,
+      textAlert:text },setTimeout(handleClose,2000));
+};
+  const handleClose = () => {
+    setData({  ...data,
+      modalVisible: false,
+      modalVisibleWarning:false
+    });
+  };
+  const getData=()=>{
     if(fbApp.auth().currentUser != null)
     {
       fbApp.database().ref('Users').child(fbApp.auth().currentUser.uid)
@@ -271,12 +263,13 @@ const saveChangesHandle = () => {
         })
       });
     }    
+  }
+  useState(()=>{
+    getData();
 });
-
-
     return (
       <View style={styles.screenContainer}>
-      <StatusBar backgroundColor='#1e88e5' barStyle="light-content"/>
+      <StatusBar backgroundColor='#a2459a' barStyle="light-content"/>
       <View style={styles.headerContainer}>
               <TouchableOpacity style={styles.cartContainer} onPress={() =>{navigation.goBack()}}>
                 <Ionicons 
@@ -513,12 +506,46 @@ const saveChangesHandle = () => {
           </View>
         </View>
       ): null}
-      </View>
-      <TouchableOpacity style={{backgroundColor:'#FF3333',
-      marginHorizontal:10,marginVertical:10,height:height/20,}} onPress={()=> {saveChangesHandle()}}>
-          <Text style={{fontSize:20, textAlign:'center', color:'white', marginTop:5}}>Lưu Thay Đổi</Text>
-      </TouchableOpacity >
+      </View>   
       </ScrollView>
+      <View style={{ justifyContent:'flex-end',height:height/12, backgroundColor:'#fff'}}>
+      <TouchableOpacity style={{backgroundColor:'#FF3333',
+      marginHorizontal:10,marginVertical:10,height:height/20,borderRadius:10}} onPress={()=> {saveChangesHandle()}}>
+          <Text style={{fontSize:20, textAlign:'center', color:'white', marginTop:5,}}>Lưu Thay Đổi</Text>
+      </TouchableOpacity >
+      </View>
+              <Modal
+                  animationType="fade"
+                  transparent={true}
+                  visible={data.modalVisible}
+                
+                  onRequestClose={() => {
+                    Alert.alert("Modal has been closed.");
+                  }}
+               >
+                  <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                      <FontAwesome5 name="grin-beam" size={40} color="#a2459a"/>
+                      <Text style={styles.modalText}>{data.textAlert}</Text>
+                    </View>
+                  </View>
+             </Modal>  
+             <Modal
+                  animationType="fade"
+                  transparent={true}
+                  visible={data.modalVisibleWarning}
+                
+                  onRequestClose={() => {
+                    Alert.alert("Modal has been closed.");
+                  }}
+               >
+                  <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                      <FontAwesome5 name="grin-beam-sweat" size={40} color="red"/>
+                      <Text style={styles.modalText1}>{data.textAlert}</Text>
+                    </View>
+                  </View>
+             </Modal>  
       </View>
     );
 };
@@ -579,7 +606,7 @@ const styles = StyleSheet.create({
       headerContainer: {
         flexDirection: 'row',
         paddingTop: 15,
-        backgroundColor: '#1e88e5',
+        backgroundColor: '#a2459a',
         paddingBottom: 12,
 
       },
@@ -607,4 +634,48 @@ const styles = StyleSheet.create({
         fontSize:20,
         paddingLeft: 10 ,
       },
+      centeredView: {
+        justifyContent: "center",
+        alignItems: "center",
+        flex:1
+      },
+      modalView: {
+        margin: 20,
+        backgroundColor: "#fff",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+        justifyContent:'center'
+      },
+      openButton: {
+        backgroundColor: "#F194FF",
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2
+      },
+      textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+      },
+      modalText: {
+        marginBottom: 15,
+        textAlign: "center",
+        fontSize:20,
+        color:'#a2459a'
+      },
+      modalText1: {
+        marginBottom: 15,
+        textAlign: "center",
+        fontSize:20,
+        color:'red'
+      }
   });
