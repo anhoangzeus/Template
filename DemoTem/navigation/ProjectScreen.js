@@ -201,7 +201,18 @@ export default function ProjectStack(props) {
       <Stack.Screen name="TopOrder" component={TopOrder}/>
       <Stack.Screen name="Setting" component={SettingsScreen} />
       <Stack.Screen name="Components" component={ComponentsScreen} />
-      <Stack.Screen name="Product" component={ProductScreen}/>
+      <Stack.Screen name="Product" component={ProductScreen} 
+      options={{
+        headerBackTitleVisible:false,
+        headerTitle:false,
+        headerTransparent:true,
+
+        headerTintColor:'red',
+        
+     headerLeft: () => (
+         <Ionicons name="arrow-back-outline" size={25} backgroundColor="#d02860" />
+     )
+     }}/>
       <Stack.Screen name="Items" component={ItemsScreen}/>
       <Stack.Screen name="ItemsCart" component={ItemsCart}/>
       <Stack.Screen name="Cart" component={Cart}/>

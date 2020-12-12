@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {StyleSheet, View, StatusBar, FlatList, Text} from 'react-native';
+import {StyleSheet, View, StatusBar, FlatList, Text,TouchableOpacity} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import Header from '../components/HeaderComponent';
@@ -44,7 +44,7 @@ export default class NotificationScreen extends Component{
         <Header title="Thông báo" />
         <View style={styles.bodyContainer}>
           <View>
-            <View style={styles.buttonActiveContainer}>
+            <TouchableOpacity style={styles.buttonActiveContainer}>
               <View style={styles.activeMark} />
               <MaterialCommunityIcons
                 name="home"
@@ -52,17 +52,17 @@ export default class NotificationScreen extends Component{
                 size={22}
                 style={styles.activeIcon}
               />
-            </View>
-            <View style={styles.buttonInactiveContainer}>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.buttonInactiveContainer}>
               <MaterialCommunityIcons
                 name="backup-restore"
                 color="#949494"
                 size={22}
               />
-            </View>
-            <View style={styles.buttonInactiveContainer}>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.buttonInactiveContainer}>
               <MaterialCommunityIcons name="sale" color="#949494" size={22} />
-            </View>
+            </TouchableOpacity>
           </View>
           <View style={styles.listContainer}>
             <FlatList

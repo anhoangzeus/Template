@@ -108,6 +108,7 @@ render(){
     <FlatList
         pagingEnabled={false}
         data={this.state.listOrder}
+        initialNumToRender={10}
         renderItem={({item})=>
         <this.RenderList
         CreatedDate={item.CreatedDate}

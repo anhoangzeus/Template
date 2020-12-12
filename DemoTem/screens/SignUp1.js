@@ -154,7 +154,7 @@ const handleClose = () => {
 const registerHandle = () => {
     if ( data.username.length <6 || data.password.length <6 || data.fullname.length == 0 
         || data.phone.length == 0) {
-            setModalVisibleWarning(true,"Bạn chưa điền đầy đủ thông tin");
+            setModalVisibleWarning(true,"Quý khách chưa điền đầy đủ thông tin");
         return;
     }
     GetCurrentDate();
@@ -178,7 +178,7 @@ const registerHandle = () => {
     .catch(function(error) {
         var errorCode = error.code;
         var errorMessage = error.message;
-        setModalVisibleWarning(true,"Quý khách kiểm tra lại Internet");              
+        setModalVisibleWarning(true,"Quý khách vui lòng kiểm tra lại Internet");              
         return;
     });   
 }

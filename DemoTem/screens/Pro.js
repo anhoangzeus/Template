@@ -65,9 +65,7 @@
         CatogoryID:"AIzaSyDSWIekvpvwQbRiGh4WF88H91tqFzL6OWI",
         Price:0,
         Date:"",
-        loading1:true,
-        loading2:true,
-        loading3:true,
+        loading:true,
         refreshing: false,
         numcart:0,
       }; 
@@ -80,11 +78,6 @@
         <TouchableOpacity onPress={()=> this.setState({BrandID :id})} style={styles.branditemContainer}>
               <Image source={{uri:image}} style={styles.cateImage} />
         </TouchableOpacity>
-        {  id=== this.state.BrandID ?
-        <View style={{height:7,width:7,borderRadius:7,backgroundColor:'#a2459a',alignSelf:'center',marginTop:3}}></View> 
-        :
-          null
-        }
       </View>
       );
     };
@@ -111,8 +104,9 @@
         )
     };
     componentDidUpdate(prevProps, prevState){
-      if(this.state.BrandID != prevState.BrandID || this.state.CatogoryID != prevState.CatogoryID)
+      if(this.state.BrandID != prevState.BrandID || this.state.CatogoryID != prevState.CatogoryID){
         this.ListenForItemsSamsung();
+      } 
     };
     componentWillUnmount() {
       clearInterval(this.timer); 
@@ -140,7 +134,7 @@
       }
     }
     _onRefresh = () => {
-      this.setState({refreshing: true});
+      this.setState({refreshing: true,loading:true});
       this.getListBanner();
       this.ListenForItemsSamsung();
       this.GetAllBrand();
@@ -158,7 +152,6 @@
         });
         this.setState({
           listbrand:items,
-          loading2:false
       });      
     });
   };
@@ -177,7 +170,6 @@
       this.setState({
         listcontents:items,
         refreshing: false,
-        loading:false
       });
     });
   };
@@ -193,7 +185,7 @@
         })
         this.setState({
           listcategory:items,
-          loading3:false
+          loading:false
       });  
     });
   };
@@ -261,7 +253,6 @@
         })
       this.setState({
         listcate:items,
-        loading1:false
       });    
     });    
   };
@@ -271,15 +262,15 @@
     }
     else{
       return(
-        <View style={{position:"absolute", borderRadius:25,backgroundColor:"red",alignItems:"center",marginLeft:width/12,width:width/20 }}>
-              <Text  style={{alignSelf:'center', fontSize:10,margin:1,fontWeight:'bold',color:"white"}} numberOfLines={1}>{this.state.numcart}</Text>
-        </View>
+        <View style={{position:"absolute", borderRadius:25,backgroundColor:"red",alignItems:"center",marginLeft:width/30,width:width/20}}>
+         <Text style={{alignSelf:'center', fontSize:10,margin:1,fontWeight:'bold',color:'white'}} numberOfLines={1}>{this.state.numcart}</Text>
+    </View>
       )
     }
   };
   render() {
     const { navigation } = this.props;
-    if (this.state.loading1 || this.state.loading1 || this.state.loading3) {
+    if (this.state.loading) {
       return (
         <View style={{ flex: 1, backgroundColor:'#fff', justifyContent:'center'}}>
         <StatusBar barStyle='light-content' backgroundColor='#a2459a'/>
@@ -291,16 +282,20 @@
     return (
     <View style={styles.screenContainer}>
       <StatusBar barStyle="light-content" />
-      <View style={styles.headerContainer}> 
-        <View style={styles.inputContainer}>
-          <FontAwesome name="search" size={24} color="#969696" />
-          <Text style={styles.inputText}>Bạn tìm gì hôm nay?</Text>
+      <View style={styles.headerContainer}>
+      <TouchableOpacity  onPress={()=> navigation.navigate("Tìm kiếm")}>
+      <View style={styles.inputContainer}>
+            <FontAwesome name="search" size={24} color="#969696" />
+            <Text style={styles.inputText}>Bạn tìm gì hôm nay?</Text>
         </View>
-        <TouchableOpacity style={styles.cartContainer} onPress={() => navigation.navigate("Cart")}>
-          <FontAwesome name="shopping-cart" size={24} color="#fff" /> 
-          {this.renderNofiCart()}
-        </TouchableOpacity> 
-      </View>
+        </TouchableOpacity>
+        <View style={styles.cartContainer}>
+            <TouchableOpacity onPress={() => navigation.navigate("Cart")}>    
+              <FontAwesome name="shopping-cart" size={24} color="#fff" /> 
+              {this.renderNofiCart()}
+            </TouchableOpacity>       
+      </View>     
+    </View>
       <View style={styles.bodyContainer}> 
     <ScrollView
        refreshControl={
@@ -354,7 +349,7 @@
               />}
             keyExtractor={item => item.id}
           /> 
-          <ScrollView  horizontal={true} showsHorizontalScrollIndicator={false} style={{marginVertical:10}}>
+          <ScrollView  horizontal={true} showsHorizontalScrollIndicator={false} style={{marginVertical:15}}>
           <TouchableOpacity style={{marginHorizontal:5}}>
             <Text style={styles.textnum}>Dưới 2 triệu</Text>
           </TouchableOpacity>
@@ -374,7 +369,7 @@
             <Text style={styles.textnum}>Trên 20 triệu</Text>
           </TouchableOpacity>
      </ScrollView>                                          
-      <View style={{height:2, backgroundColor:'#a2459a'}}/>
+      <View style={{height:5, backgroundColor:'#a2459a'}}/>
         <View style={styles.listItemContainer}>
           <FlatList 
             initialNumToRende={3}
@@ -407,7 +402,7 @@
     },
     headerContainer: {
       flexDirection: 'row',
-      paddingTop: 10,
+      paddingTop: 15,
       paddingBottom: 4,
       backgroundColor: '#a2459a',
     },
@@ -417,9 +412,11 @@
       flex: 1,
       marginLeft: 10,
       alignItems: 'center',
-      paddingVertical: 8,
+      paddingVertical: height/50,
       paddingHorizontal: 12,
-      borderRadius: 2, 
+      borderRadius: 2,
+      height:height/10,
+      width:width*0.8,
     },
     inputText: {
       color: '#969696',
@@ -428,11 +425,11 @@
       fontWeight: '500',
     },
     cartContainer: {
-      paddingHorizontal: 20,
-      paddingTop:5,
+      paddingHorizontal: 15, 
       justifyContent: 'center',
+      width:75,
       borderRadius:15,
-      width:70
+      paddingTop:5,
     },
     bodyContainer: {
       flex: 1,

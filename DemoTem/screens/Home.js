@@ -121,7 +121,7 @@ export default class Home extends React.PureComponent {
   };
   
   _onRefresh = () => {
-    this.setState({refreshing: true});
+    this.setState({refreshing: true,loading:true});
     this.getListBanner();
     this.ListenForItems();
     this._getListPhoneNew();

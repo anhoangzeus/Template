@@ -51,14 +51,16 @@ export function bodau(str){
   return str;
 }
 
-const ProductItem = ({image, name, price}) => (
+const ProductItem = ({image, name, price,PromotionPrice}) => (
   <View style={styles.itemContainer1}>
   <Image source={{uri:image}} style={styles.itemImage} />
   <Text style={styles.itemName} numberOfLines={2}>
     {name}
   </Text>
   <Text style={styles.itemPrice}><ReactNativeNumberFormat value={price}/> 
-      <Text style={{color:"red"}}>  -20%</Text>
+      {price === PromotionPrice? null:
+          <Text style={{color:"red"}}>  -{((PromotionPrice-price)/PromotionPrice*100).toFixed(0)}%</Text>
+          }
   </Text>
   <View style={{flexDirection:'row'}}>
     <Image source={require("../assets/images/star.jpg")} style={styles.reviewimg}/>
@@ -66,19 +68,17 @@ const ProductItem = ({image, name, price}) => (
   </View>
 </View>
 );
-let brandname ="Oppo";
 export default class Setting extends React.Component {
-
   constructor(props) {
     super(props);
     LogBox.ignoreAllLogs();
     this.itemRef = fbApp.database();
     this.state = { 
-      brand:"Samsung",
       listcate:[],
       searchText:"",
       numcart:0,
     }; 
+    this.timer;
   }
  
   searchDictionary=()=>{
@@ -93,6 +93,9 @@ export default class Setting extends React.Component {
           metades:'',
           image:'',
           id: '',
+          BrandID:'',
+          CategoryID:'',
+          PromotionPrice:0
         }
         var rs = childSnapshot.val().Name.toLowerCase();
         var des = childSnapshot.val().MetaDescription.toLowerCase();
@@ -103,6 +106,9 @@ export default class Setting extends React.Component {
           product.metades=childSnapshot.val().MetaDescription;
           product.image=childSnapshot.val().Image;
           product.id=childSnapshot.val().ProductID;
+          product.BrandID=childSnapshot.val().BrandID;
+          product.CategoryID=childSnapshot.val().CategoryID;
+          product.PromotionPrice = childSnapshot.val().PromotionPrice;
           items.push(product);     
         }              
     });
@@ -112,7 +118,10 @@ export default class Setting extends React.Component {
     })
   })
   }
-  renderNofiCart = () =>{
+  componentWillUnmount() {
+    clearInterval(this.timer); 
+  }
+  getnumcart=()=> {
     if(fbApp.auth().currentUser){ 
       this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid).once('value').then((snapshot) => {
         var dem = 0;
@@ -124,6 +133,13 @@ export default class Setting extends React.Component {
         });  
       });  
     }
+  }
+  componentDidMount(){
+    this.timer = setInterval(() => {
+      this.getnumcart();
+    }, 1500);
+  }
+  renderNofiCart = () =>{
     if(this.state.numcart == 0){
       return null;
     }
@@ -135,7 +151,6 @@ export default class Setting extends React.Component {
       )
     }
   };
-
   renderTextnull= ()=>{
     if(this.state.searchText != null && this.state.listcate == null){
       return(
@@ -145,9 +160,8 @@ export default class Setting extends React.Component {
       )
     }
     else
-    return null
+      return null
   }
-
   render() {
     const { navigation } = this.props;
 
@@ -155,7 +169,6 @@ export default class Setting extends React.Component {
     <View style={styles.screenContainer}>
     <StatusBar barStyle="light-content" />
     <View style={styles.headerContainer}>   
-    
       <View style={styles.inputContainer}>
         <FontAwesome name="search" size={24} color="#969696" />
         <TextInput style={styles.inputText} placeholder="Bạn tìm gì hôm nay?" 
@@ -182,11 +195,12 @@ export default class Setting extends React.Component {
         showsHorizontalScrollIndicator={false}
         data={this.state.listcate}
         renderItem={({item})=>
-        <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id})}>
+        <TouchableOpacity onPress={() => navigation.navigate('Items', {id: item.id, CategoryID: item.CategoryID, BrandID: item.BrandID})}>
              <ProductItem
             name={item.title}
             image={item.image}
             price={item.price}
+            PromotionPrice={item.PromotionPrice}
       />
         </TouchableOpacity>    
         }
@@ -222,14 +236,15 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 2,
-    
+    height:height/16,
   },
   inputText: {
     color: '#969696',
     fontSize: 14,
     marginLeft: 8,
     fontWeight: '500',
-    height:height/25,
+    height:height/16,
+    width:width*0.7,
     padding:height/125,
   },
   cartContainer: {
@@ -238,7 +253,6 @@ const styles = StyleSheet.create({
     width:70,
     paddingTop:10,
   },
-  //
   bodyContainer: {
     flex: 1,
     backgroundColor: '#fff',
@@ -293,12 +307,13 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   itemContainer1:{
-    width: width/2.15,
+    width: width/2.2,
     height:height/2.8,
     borderColor:'silver',
     borderWidth:1,
     borderRadius:25,
-    marginRight:5
+    marginRight:5,
+    marginEnd:2
   },
   //
   filterContainer: {

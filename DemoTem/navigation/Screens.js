@@ -1,5 +1,5 @@
 import React from 'react';
-import { Easing, Animated, Dimensions, View , StyleSheet, Image} from 'react-native';
+import { Easing, Animated, Dimensions, View , StyleSheet, Image,StatusBar} from 'react-native';
 import { createStackNavigator, HeaderBackButton } from "@react-navigation/stack";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';

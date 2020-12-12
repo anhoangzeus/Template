@@ -108,7 +108,7 @@ const Login1 = ({navigation}) => {
 
     const loginHandle = (userName, password) => {
         if ( data.username.length < 6 || data.password.length <6 ) {
-            setModalVisibleWarning(true,"Quý khách chưa nhập đủ thông tin");
+            setModalVisibleWarning(true,"Quý khách chưa nhập đầy đủ thông tin");
             return;
         }
         fbApp.database().ref('Users').on('value',snapshot=>{
@@ -120,7 +120,7 @@ const Login1 = ({navigation}) => {
                         fbApp.auth().signInWithEmailAndPassword(child.val().Email,password)
                         .then(()=> signIn())
                         .catch(function(error) {
-                            setModalVisibleWarning(true,"Quý khách kiểm tra lại Internet");         
+                            setModalVisibleWarning(true,"Quý khách vui lòng kiểm tra lại Internet");         
                             return;
                         });      
                     }else{

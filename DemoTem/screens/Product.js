@@ -12,13 +12,15 @@ import {
   StatusBar,
   FlatList,
   Modal,
-  TouchableHighlight
+  TouchableHighlight,
+  Animated
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 import NumberFormat from 'react-number-format';
+import { HeaderBackButton } from '@react-navigation/stack';
 
 const { width, height } = Dimensions.get('screen');
 const thumbMeasure = (width - 48 - 32) / 3;
@@ -49,6 +51,7 @@ export default class Product extends React.Component {
       idsanpham:this.props.content,
       listcart:[],
       modalVisible:false,
+      scrollY: new Animated.Value(0),
     };
     this.timer;
   };
@@ -103,8 +106,7 @@ export default class Product extends React.Component {
     this.GetCartData();
   }
   else{
-    const {navigation}= this.props;
-    navigation.navigate("Top");
+    this.props.navigation.navigate("Top");
   }
   this.setModalVisible(true);
 }
@@ -231,13 +233,51 @@ getItemRespon=()=>{
       this.getItemRespon();
     }
   };
+
   render() {
     const { navigation } = this.props;
     const { modalVisible ,PromotionPrice,Price,List_Productlienquan} = this.state;
+    const HEADER_MAX_HEIGHT = height/10;
+    const HEADER_MIN_HEIGHT = height/30;
+    const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT + HEADER_MIN_HEIGHT;
+    const headerHeight = this.state.scrollY.interpolate({
+      inputRange: [HEADER_MAX_HEIGHT/2.5, HEADER_SCROLL_DISTANCE],
+      outputRange: [HEADER_MIN_HEIGHT,HEADER_MAX_HEIGHT],
+      extrapolate: 'clamp',
+    });
     return (
       <View  style={{flex:1,backgroundColor:"#ededed"}}>
-      <StatusBar barStyle='dark-content' />
-        <View style={styles.headerFont} >
+        <StatusBar barStyle='dark-content'  backgroundColor="transparent" translucent={true}/>
+        <Animated.View style={[styles.headerFont1,{height: headerHeight}]} >
+            <TouchableOpacity style={{width:50,height:30,backgroundColor:'#a2459a', borderRadius:25,alignItems:'center',marginLeft:5,justifyContent:'center',marginTop:10}} onPress={()=> navigation.goBack()}> 
+              <FontAwesome name="chevron-left" size={25} color="white"/>
+            </TouchableOpacity>
+            <TouchableOpacity style={{width:50,height:30,backgroundColor:'#a2459a', borderRadius:25,marginLeft:width*0.45,alignItems:'center',justifyContent:'center',marginTop:10}} onPress={()=> navigation.navigate("Setting")}> 
+              <FontAwesome name="search" size={25} color="white"/>
+            </TouchableOpacity>
+            <TouchableOpacity style={{width:50,height:30,backgroundColor:'#a2459a', borderRadius:25,marginLeft:width*0.01,alignItems:'center',justifyContent:'center',marginTop:10}} onPress={() => navigation.navigate("App")}>
+              <FontAwesome name="home" size={30} color="white" />
+            </TouchableOpacity>
+          <View>
+            <TouchableOpacity style={{width:50,height:30,backgroundColor:'#a2459a', borderRadius:25,marginLeft:width*0.01,alignItems:'center',justifyContent:'center',marginTop:10}} onPress={() => navigation.navigate("Cart")} >
+              <FontAwesome name="shopping-cart" size={30} color="white" />
+            </TouchableOpacity>  
+            {this.renderNofiCart()}    
+            </View>
+        </Animated.View>
+        <ScrollView 
+          showsVerticalScrollIndicator={false}
+          scrollEventThrottle={16}
+          onScroll={Animated.event(
+            [{nativeEvent: {contentOffset: {y: this.state.scrollY}}}]
+         )}
+        >
+         <View backgroundColor="white">
+              <Image source={{uri : this.state.Image}}
+                      style={styles.profileContainer}
+                      imageStyle={styles.profileImage}/>
+                </View>
+                <View style={styles.headerFont} >
           <TouchableOpacity style={{width:50,backgroundColor:'#a2459a', borderRadius:25,alignItems:'center',marginLeft:5,justifyContent:'center',marginTop:10}} onPress={()=> navigation.goBack()}> 
             <FontAwesome name="chevron-left" size={25} color="white"/>
           </TouchableOpacity>
@@ -254,12 +294,6 @@ getItemRespon=()=>{
                {this.renderNofiCart()}    
                </View>
               </View>
-              <ScrollView showsVerticalScrollIndicator={false}>
-              <View backgroundColor="white">
-              <Image source={{uri : this.state.Image}}
-                      style={styles.profileContainer}
-                      imageStyle={styles.profileImage}/>
-                </View>
           <View  style={styles.options}>
           <View>
               <View >
@@ -339,6 +373,25 @@ getItemRespon=()=>{
           <View style={{height:25}}/>
           </View>
         </ScrollView>
+   
+        <View style={styles.centeredView}>
+              <Modal
+                  animationType="fade"
+                  transparent={true}
+                  visible={modalVisible}
+                
+                  onRequestClose={() => {
+                    Alert.alert("Modal has been closed.");
+                  }}
+               >
+                  <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                      <FontAwesome5 name="cart-plus" size={40} color="#a2459a"/>
+                      <Text style={styles.modalText}>Thêm thành công!</Text>
+                    </View>
+                  </View>
+             </Modal>  
+        </View>  
         <View style={styles.devide} />
         <View style={{backgroundColor:"#fff",flexDirection:"row",height:height/16, justifyContent:'center'}}>
           <TouchableOpacity style={styles.btnmua} onPress={this.addCart}>
@@ -352,20 +405,28 @@ getItemRespon=()=>{
 const styles = StyleSheet.create({
   headerFont:{
     flexDirection:"row",
-    backgroundColor:"#fff",
+    position:'absolute',
+    width:width
+  },
+  headerFont1:{
+    flexDirection:"row",
+    paddingTop:height/30,
+    overflow: 'hidden',
+    backgroundColor:'#fff',
+    width:width
   },
   devide:{
     height:2
   },
   profileImage: {
-    width: width*0.95 ,
-    height: height*0.6,
+    width: width,
+    height: height/2,
+    resizeMode:'contain',
+    marginTop:10
   },
   profileContainer: {
-    marginLeft:10,
-    width: width-20,
-    height: height*0.5,
-    resizeMode:'contain'
+    width: width,
+    height: height/2,
   },
   options: {
     position: 'relative',
@@ -394,7 +455,8 @@ const styles = StyleSheet.create({
   itemImage1: {
     width: 100,
     height: 120,
-    resizeMode:'contain'
+    resizeMode:'contain',
+
   },
   cartposition:{
     position:"absolute", 
@@ -453,5 +515,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize:20,
     color:'#a2459a'
-  }
+  },
+
 });
