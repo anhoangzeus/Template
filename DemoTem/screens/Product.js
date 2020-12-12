@@ -21,6 +21,7 @@ import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
 import NumberFormat from 'react-number-format';
 import { HeaderBackButton } from '@react-navigation/stack';
+import Swiper from 'react-native-swiper';
 
 const { width, height } = Dimensions.get('screen');
 const thumbMeasure = (width - 48 - 32) / 3;
@@ -48,6 +49,7 @@ export default class Product extends React.Component {
       PromotionPrice:"",
       MetaDescription:"",
       List_Productlienquan:[],
+      List_MoreImage:[],
       idsanpham:this.props.content,
       listcart:[],
       modalVisible:false,
@@ -148,9 +150,10 @@ getItemRespon=()=>{
       });
     });
   };
-  getData =()=>{
+getData =()=>{
+    var ImageItems=[];
     this.itemRef.ref('/Products/').child(this.state.idsanpham)
-    .on('value', snapshot => {
+    .on('value',snapshot => {
       this.setState({
         Decription:snapshot.val().Description,
         Image:snapshot.val().Image,
@@ -160,8 +163,20 @@ getItemRespon=()=>{
         MetaDescription:snapshot.val().MetaDescription,
         PromotionPrice:snapshot.val().PromotionPrice,
       });
+      ImageItems.push(snapshot.val().Image);
     });
-  };
+    this.itemRef.ref('/Products/').child(this.state.idsanpham).child('MoreImages')
+    .once('value').then((snapshot)=>{
+      snapshot.forEach((child)=>{
+        ImageItems.push(
+          child.val().Image
+        )
+      })
+    })
+    this.setState({
+      List_MoreImage:ImageItems
+    })
+};
   GetCartData = ()=>{
     if(fbApp.auth().currentUser){
       this.itemRef.ref('Cart/'+fbApp.auth().currentUser.uid).once('value').then((snapshot) => {
@@ -235,6 +250,7 @@ getItemRespon=()=>{
   };
 
   render() {
+    console.log(this.state.List_MoreImage);
     const { navigation } = this.props;
     const { modalVisible ,PromotionPrice,Price,List_Productlienquan} = this.state;
     const HEADER_MAX_HEIGHT = height/10;
@@ -272,28 +288,37 @@ getItemRespon=()=>{
             [{nativeEvent: {contentOffset: {y: this.state.scrollY}}}]
          )}
         >
-         <View backgroundColor="white">
-              <Image source={{uri : this.state.Image}}
-                      style={styles.profileContainer}
-                      imageStyle={styles.profileImage}/>
+            <Swiper 
+              loop={true}
+              showsPagination={true}
+              index={0}
+              width= {width}
+              height= {height/2}
+            >
+              {this.state.List_MoreImage.map((item)=>
+                    <View backgroundColor="white"  style={styles.profileContainer}>
+                    <Image source={{uri : item}} 
+                            style={styles.profileImage}/>
+                      </View>
+              )}
+            </Swiper>
+         <View style={styles.headerFont} >
+            <TouchableOpacity style={{width:50,backgroundColor:'#a2459a', borderRadius:25,alignItems:'center',marginLeft:5,justifyContent:'center',marginTop:10}} onPress={()=> navigation.goBack()}> 
+              <FontAwesome name="chevron-left" size={25} color="white"/>
+            </TouchableOpacity>
+            <TouchableOpacity style={{width:50,backgroundColor:'#a2459a', borderRadius:25,marginLeft:width*0.45,alignItems:'center',justifyContent:'center',marginTop:10}} onPress={()=> navigation.navigate("Setting")}> 
+              <FontAwesome name="search" size={25} color="white"/>
+            </TouchableOpacity>
+            <TouchableOpacity style={{width:50,backgroundColor:'#a2459a', borderRadius:25,marginLeft:width*0.01,alignItems:'center',justifyContent:'center',marginTop:10}} onPress={() => navigation.navigate("App")}>
+              <FontAwesome name="home" size={30} color="white" />
+            </TouchableOpacity>
+          <View>
+            <TouchableOpacity style={{width:50,backgroundColor:'#a2459a', borderRadius:25,marginLeft:width*0.01,alignItems:'center',justifyContent:'center',marginTop:10}} onPress={() => navigation.navigate("Cart")} >
+              <FontAwesome name="shopping-cart" size={30} color="white" />
+            </TouchableOpacity>  
+                {this.renderNofiCart()}    
                 </View>
-                <View style={styles.headerFont} >
-          <TouchableOpacity style={{width:50,backgroundColor:'#a2459a', borderRadius:25,alignItems:'center',marginLeft:5,justifyContent:'center',marginTop:10}} onPress={()=> navigation.goBack()}> 
-            <FontAwesome name="chevron-left" size={25} color="white"/>
-          </TouchableOpacity>
-          <TouchableOpacity style={{width:50,backgroundColor:'#a2459a', borderRadius:25,marginLeft:width*0.45,alignItems:'center',justifyContent:'center',marginTop:10}} onPress={()=> navigation.navigate("Setting")}> 
-            <FontAwesome name="search" size={25} color="white"/>
-          </TouchableOpacity>
-          <TouchableOpacity style={{width:50,backgroundColor:'#a2459a', borderRadius:25,marginLeft:width*0.01,alignItems:'center',justifyContent:'center',marginTop:10}} onPress={() => navigation.navigate("App")}>
-            <FontAwesome name="home" size={30} color="white" />
-          </TouchableOpacity>
-        <View>
-          <TouchableOpacity style={{width:50,backgroundColor:'#a2459a', borderRadius:25,marginLeft:width*0.01,alignItems:'center',justifyContent:'center',marginTop:10}} onPress={() => navigation.navigate("Cart")} >
-            <FontAwesome name="shopping-cart" size={30} color="white" />
-          </TouchableOpacity>  
-               {this.renderNofiCart()}    
-               </View>
-              </View>
+                </View>
           <View  style={styles.options}>
           <View>
               <View >
@@ -329,7 +354,6 @@ getItemRespon=()=>{
                   animationType="fade"
                   transparent={true}
                   visible={modalVisible}
-                
                   onRequestClose={() => {
                     Alert.alert("Modal has been closed.");
                   }}
@@ -422,7 +446,6 @@ const styles = StyleSheet.create({
     width: width,
     height: height/2,
     resizeMode:'contain',
-    marginTop:10
   },
   profileContainer: {
     width: width,
