@@ -1,44 +1,45 @@
 import * as React from 'react';
-import { StyleSheet, Text, ScrollView, KeyboardAvoidingView, NativeModules, NativeEventEmitter } from 'react-native';
+import { StyleSheet, Text, ScrollView, KeyboardAvoidingView, NativeModules,Dimensions, NativeEventEmitter,Image} from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { Button } from 'react-native-elements';
 import CryptoJS from 'crypto-js';
+import NumberFormat from 'react-number-format';
+import { View } from 'react-native';
 
-
+const { height, width } = Dimensions.get('screen');
 const { PayZaloBridge } = NativeModules;
-
-
 const payZaloBridgeEmitter = new NativeEventEmitter(PayZaloBridge);
+let apptransid;
 
 const subscription = payZaloBridgeEmitter.addListener(
     'EventPayZalo',
     (data) => {
-      console.log("kết quả giao dịch");
-        if(data.returnCode == 1){
-          alert('Pay success!');
-        }else{
-          alert('Pay errror! ' + data.returnCode);
-        }
+      console.log("kết quả giao dịch:"+ data);
     }
 );
 
+function ReactNativeNumberFormat({ value }) {
+  return (
+    <NumberFormat
+      value={value}
+      displayType={'text'}
+      thousandSeparator={true}
+      renderText={formattedValue => <Text>{formattedValue} đ</Text>} 
+    />
+  );
+}
 
 export default function App({route,navigation}) {
   const [money,setMoney] = React.useState('10000')
   const [token,setToken] = React.useState('')
   const [returncode,setReturnCode] = React.useState('')
-  
-
   function getCurrentDateYYMMDD() {
     var todayDate = new Date().toISOString().slice(2,10);
     return todayDate.split('-').join('');
   }
-
-  
-
-  async function createOrder(money) {
-    let apptransid = getCurrentDateYYMMDD()+ '_'+new Date().getTime()
-  
+  async function createOrder() {
+    apptransid = getCurrentDateYYMMDD()+ '_'+new Date().getTime()
+    console.log("App transit khoi tao: "+apptransid);
     let appid = 553
     let amount = route.params.amount;
     let appuser = "TiAn"
@@ -63,9 +64,6 @@ export default function App({route,navigation}) {
       'description': description,
       'mac': mac
     }
-  
-    console.log(order)
-  
     let formBody = []
     for (let i in order) {
       var encodedKey = encodeURIComponent(i);
@@ -73,6 +71,7 @@ export default function App({route,navigation}) {
       formBody.push(encodedKey + "=" + encodedValue);
     }
     formBody = formBody.join("&");
+    console.log(formBody);
     await fetch('https://sandbox.zalopay.com.vn/v001/tpe/createorder', {
       method: 'POST',
       headers: {
@@ -84,6 +83,43 @@ export default function App({route,navigation}) {
       setToken(resJson.zptranstoken)
       setReturnCode(resJson.returncode)
       payOrder()
+      
+    })
+    .catch((error)=>{
+      console.log("error ", error)
+    })
+  }
+
+  async function getStatus(){
+    var payZP = NativeModules.PayZaloBridge;
+    // console.log("kết quả sub: "+ subscription.listener());
+    let appid = 553;
+    let hmacinput =  appid+"|"+apptransid+"|9phuAOYhan4urywHTh0ndEXiV3pKHr5Q"
+    let mac = CryptoJS.HmacSHA256(hmacinput, "9phuAOYhan4urywHTh0ndEXiV3pKHr5Q")
+    console.log("mac: "+mac);
+    var order = {
+      'appid':appid,
+      'apptransid': apptransid,
+      'mac': mac
+    }
+    let formBody = [];
+    for (let i in order) {
+      var encodedKey = encodeURIComponent(i);
+      var encodedValue = encodeURIComponent(order[i]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+    // console.log(formBody);
+    await fetch('https://sandbox.zalopay.com.vn/v001/tpe/getstatusbyapptransid', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      params: formBody
+    }).then(response => response.json())
+    .then(resJson => {  
+      console.log("giá trị đơn hàng: "+resJson.amount);
+      console.log("trạng thái đơn hàng trả về: "+resJson.returnmessage);
     })
     .catch((error)=>{
       console.log("error ", error)
@@ -93,40 +129,31 @@ export default function App({route,navigation}) {
   function payOrder() {
     var payZP = NativeModules.PayZaloBridge;
     payZP.payOrder(token);
-   
-    console.log( Object.keys(subscription));
-    console.log("subscrip: "+subscription.subscriber);
-    console.log("emit: "+subscription.emitter);
-    console.log("listen: "+subscription.listener);
-    console.log("context: "+subscription.context);
-    console.log("event: "+subscription.eventType);
-    console.log("key: "+subscription.key);
   }
 
   return (
     <ScrollView>
       <KeyboardAvoidingView style={styles.container}>
+      <Image source={require("../../assets/zalopay.png")} style={{width:width/3,height:height/7, resizeMode:'contain', marginTop:height/5}}/>
         <Text style={styles.welcomeHead} >
-          Xác nhận thanh toán
+          Thanh toán qua ZaloPay
         </Text>
         <Text style={styles.welcome} >
-          Amount: {route.params.amount}
+          Tổng hóa đơn: <ReactNativeNumberFormat value={route.params.amount} />
         </Text>
         <Button
-          title="Create order"
+          title="Mở ZaloPay để thanh toán"
           type="outline"
-          onPress={() => {createOrder(route.params.amount)}}
+          style={{width:width*0.9, height:height/10}}
+          onPress={() => {createOrder()}}
         />
-        <Text style={styles.welcome}>ZpTranstoken: {token}</Text>
-        <Text style={styles.welcome}>returncode: {returncode}</Text>
-        { returncode == 1 ?
-          <Button
-            title="Pay order"
-            type="outline"
-            onPress={()=>{payOrder()}}
-          /> : null
-        }
       </KeyboardAvoidingView>
+      <View>
+        <Button title="Về lại trang chủ" 
+        type="outline"
+        style={{width:width*0.9, height:height/10}}
+          onPress={() => {getStatus()}}/>
+      </View>
     </ScrollView>
   );
 }
@@ -136,19 +163,21 @@ const styles = StyleSheet.create({
     flex: 6,
     justifyContent: 'center',
     alignItems: 'center',
-    textAlign: 'center'
+    textAlign: 'center',
+    backgroundColor:"#fff",
   },
   welcomeHead: {
     fontSize: 20,
     textAlign: 'center',
     marginTop: 50,
-    
+    backgroundColor:"#fff",
   },
   welcome: {
     fontSize: 20,
     textAlign: 'center',
     margin: 20,
-    
+    marginTop:height/4,
+    color:"#484848"
   },
   instructions: {
     textAlign: 'center',
@@ -161,3 +190,4 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
 });
+
