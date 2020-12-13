@@ -1,5 +1,5 @@
 import React, {useState, useEffect, Component} from 'react';
-import {StyleSheet, View, Text, StatusBar, ScrollView,FlatList,Alert,ActivityIndicator} from 'react-native';
+import {StyleSheet, View, Text, StatusBar, ScrollView,FlatList,Alert,ActivityIndicator,Modal,Dimensions,TouchableOpacity} from 'react-native';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -9,15 +9,18 @@ import LinearGradient from 'react-native-linear-gradient';
 import Header from '../components/HeaderComponent';
 import {fbApp} from "../firebaseconfig";
 import "firebase/auth";
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
+const { height, width } = Dimensions.get('screen');
 export default class AddressScreen extends Component {
     constructor(props) {
         super(props);
         this.state = { 
          listAddress:[],
          status:false,
-         loading:true
+         loading:true,
+         modalVisible:false,
+         _idCanXoa:'',
+         isMain:false
         }; 
       }
     RenderList = ({NumberAddress,Xa, City, Huyen,ShipName,ShipMoblie,id,Main}) =>(
@@ -41,7 +44,9 @@ export default class AddressScreen extends Component {
                       name='delete' 
                       color="red" 
                       size={25}
-                      onPress={()=> {this.DeleteAddress(id,Main)}}
+                      onPress={()=> {this.setModalVisible(true),this.setState({
+                        _idCanXoa: id, 
+                        isMain: Main})}}
                     />
                   }           
               </View>             
@@ -49,32 +54,23 @@ export default class AddressScreen extends Component {
           </View >
       </View>
     );
-    
     componentDidMount(){
-       this.ListenForListAddress();
-    }   
-    DeleteAddress=(id,Main)=>{
-      Alert.alert(
-        'Bạn có chắc chắc muốn xoá',
-        '',
-        [
-          { text: 'OK', onPress: () => {
-            if(Main == false){
-              fbApp.database().ref('ListAddress').child(fbApp.auth().currentUser.uid).child(id).remove();
-            }
-            this.ListenForListAddress();
-          }}
-          ,{},
-          {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel'
-          }
-        
-        ],
-        { cancelable: false }
-      );
-   
+      this.ListenForListAddress();
+   }   
+   setModalVisible = (visible) => {
+    this.setState({ modalVisible: visible });
+  };
+    handleClose = () => {
+      this.setState({
+        modalVisible: false 
+      });
+    };
+    _deleteAddress=()=>{
+      if(this.state.isMain == false){
+        fbApp.database().ref('ListAddress').child(fbApp.auth().currentUser.uid).child(this.state._idCanXoa).remove();
+      }
+      this.handleClose();
+      this.ListenForListAddress();
     }
     ListenForListAddress = () =>{           
         fbApp.database().ref('ListAddress').child(fbApp.auth().currentUser.uid)
@@ -137,7 +133,6 @@ export default class AddressScreen extends Component {
     renderNull = () =>{
       return(
         <View style={{flex:1, justifyContent:'center', alignItems:"center", backgroundColor:'white'}}>
-        {/* <Image source={noOder} style={{width:50, height:50, }}/> */}
         <Text style={{fontSize:20, color:"#1ba8ff"}}>Thêm địa chỉ nhận hàng ngay nào!</Text>
         <TouchableOpacity 
                       onPress={()=> {this.props.navigation.navigate('DetailAddressScreen', {id: ""})}}
@@ -150,6 +145,7 @@ export default class AddressScreen extends Component {
       )
     }
     render(){
+        const {modalVisible} = this.state;
         if (this.state.loading) {
           return (
             <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
@@ -197,7 +193,7 @@ export default class AddressScreen extends Component {
                   <TouchableOpacity 
                       onPress={()=> {this.props.navigation.navigate('DetailAddressScreen', {id: ""})}}
                       style={styles.userContainer}>
-                        <View style={{}}>      
+                        <View>      
                             <View style={{flexDirection:'row'}}>
                             <Ionicons name='add-circle-outline' color='green' size={28}/>
                             <Text style={styles.titletext}>Thêm địa chỉ mới</Text>            
@@ -206,7 +202,35 @@ export default class AddressScreen extends Component {
                   </TouchableOpacity>
                  
               </View>                           
-               }                             
+               }         
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={modalVisible}     
+                    onRequestClose={() => {
+                      Alert.alert("Modal has been closed.");
+                    }}
+                  >
+                    <View style={styles.centeredView}>
+                      <View style={{...styles.modalView, padding: width/15,}}>
+                        <Text style={styles.modalText}>Bạn có chắc bỏ xoá địa chỉ này?</Text>
+                        <View style={{flexDirection:'row'}}>
+                        <TouchableOpacity
+                          style={{ ...styles.openButton, backgroundColor: "#2196F3", width:width/2.5 }}
+                          onPress={() => {this.handleClose()}}
+                        >
+                          <Text style={styles.textStyle}>Giữ lại</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={{ ...styles.openButton, backgroundColor: "#2196F3",width:width/2.5,marginLeft:5}}
+                          onPress={() => {this._deleteAddress()}}
+                        >
+                          <Text style={styles.textStyle}>Xác nhận</Text>
+                        </TouchableOpacity>
+                        </View>                  
+                      </View>
+                    </View>
+              </Modal>                      
             </View>
         );
     }
@@ -273,6 +297,47 @@ const styles = StyleSheet.create({
         backgroundColor:'green',
         width:250,
         borderRadius:5
-
+      },
+      centeredView: {
+        justifyContent: "center",
+        alignItems: "center",
+        flex:1,
+      },
+      modalView: {
+        margin: 20,
+        backgroundColor: "#fff",
+        borderRadius: 20,
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+        justifyContent:'center'
+      },
+      openButton: {
+        backgroundColor: "#F194FF",
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2,
+  
+      },
+      modalText: {
+        marginBottom: 15,
+        fontSize:20,
+        color:'#2196F3'
+      },
+      textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+      },
+      modalText1: {
+        marginBottom: 15,
+        textAlign: "center",
+        fontSize:20,
+        color:'#a2459a'
       }
   });
