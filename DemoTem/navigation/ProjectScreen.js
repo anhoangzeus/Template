@@ -1,16 +1,12 @@
-import React from 'react';
-import { Easing, Animated, Dimensions, View , StyleSheet, Image, } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Animated, Dimensions, View, StyleSheet, Image, StatusBar, TouchableOpacity, Text } from 'react-native';
 import { createStackNavigator, HeaderBackButton } from "@react-navigation/stack";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
-import { Block, Text, theme } from "galio-framework";
-
-import ComponentsScreen from '../screens/Components';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import HomeScreen from '../screens/Home';
 import ItemsScreen from '../screens/Items';
-import ItemsCart from '../screens/ItemsCart';
 import ProScreen from '../screens/Pro';
 import SettingsScreen from '../screens/Settings';
 import ProductScreen from '../screens/Product';
@@ -25,95 +21,149 @@ import Order_DaHuy from '../screens/Order_DaHuy';
 import Order_LayHangScreen from '../screens/Order_LayHangScreen';
 import AddressScreen from '../screens/AddressScreen';
 import Route_OrderDetail from '../screens/Detail_Order';
-import PaymentScreen from '../screens/Payment';
+import ItemsCart from '../screens/ItemsCart';
 import Route_AddressDetail from '../screens/DetailAddressScreen';
 import Cart from '../screens/Cart';
-import ZaloPay from '../screens/ZaloPay/ZaloPay'
-
-import CustomDrawerContent from './Menu';
-import { Icon, Header } from '../components';
-import { Images, materialTheme } from "../constants/";
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import ZaloPay from '../screens/ZaloPay/ZaloPay';
+import Rating from '../screens/Rating';
+import RatingDone from '../screens/RatingDone';
 import Profile_User from '../screens/Profile_User';
 import ProfileScreen from '../screens/Profile';
 import NotificationScreen from '../screens/NotificationScreen ';
-import { color } from 'react-native-reanimated';
+import PaymentScreen from '../screens/Payment';
+import Contents from '../screens/Contents/Contents';
+import RatingView from '../screens/RatingView';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import database from '@react-native-firebase/database';
+import auth from '@react-native-firebase/auth';
+
+
+
+
 
 const { width } = Dimensions.get("screen");
-
-
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+const TopTab = createMaterialTopTabNavigator();
 const TopStackOrder = createMaterialTopTabNavigator();
 const StackProfile = createStackNavigator();
 
-export function TopOrder(props){
-  return(
+
+
+export function TopOrder(props) {
+  return (
     <View style={styles.containner}>
       <View style={styles.headconteiner}>
-        <TouchableOpacity style={{width:60, borderRadius:10}} onPress={() =>props.navigation.navigate("App")}>
-        <Ionicons name="arrow-back-outline" color={'white'}  size={30} />
-        </TouchableOpacity> 
-      <Text style={styles.texthead}>ĐƠN HÀNG CỦA TÔI</Text>
-      <Ionicons name="arrow-undo" color={'#a2459a'} size={26} />
+        <TouchableOpacity style={{ width: 60, borderRadius: 10 }} onPress={() => props.navigation.navigate("App")}>
+          <FontAwesome name="angle-left" size={30} color="#fff" style={{ marginLeft: width / 40 }} />
+        </TouchableOpacity>
+        <Text style={styles.texthead}>ĐƠN HÀNG CỦA TÔI</Text>
       </View>
-          <TopStackOrder.Navigator
-          tabBarOptions={{
+      <TopStackOrder.Navigator
+        tabBarOptions={{
           activeTintColor: '#a2459a',
           scrollEnabled: true,
-        }}      
+        }}
       >
-      <Tab.Screen name="OrderXuli" component={OrderXuli}
-       options={{
-        title :"Chờ xác nhận",
-      }}/>
-           <Tab.Screen name="Order_LayHangScreen" component={Order_LayHangScreen}
-       options={{
-        title :"Chờ lấy hàng",
-      }}/>
-      <Tab.Screen name="Order_DangVanChuyen" component={Order_DangVanChuyen}
-       options={{
-        title :"Đang vận chuyển",
-      }}/>
-      <Tab.Screen name="Order_DaGiao" component={Order_DaGiao}
-       options={{
-        title :"Đã giao",
-      }}/>
-      <Tab.Screen name="Order_DaHuy" component={Order_DaHuy}
-       options={{
-        title :"Đã huỷ",
-      }}/>
-     <Tab.Screen name="Order_Payment" component={Order_Payment}
-       options={{
-        title :"Trả hàng",
-      }}/>
+        <Tab.Screen name="OrderXuli" component={OrderXuli}
+          options={{
+            title: "Chờ xác nhận",
+          }} />
+        <Tab.Screen name="Order_LayHangScreen" component={Order_LayHangScreen}
+          options={{
+            title: "Chờ lấy hàng",
+          }} />
+        <Tab.Screen name="Order_DangVanChuyen" component={Order_DangVanChuyen}
+          options={{
+            title: "Đang vận chuyển",
+          }} />
+        <Tab.Screen name="Order_DaGiao" component={Order_DaGiao}
+          options={{
+            title: "Đã giao",
+          }} />
+        <Tab.Screen name="Order_DaHuy" component={Order_DaHuy}
+          options={{
+            title: "Đã huỷ",
+          }} />
+        <Tab.Screen name="Order_Payment" component={Order_Payment}
+          options={{
+            title: "Trả hàng",
+          }} />
       </TopStackOrder.Navigator>
-      </View>
+    </View>
   );
 }
 
+export function TopTabScreen(props) {
+  return (
+    <View style={styles.screenContainer}>
+      <StatusBar backgroundColor='#a2459a' barStyle="light-content" />
+      <View style={styles.headerContainer}>
+        <TouchableOpacity style={styles.cartContainer} onPress={() => { props.navigation.navigate("App") }}>
+          <FontAwesome name="angle-left" size={30} color="#fff" style={{ marginLeft: width / 40 }} />
+        </TouchableOpacity>
+        <Text style={styles.headerText}>Đánh giá sản phẩm</Text>
+      </View>
+      <TopTab.Navigator
+        tabBarOptions={{
+          activeTintColor: '#a2459a',
+        }}
+      >
+        <TopTab.Screen name="Rating" component={Rating} options={{
+          title: 'Chưa đánh giá',
+        }}
+        />
+        <TopTab.Screen name="RatingDone" component={RatingDone} options={{
+          title: "Đã đánh giá",
+        }} />
+      </TopTab.Navigator>
+    </View>
 
+  )
+}
 export function AppStack(props) {
+  useEffect(() => {
+      GetAnouns();
+  }, []);
+  const GetAnouns = () => {
+    var uid = "";
+
+    if (auth().currentUser) {
+      uid = auth().currentUser.uid;
+    }
+    database().ref('Announces').on('value',snapshot => {
+      var temp = 0;
+      snapshot.forEach((child)=>{
+        if(child.child('Users').hasChild(uid)==false)
+        {
+            temp++;
+        }
+      })
+      if(temp!=0){
+        setisShow(false);
+      }else {
+        setisShow(true);
+      }
+    });
+  }
+  const [isShow, setisShow] = useState(true);
   return (
     <Tab.Navigator
       style={{ flex: 1 }}
-      initialRouteName="Home"
+      initialRouteName="Trang chủ"
       tabBarOptions={{
         activeTintColor: '#a2459a',
-      }}      
+      }}
     >
       <Tab.Screen
         name="Trang chủ"
         component={HomeScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Icon
+            <AntDesign
               size={24}
               name="home"
-              family="ionicons"
-              color={focused ? "a2459a" : materialTheme.COLORS.MUTED}
-              family="antdesign"
-              color={focused ? "#a2459a" : materialTheme.COLORS.MUTED}
+              color={focused ? "#a2459a" : '#000'}
             />
           )
         }}
@@ -124,14 +174,10 @@ export function AppStack(props) {
         component={ProScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Icon
+            <AntDesign
               size={24}
               name="appstore1"
-              family="ionicons"
-              color={focused ? "a2459a" : materialTheme.COLORS.MUTED}
-              family="antdesign"
-              color={focused ? "#a2459a" : materialTheme.COLORS.MUTED}
-             
+              color={focused ? "#a2459a" : '#000'}
             />
           )
         }}
@@ -141,13 +187,10 @@ export function AppStack(props) {
         component={SettingsScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Icon
+            <FontAwesome
               size={24}
               name="search"
-              family="font-awesome"
-              color={focused ? "a2459a" : materialTheme.COLORS.MUTED}
-              color={focused ? "#a2459a" : materialTheme.COLORS.MUTED}
-              style={{ marginRight: -3 }}
+              color={focused ? "#a2459a" : '#000'}
             />
           )
         }}
@@ -158,14 +201,15 @@ export function AppStack(props) {
         component={NotificationScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Icon
-              size={24}
-              name="bells"
-              family="antdesign"
-              color={focused ? "a2459a" : materialTheme.COLORS.MUTED}
-              color={focused ? "#a2459a" : materialTheme.COLORS.MUTED}
-              style={{ marginRight: -3 }}
-            />
+            <View>
+              {isShow ? null : <View style={styles.redpoint} />}
+              <AntDesign
+                size={24}
+                name="bells"
+                color={focused ? "#a2459a" : '#000'}
+              />
+            </View>
+
           )
         }}
       />
@@ -174,19 +218,16 @@ export function AppStack(props) {
         component={Profile_User}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Icon
+            <AntDesign
               size={24}
               name="user"
-              family="antdesign"
-              color={focused ? "a2459a" : materialTheme.COLORS.MUTED}
-              color={focused ? "#a2459a" : materialTheme.COLORS.MUTED}
+              color={focused ? "#a2459a" : '#000'}
             />
           )
         }}
       />
 
-      
-      
+
     </Tab.Navigator>
   );
 }
@@ -197,52 +238,75 @@ export default function ProjectStack(props) {
       <Stack.Screen name="App" component={AppStack} />
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Pro" component={ProScreen} />
-      <Stack.Screen name="Profile_User" component={Profile_User}/>
-      <Stack.Screen name="TopOrder" component={TopOrder}/>
+      <Stack.Screen name="Profile_User" component={Profile_User} />
+      <Stack.Screen name="TopOrder" component={TopOrder} />
       <Stack.Screen name="Setting" component={SettingsScreen} />
-      <Stack.Screen name="Components" component={ComponentsScreen} />
-      <Stack.Screen name="Product" component={ProductScreen} 
-      options={{
-        headerBackTitleVisible:false,
-        headerTitle:false,
-        headerTransparent:true,
-
-        headerTintColor:'red',
-        
-     headerLeft: () => (
-         <Ionicons name="arrow-back-outline" size={25} backgroundColor="#d02860" />
-     )
-     }}/>
-      <Stack.Screen name="Items" component={ItemsScreen}/>
-      <Stack.Screen name="ItemsCart" component={ItemsCart}/>
-      <Stack.Screen name="Cart" component={Cart}/>
-      <Stack.Screen name='View_OrderDetail' component={Route_OrderDetail}/>
-      <Stack.Screen name='InfoUser' component={InfoUser}/>
-      <Stack.Screen name='Payment' component={PaymentScreen}/>
-      <Stack.Screen name="AddressScreen" component={AddressScreen}/>
-      <Stack.Screen name="DetailAddressScreen" component={Route_AddressDetail}/>
-      <Stack.Screen name="NotificationScreen" component={NotificationScreen}/>
-      <Stack.Screen name="ZaloPayScreen" component={ZaloPay}/>
+      <Stack.Screen name="Product" component={ProductScreen} />
+      <Stack.Screen name="Items" component={ItemsScreen} />
+      <Stack.Screen name="ItemsCart" component={ItemsCart} />
+      <Stack.Screen name="Cart" component={Cart} />
+      <Stack.Screen name='View_OrderDetail' component={Route_OrderDetail} />
+      <Stack.Screen name='InfoUser' component={InfoUser} />
+      <Stack.Screen name="TopTabScreen" component={TopTabScreen} />
+      <Stack.Screen name="AddressScreen" component={AddressScreen} />
+      <Stack.Screen name="DetailAddressScreen" component={Route_AddressDetail} />
+      <Stack.Screen name="NotificationScreen" component={NotificationScreen} />
+      <Stack.Screen name="ZaloPayScreen" component={ZaloPay} />
+      <Stack.Screen name='Payment' component={PaymentScreen} />
+      <Stack.Screen name="Contents" component={Contents} />
+      <Stack.Screen name="RatingView" component={RatingView} />
     </Stack.Navigator>
   );
 }
 const styles = StyleSheet.create({
-    containner: {
-      flex: 1,
-      backgroundColor:"#a2459a",
-    },
-    texthead:{
-      color:"white",
-      fontSize: 20,
-      fontWeight: 'bold',
-      marginBottom: 10,
-      textAlign: 'center',
-    },
-    headconteiner:{
-      flexDirection: 'row', 
-      justifyContent:'space-between', 
-      paddingHorizontal: 5, 
-      paddingTop: 15,
-      paddingBottom:5
-    }
-  });
+  containner: {
+    flex: 1,
+    backgroundColor: "#a2459a",
+  },
+  texthead: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    marginLeft: width / 20
+  },
+  headconteiner: {
+    flexDirection: 'row',
+    paddingHorizontal: 5,
+    paddingTop: 15,
+    paddingBottom: 5
+  },
+  screenContainer: {
+    flex: 1,
+  },
+  screenContainer: {
+    flex: 1,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    paddingTop: 15,
+    backgroundColor: '#a2459a',
+    paddingBottom: 12,
+
+  },
+  cartContainer: {
+    paddingHorizontal: 20,
+    width: 72,
+    borderRadius: 15
+  },
+  headerText: {
+    color: '#fff',
+    textAlignVertical: 'center',
+    fontSize: 20,
+    fontWeight: 'bold'
+  },
+  redpoint: {
+    width: 12,
+    height: 12,
+    borderRadius: 12,
+    backgroundColor: 'red',
+    position: "absolute",
+    marginLeft: width / 30
+  }
+
+});
