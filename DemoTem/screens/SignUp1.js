@@ -23,9 +23,6 @@ import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 
 const { height, width } = Dimensions.get("screen");
-
-
-
 const SignUp1 = (navigation) => {
 
     const [data, setData] = React.useState({
@@ -41,7 +38,6 @@ const SignUp1 = (navigation) => {
         check_textInputChange1: false,
         check_textInputChange3: false,
         secureTextEntry: true,
-        isValidUser: true,
         isValidPassword: true,
         modalVisible: false,
         modalVisibleWarning: false,
@@ -79,14 +75,12 @@ const SignUp1 = (navigation) => {
                 ...data,
                 username: val,
                 check_textInputChange1: true,
-                isValidUser: true
             });
         } else {
             setData({
                 ...data,
                 username: val,
                 check_textInputChange1: false,
-                isValidUser: false
             });
         }
     }
@@ -137,9 +131,20 @@ const SignUp1 = (navigation) => {
             modalVisibleWarning: false
         });
     };
+    let isEmailAddress = val => {
+        return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(val) || /w+([-+.]w+)*@w+([-.]w+)*.w+([-.]w+)*/.test(val);
+    }
     const registerHandle = () => {
-        if (data.username.length < 6 || data.password.length < 6 || data.fullname.length == 0) {
-            setModalVisibleWarning(true, "Quý khách chưa điền đầy đủ thông tin");
+        if(!isEmailAddress(data.username)){
+            setModalVisibleWarning(true, "Email sai định dạng");
+            return;
+        }
+        if(data.fullname.length <6){
+            setModalVisibleWarning(true, "Quý khách chưa nhập Họ tên");
+            return;
+        }
+        if (data.password.length < 6) {
+            setModalVisibleWarning(true, "Mật khẩu chưa đủ độ dài");
             return;
         }
         GetCurrentDate();
@@ -229,12 +234,6 @@ const SignUp1 = (navigation) => {
                             </Animatable.View>
                             : null}
                     </View>
-                    {data.isValidUser ? null :
-                        <Animatable.View animation="fadeInLeft" duration={500}>
-                            <Text style={styles.errorMsg}>Tài khoản ít nhất 6 kí tự</Text>
-                        </Animatable.View>
-                    }
-
                     <Text style={[styles.text_footer, {
                         marginTop: 10
                     }]}>Mật khẩu</Text>

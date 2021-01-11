@@ -26,7 +26,7 @@ class localNotificationService {
             // requestPermissions: true,
         });
     }
-    unregister = () => {
+    unregister = () => {       
         PushNotification.unregister();
     }
     showNotificaton = (id, title, messsage, data = {}, options = {}) => {

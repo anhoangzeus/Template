@@ -87,7 +87,7 @@ const App = () => {
     }
 
     function onOpenNotifiaton(notify){
-      console.log(notify);
+      console.log('open');
       return()=>{
         fcmService.unRegister();
         localNoti.unregister()

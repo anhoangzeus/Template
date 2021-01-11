@@ -171,11 +171,11 @@ const Login1 = ({ navigation }) => {
         const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
 
         if (result.isCancelled) {
-            setModalVisibleWarning(true, "User cancelled the login process");
+            setModalVisibleWarning(true, "Huỷ đăng nhập");
         }
         const data1 = await AccessToken.getCurrentAccessToken();
         if (!data1) {
-            setModalVisibleWarning(true, "Something went wrong obtaining access token");
+            setModalVisibleWarning(true, "Lỗi đăng nhập!!!");
         }
         const facebookCredential = auth.FacebookAuthProvider.credential(data1.accessToken);
         var CreateDate = GetCurrentDate();
@@ -200,6 +200,7 @@ const Login1 = ({ navigation }) => {
     useEffect(() => {
         GoogleSignin.configure({
             webClientId: '933734030914-3v0h6jlkrpqtm58llk0qgnqgsiee2vs5.apps.googleusercontent.com',
+            scopes: ["https://www.googleapis.com/auth/userinfo.email"],
             offlineAccess: true,
             forceCodeForRefreshToken: false
         });
@@ -210,6 +211,7 @@ const Login1 = ({ navigation }) => {
         var CreateDate = GetCurrentDate();
         auth().signInWithCredential(googleCredential)
             .then(() =>{
+                console.log(auth().currentUser);
                 database().ref('Users').child(auth().currentUser.uid).update({
                     Avatar: auth().currentUser.photoURL,
                     CMND: "",
