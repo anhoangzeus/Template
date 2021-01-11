@@ -362,9 +362,7 @@ export default class Cart extends Component {
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
-    backgroundColor: "silver"
   },
-
   headerContainer: {
     flexDirection: 'row',
     paddingTop: 20,

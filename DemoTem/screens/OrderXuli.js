@@ -27,15 +27,19 @@ export default class Order_Xuli extends Component {
       refreshing: false,
     };
   }
-  RenderList = ({ CreatedDate, ShipAddress, ShipName, ShipMoblie, ToTalPrice, id }) => (
+  RenderList = ({ CreatedDate, ShipAddress, ShipName, ShipMoblie, ToTalPrice, orderDetail,id }) => (
     <TouchableOpacity style={styles.listItem} onPress={() => { this.props.navigation.navigate('View_OrderDetail', { id: id }) }}>
       <View style={{ flex: 1, margin: 10 }}>
-        <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center', color: '#000' }}>{ShipName}</Text>
-        <View style={{ height: 1, backgroundColor: 'silver', marginTop: 5 }} />
-        <View style={{ flexDirection: 'row', marginTop: 10 }} >
-          <MaterialIcons name='phone-in-talk' size={20} color="#1e88e5" />
-          <Text style={{ marginLeft: 10, color: '#000' }}>{ShipMoblie}</Text>
-        </View>
+        <Text style={{color:'#a2459a'}}>Mã đơn hàng: {id}</Text>
+         {orderDetail.map((data)=>{
+           return(
+             <View>
+                <Text>{data.Name}</Text>
+                <Image source={{uri:data.Picture}} style={{width:50,height:50,resizeMode:'contain'}}/>
+                <Text><ReactNativeNumberFormat value={data.Price}/>  x {data.Quantity}</Text>
+             </View>
+           )
+         })}
         <View style={{ flexDirection: 'row' }} >
           <MaterialIcons name='event-available' size={20} color="#1e88e5" />
           <Text style={{ marginLeft: 10, color: '#000' }}>{CreatedDate}</Text>
@@ -62,6 +66,15 @@ export default class Order_Xuli extends Component {
       snapshot.forEach(function (childSnapshot) {
         if (childSnapshot.val().CustomerID == auth().currentUser.uid) {
           if (childSnapshot.val().Status == "1") {
+            var orderDetail=[];
+            childSnapshot.child('OrderDetails').forEach((child)=>{
+              orderDetail.push({
+                Name:child.val().Name,
+                Picture:child.val().Picture,
+                Quantity:child.val().Quantity,
+                Price:child.val().Price,
+              })
+            })
             items.push({
               CreatedDate : childSnapshot.val().CreatedDate,
               ShipAddress : childSnapshot.val().ShipAddress,
@@ -69,7 +82,9 @@ export default class Order_Xuli extends Component {
               ShipMoblie : childSnapshot.val().ShipMoblie,
               id : childSnapshot.val().OrderID,
               ToTalPrice : childSnapshot.val().Total,
+              orderDetail:orderDetail,
             })
+            
           }
         }
       });
@@ -116,6 +131,7 @@ export default class Order_Xuli extends Component {
             ShipName={item.ShipName}
             ShipMoblie={item.ShipMoblie}
             ToTalPrice={item.ToTalPrice}
+            orderDetail={item.orderDetail}
             id={item.id}
             key={item.id}
           />

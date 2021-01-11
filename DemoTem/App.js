@@ -34,6 +34,32 @@ const App = () => {
     }, 2500)
   }, []);
 
+  useEffect(()=>{
+    if(auth().currentUser){
+      const options ={
+        soundName: 'default',
+        playSound: true
+      }
+      database().ref('Orders').on('child_changed',snapshot =>{
+        if(snapshot.val().CustomerID==auth().currentUser.uid){
+          var notify={
+            title:"Cập nhật trạng thái đơn hàng",
+            body:"Đơn hàng " +snapshot.val().OrderID+" đã cập nhật trạng thái",
+            id:snapshot.val().OrderID
+          }
+          localNoti.showNotificaton(
+            0,
+            notify.title,
+            notify.body,
+            notify,
+            options
+          )
+        }    
+      })
+    }
+   
+  })
+
   useEffect(() => {
     fcmService.registerAppWithFCM()
     fcmService.register(onRegister, onNotification , onOpenNotifiaton)

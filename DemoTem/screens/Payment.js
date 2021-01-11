@@ -43,6 +43,7 @@ export default class Payscreen extends React.PureComponent {
       shopLa: 10.851807522842384,
       shopLo: 106.77209920171669,
       shipMonney: 0,
+      modalVisibleConfirm:false,
     };
   }
   getShipMoney = () => {
@@ -94,6 +95,16 @@ export default class Payscreen extends React.PureComponent {
     }
     return date + '/' + month + "/" + year + " " + gio + ":" + phut + ":" + giay +" " + UTM ;
   }
+  setModalVisibleConfirm = (visible) => {
+    if (auth().currentUser) {
+      this.setState({ modalVisibleConfirm: visible });
+    }
+  };
+  handleCloseConfirm = () => {
+    this.setState({
+      modalVisibleConfirm: false
+    });
+  };
   setModalVisible = (visible) => {
     if (auth().currentUser) {
       this.setState({ modalVisible: visible }, () => { setTimeout(this.handleClose, 10000) });
@@ -155,12 +166,14 @@ export default class Payscreen extends React.PureComponent {
       this.setModalVisible(true);
     }
     else {
+      this.handleCloseConfirm();
       this.props.navigation.navigate("ZaloPayScreen", { amount: this.props.amount,shipMonney:this.state.shipMonney, listItem: this.props.CartItem, Address: this.props.address });
     }
   }
   render() {
     const { navigation } = this.props;
-    const { modalVisible ,shipMonney} = this.state;
+    const { modalVisible ,shipMonney,modalVisibleConfirm} = this.state;
+    const listItem = this.props.CartItem;
     if (this.state.loading) {
       return (
         <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
@@ -201,7 +214,7 @@ export default class Payscreen extends React.PureComponent {
                 color="#3399ff"
                 status={this.state.checked === 'first' ? 'checked' : 'unchecked'}
                 onPress={() => { this.setState({ checked: 'first' }) }} />
-              <FontAwesome name="money" size={30} color='#000' />
+              <FontAwesome name="money" size={30} color='green' />
               <Text style={{ marginLeft: width / 40, fontSize: 16, color: '#000' }}>Thanh toán tiền mặt</Text>
             </View>
             <View style={styles.option}>
@@ -209,7 +222,7 @@ export default class Payscreen extends React.PureComponent {
                 color="#3399ff"
                 status={this.state.checked === 'second' ? 'checked' : 'unchecked'}
                 onPress={() => { this.setState({ checked: 'second' }) }} />
-              <FontAwesome name="credit-card" size={30} color='#000' />
+              <FontAwesome name="credit-card" size={30} color='orange' />
               <Text style={{ marginLeft: width / 40, fontSize: 16, color: '#000' }}>Thanh toán trực tuyến </Text>
             </View>
           </View>
@@ -229,7 +242,7 @@ export default class Payscreen extends React.PureComponent {
             <Text style={{ marginLeft: 10, fontSize: 20, color: '#000' }}>Thành tiền: </Text>
             <Text color="red" style={{ fontSize: 20, marginHorizontal: 10, color: '#000' }}><ReactNativeNumberFormat value={this.props.amount + shipMonney} /></Text>
           </View>
-          <TouchableOpacity style={styles.btnSubmit} onPress={() => { this.thanhToan() }}>
+          <TouchableOpacity style={styles.btnSubmit} onPress={() => { this.setModalVisibleConfirm(true) }}>
             <Text style={{ color: "white", fontSize: 20, alignSelf: 'center' }}>Xác Nhận</Text>
           </TouchableOpacity>
         </View>
@@ -254,6 +267,38 @@ export default class Payscreen extends React.PureComponent {
             </View>
           </View>
         </Modal>
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisibleConfirm}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={{ ...styles.modalView, padding: width / 15, }}>
+              <Text style={{...styles.address,color:'green'}}>Xác nhận đơn hàng</Text>
+              <Text style={styles.address}>Địa chỉ nhận hàng: {this.props.address.NumberAddress}, {this.props.address.Xa}, {this.props.address.Huyen}, {this.props.address.City}</Text>
+              <Text style={styles.address}>{this.state.checked == "first"? "Thanh toán khi nhận hàng" : "Thanh toán trực tuyến" }</Text>
+              <Text style={styles.address}>Phí vận chuyển:<ReactNativeNumberFormat value={shipMonney} /></Text>
+              <Text style={{...styles.address,marginBottom:20}}>Tổng tiền:<ReactNativeNumberFormat value={this.props.amount} /></Text>
+              <View style={{ flexDirection: 'row' }}>    
+                <TouchableOpacity
+                  style={{ ...styles.openButton, backgroundColor: "#2196F3", width: width / 2.5, }}
+                  onPress={() => {this.thanhToan()}}
+                >
+                  <Text style={styles.textStyle}>Xác nhận</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{ ...styles.openButton, backgroundColor: "#2196F3", width: width / 2.5, marginLeft: 5, }}
+                  onPress={() => {this.handleCloseConfirm()}}
+                >
+                  <Text style={styles.textStyle}>Trở về</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </View>
     );
   };
@@ -261,7 +306,6 @@ export default class Payscreen extends React.PureComponent {
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
-    backgroundColor: "silver"
   },
   headerContainer: {
     flexDirection: 'row',

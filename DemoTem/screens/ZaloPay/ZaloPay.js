@@ -50,11 +50,12 @@ export default function App({ route, navigation }) {
   const subscription = payZaloBridgeEmitter.addListener(
     'EventPayZalo',
     (data) => {
+      console.log(data.returnCode);
       if (data.returnCode == 1) {
         thanhToan();
         data.returnCode = 0;
       } else if (data.returnCode == 4) {
-        alert('Số dư trong tài khoản không đủ');
+        navigation.navigate("App");
       }
     }
   );
@@ -119,6 +120,7 @@ export default function App({ route, navigation }) {
 
   function getStatus() {
     navigation.navigate("App");
+    setmodal(false);
   }
   function thanhToan() {
     var key = database().ref().child('Orders/').push().key;
@@ -185,12 +187,9 @@ export default function App({ route, navigation }) {
         <Text style={styles.welcome} >
           Tổng hóa đơn: <ReactNativeNumberFormat value={route.params.amount+ route.params.shipMonney} />
         </Text>
-        <Button
-          title="Mở ZaloPay để thanh toán"
-          type="outline"
-          style={{ width: width * 0.9, height: height / 10 }}
-          onPress={() => { createOrder() }}
-        />
+        <TouchableOpacity style={styles.btnPayment}  onPress={() => { createOrder() }}>
+          <Text style={{color:"#3399FF", fontWeight:"bold", fontSize:17}}>Mở ZaloPay để thanh toán</Text>
+        </TouchableOpacity>
         <View>
           <Button title="Về lại trang chủ"
             type="outline"
@@ -288,5 +287,15 @@ const styles = StyleSheet.create({
     elevation: 5,
     justifyContent: 'center'
   },
+  btnPayment:{
+    width: width * 0.7, 
+    height: height / 18,
+    borderColor:'#3399FF', 
+    borderWidth:1,
+    justifyContent:'center',
+    alignItems:'center',
+    borderRadius:15,
+    marginBottom:15
+  }
 });
 

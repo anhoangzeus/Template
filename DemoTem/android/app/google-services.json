@@ -52,11 +52,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "933734030914-1oskpqaldqe2n69sp0ht9tku1kiuqjd6.apps.googleusercontent.com",
+          "client_id": "933734030914-5eu45j4onoaibtlh697cog9a9rtap3il.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.demotem",
-            "certificate_hash": "a6cd1e65aa9993073938cfe37af3b717f3c7fb3a"
+            "certificate_hash": "cfd387430b58858622d9f5a281d0c7801bd0f707"
           }
         },
         {

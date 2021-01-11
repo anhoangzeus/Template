@@ -21,8 +21,8 @@ import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Swiper from 'react-native-swiper';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
+const noOder = require('../assets/logoAn-02.png');
 
-console.disableYellowBox = true;
 const { height, width } = Dimensions.get('screen');
 function ReactNativeNumberFormat({ value }) {
   return (
@@ -157,6 +157,11 @@ export default class Pro extends React.PureComponent {
         <Text style={{ textAlign: 'center', fontWeight: 'bold', color: colorText }}>{name}</Text>
       </TouchableOpacity>
     )
+  };
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.BrandID != prevState.BrandID || this.state.CatogoryID != prevState.CatogoryID) {
+      this.ListenForItemsSamsung();
+    }
   };
   componentDidMount() {
     this.ListenForItemsSamsung();
@@ -347,6 +352,16 @@ export default class Pro extends React.PureComponent {
       )
     }
   };
+  renderNull = () => {
+    return (
+      <TouchableOpacity style={styles.ContainerEmpty}
+        onPress={() => {this._onRefresh()}}
+      >
+        <Image source={noOder} style={{ width: 50, height: 50, }} />
+        <Text style={{ fontSize: 20, color: "#1ba8ff" }}>Không có sản phẩm</Text>
+      </TouchableOpacity>
+    )
+  }
   render() {
     const { navigation } = this.props;
     if (this.state.loading) {
@@ -360,7 +375,7 @@ export default class Pro extends React.PureComponent {
     }
     return (
       <View style={styles.screenContainer}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar barStyle="light-content" translucent={false}/>
         <View style={styles.headerContainer}>
           <TouchableOpacity onPress={() => navigation.navigate("Tìm kiếm")}>
             <View style={styles.inputContainer}>
@@ -448,6 +463,7 @@ export default class Pro extends React.PureComponent {
                       />
                     </TouchableOpacity>}
                   keyExtractor={item => item.id}
+                  ListEmptyComponent={this.renderNull}
                 />
               </View>
             </View>
@@ -505,7 +521,7 @@ const styles = StyleSheet.create({
   itemContainer: {
     alignItems: 'center',
     width: width / 2,
-    height: height / 3.8,
+    height: height / 3.62,
     margin: -0.2,
     borderColor: '#a2459a',
     borderWidth: 1,
@@ -588,5 +604,10 @@ const styles = StyleSheet.create({
     marginLeft: width / 40,
     alignSelf: 'center'
   },
+  ContainerEmpty:{
+    height:height/3,
+    justifyContent:'center',
+    alignItems:'center'
+  }
 });
 
