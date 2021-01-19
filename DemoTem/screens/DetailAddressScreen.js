@@ -150,7 +150,8 @@ export const DetailAddressScreen = ({ content, navigation }) => {
       }
     }
     if (data.ShipName.length == 0 || data.ShipPhone.length == 0 || data.NumberAddress.length == 0
-      || data.City == "Chọn tỉnh/thành phố" || data.Huyen == "Chọn quận/huyện" || data.Xa == "Chọn xã/phường") {
+      || data.City == "Chọn tỉnh/thành phố" || data.Huyen == "Chọn quận/huyện" || data.Xa == "Chọn xã/phường"||
+      data.City =="" ||  data.Huyen =="" || data.Xa== "" ) {
       setModalVisibleWarning(true, 'Bạn chưa điền đầy đủ thông tin');
       return;
     }
