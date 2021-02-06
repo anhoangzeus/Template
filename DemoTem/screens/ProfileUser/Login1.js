@@ -18,7 +18,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import { useTheme } from 'react-native-paper';
-import { AuthContext } from '../components/context';
+import { AuthContext } from '../../components/context';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { LoginManager, AccessToken } from 'react-native-fbsdk';
 import { GoogleSignin } from "@react-native-community/google-signin";
@@ -372,7 +372,7 @@ const Login1 = ({ navigation }) => {
                         style={{ ...styles.signIn1, backgroundColor: '#ffffff', flexDirection: 'row',marginLeft:5,borderWidth:1,borderColor:'#000' }}
                         onPress={() => { loginGoogle() }}
                     >
-                        <Image source={require("../assets/google.png")} style={{width:30,height:30,resizeMode:'center'}}/>
+                        <Image source={require("../../assets/google.png")} style={{width:30,height:30,resizeMode:'center'}}/>
                         <Text style={[styles.textSign, { color: '#000000', marginLeft: 5 }]}>Google</Text>
                     </TouchableOpacity>
                 </View>

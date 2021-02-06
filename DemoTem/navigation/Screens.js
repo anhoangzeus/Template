@@ -3,19 +3,18 @@ import { Animated, Dimensions, View, StyleSheet, Image, StatusBar,Text } from 'r
 import { createStackNavigator, HeaderBackButton } from "@react-navigation/stack";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import HomeScreen from '../screens/Home';
-import ItemsScreen from '../screens/Items';
-import ProfileScreen from '../screens/Profile';
-import ProScreen from '../screens/Pro';
-import SettingsScreen from '../screens/Settings';
-import ProductScreen from '../screens/Product';
-import Login1 from '../screens/Login1';
-import Signup1 from '../screens/SignUp1';
-import Cart from '../screens/Cart';
-import PaymentScreen from '../screens/Payment';
-import NotificationScreen from '../screens/NotificationScreen ';
+import HomeScreen from '../screens/MainTabScreen/Home';
+import ItemsScreen from '../screens/MainTabScreen/Items';
+import ProfileScreen from '../screens/ProfileUser/Profile';
+import ProScreen from '../screens/MainTabScreen/Pro';
+import SettingsScreen from '../screens/MainTabScreen/Settings';
+import ProductScreen from '../screens/MainTabScreen/Product';
+import Login1 from '../screens/ProfileUser/Login1';
+import Signup1 from '../screens/ProfileUser/SignUp1';
+import Cart from '../screens/ZaloPay/Cart';
+import NotificationScreen from '../screens/MainTabScreen/NotificationScreen ';
 import Contents from '../screens/Contents/Contents';
-import RatingView from '../screens/RatingView';
+import RatingView from '../screens/Rating/RatingView';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -140,7 +139,6 @@ export default function OnboardingStack(props) {
       <Stack.Screen name="Setting" component={SettingsScreen} />
       <Stack.Screen name="NotificationItem" component={NotificationScreen} />
       <Stack.Screen name="Cart" component={Cart} />
-      <Stack.Screen name='Payment' component={PaymentScreen} />
       <Stack.Screen name="Product" component={ProductScreen} />
       <Stack.Screen name="Items" component={ItemsScreen} />
       <Stack.Screen name="Contents" component={Contents}/>

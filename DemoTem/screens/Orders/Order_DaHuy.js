@@ -16,7 +16,7 @@ function ReactNativeNumberFormat({ value }) {
     />
   );
 }
-const noOder = require('../assets/process3.jpg');
+const noOder = require('../../assets/process3.jpg');
 
 export default class Order_Xuli extends Component {
   constructor (props) {
@@ -65,7 +65,7 @@ export default class Order_Xuli extends Component {
       var items = [];
       snapshot.forEach(function (childSnapshot) {
         if (childSnapshot.val().CustomerID == auth().currentUser.uid) {
-          if (childSnapshot.val().Status == "1") {
+          if (childSnapshot.val().Status == "5") {
             var orderDetail=[];
             childSnapshot.child('OrderDetails').forEach((child)=>{
               orderDetail.push({

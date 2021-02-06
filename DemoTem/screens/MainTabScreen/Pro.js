@@ -21,7 +21,7 @@ import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Swiper from 'react-native-swiper';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
-const noOder = require('../assets/logoAn-02.png');
+const noOder = require('../../assets/logoAn-02.png');
 
 const { height, width } = Dimensions.get('screen');
 function ReactNativeNumberFormat({ value }) {
@@ -148,7 +148,7 @@ export default class Pro extends React.PureComponent {
             justifyContent: "center"
           }
           }
-            source={require('../assets/bg.png')}>
+            source={require('../../assets/bg.png')}>
             <Icons name={icon} color="#fff" size={width / 12}
               style={styles.cateIcon} />
           </ImageBackground>
@@ -368,7 +368,7 @@ export default class Pro extends React.PureComponent {
       return (
         <View style={{ flex: 1, backgroundColor: '#fff', justifyContent: 'center' }}>
           <StatusBar barStyle='light-content' backgroundColor='#a2459a' />
-          <Image source={require('../assets/homeloading.png')} style={{ width: width, height: height, resizeMode: 'contain' }} />
+          <Image source={require('../../assets/homeloading.png')} style={{ width: width, height: height, resizeMode: 'contain' }} />
           <ActivityIndicator size='large' color="'#a2459a" style={{ position: 'absolute', alignSelf: 'center' }} />
         </View>
       )

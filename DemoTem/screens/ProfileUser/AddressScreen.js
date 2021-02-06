@@ -5,7 +5,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
-import Header from '../components/HeaderComponent';
+import Header from '../../components/HeaderComponent';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 

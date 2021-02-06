@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, StatusBar,TouchableOpacity } from 'react-native
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Header from '../components/HeaderComponent';
+import Header from '../../components/HeaderComponent';
 import AsyncStorage from '@react-native-community/async-storage';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';

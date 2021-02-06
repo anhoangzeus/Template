@@ -16,14 +16,14 @@ import {
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Header from '../components/HeaderComponent';
+import Header from '../../components/HeaderComponent';
 import Feather from 'react-native-vector-icons/Feather';
 import * as Animatable from 'react-native-animatable';
-import AddressScreen from '../screens/AddressScreen';
+import AddressScreen from './AddressScreen';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { Picker } from '@react-native-community/picker';
-import vn from '../vn.json';
+import vn from '../../vn.json';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 

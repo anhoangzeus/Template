@@ -4,7 +4,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import Header from '../components/HeaderComponent';
+import Header from '../../components/HeaderComponent';
 import NumberFormat from 'react-number-format';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';

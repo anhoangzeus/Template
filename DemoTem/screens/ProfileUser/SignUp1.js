@@ -17,7 +17,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import { useTheme } from 'react-native-paper';
-import { AuthContext } from '../components/context';
+import { AuthContext } from '../../components/context';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';

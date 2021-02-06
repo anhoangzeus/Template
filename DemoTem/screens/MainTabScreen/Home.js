@@ -391,7 +391,7 @@ export default class Home extends React.PureComponent {
       return (
         <View style={{ flex: 1, backgroundColor: '#fff', justifyContent: 'center' }}>
           <StatusBar barStyle='light-content' backgroundColor='#a2459a' />
-          <Image source={require('../assets/homeloading.png')} style={{ width: width, height: height, resizeMode: 'contain' }} />
+          <Image source={require('../../assets/homeloading.png')} style={{ width: width, height: height, resizeMode: 'contain' }} />
           <ActivityIndicator size='large' color="'#a2459a" style={{ position: 'absolute', alignSelf: 'center' }} />
         </View>
       )
@@ -449,27 +449,27 @@ export default class Home extends React.PureComponent {
               <View style={{ flexDirection: 'row', marginTop: 5 }}>
                 <TouchableOpacity   onPress={() => this.props.navigation.navigate("Contents", { id: "https://tinhte.vn/thread/tong-hop-deal-khuyen-mai-02-01.3248083/" })}>
                 <Image style={styles.tophotimg1}
-                  source={require('../assets/images/iphonepromax.jpg')}
+                  source={require('../../assets/images/iphonepromax.jpg')}
                 />
                 </TouchableOpacity>
               
                 <View style={{ marginLeft: 5 }}>
                 <TouchableOpacity   onPress={() => this.props.navigation.navigate("Contents", { id: "https://tinhte.vn/thread/tong-hop-deal-khuyen-mai-02-01.3248083/" })}>
-                  <Image style={styles.hotimgtype2} source={require('../assets/images/sale1.jpg')}
+                  <Image style={styles.hotimgtype2} source={require('../../assets/images/sale1.jpg')}
                   />
                   </TouchableOpacity>
                   <TouchableOpacity   onPress={() => this.props.navigation.navigate("Contents", { id: "https://tinhte.vn/thread/tong-hop-deal-khuyen-mai-02-01.3248083/" })}>
-                  <Image style={styles.hotimgtype1} source={require('../assets/images/sale2.jpg')}
+                  <Image style={styles.hotimgtype1} source={require('../../assets/images/sale2.jpg')}
                   />
                   </TouchableOpacity>
                 </View>
                 <View style={{ marginLeft: 5 }}>
                 <TouchableOpacity   onPress={() => this.props.navigation.navigate("Contents", { id: "https://tinhte.vn/thread/tong-hop-deal-khuyen-mai-02-01.3248083/" })}>
-                  <Image style={styles.hotimgtype2} source={require('../assets/images/sale3.jpg')}
+                  <Image style={styles.hotimgtype2} source={require('../../assets/images/sale3.jpg')}
                   />
                   </TouchableOpacity>
                   <TouchableOpacity   onPress={() => this.props.navigation.navigate("Contents", { id: "https://tinhte.vn/thread/tong-hop-deal-khuyen-mai-02-01.3248083/" })}>
-                  <Image style={styles.hotimgtype1} source={require('../assets/images/sale4.jpg')}
+                  <Image style={styles.hotimgtype1} source={require('../../assets/images/sale4.jpg')}
                   />
                   </TouchableOpacity>
                 </View>
@@ -483,7 +483,7 @@ export default class Home extends React.PureComponent {
               <View style={{ flexDirection: 'row', marginTop: 5 }}>
               <TouchableOpacity   onPress={() => this.props.navigation.navigate("Contents", { id: "https://tinhte.vn/thread/tong-hop-deal-khuyen-mai-02-01.3248083/" })}>
                 <Image style={styles.tophotimg1}
-                  source={require('../assets/images/iphonepromax.jpg')}
+                  source={require('../../assets/images/iphonepromax.jpg')}
                 />
                 </TouchableOpacity>
                 <View style={{ marginLeft: 5 }}>

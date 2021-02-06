@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, StatusBar, FlatList, Text, TouchableOpacity, Dimensions, ActivityIndicator, RefreshControl, } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Header from '../components/HeaderComponent';
+import Header from '../../components/HeaderComponent';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import PushNotification from "react-native-push-notification";

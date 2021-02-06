@@ -1,5 +1,4 @@
 import { Platform, StyleSheet, Dimensions } from "react-native";
-// import { Configuration } from "./Configuration";
 
 const { width, height } = Dimensions.get("window");
 const SCREEN_WIDTH = width < height ? width : height;
